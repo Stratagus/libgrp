@@ -40,6 +40,10 @@ set (LIBRARIES_DIR "./Libraries")
 add_library(libgrp SHARED ${LIBGRP_SOURCE})
 
 if(APPLE)
+	#Check MacPorts include/lib folders
+    include_directories("/opt/local/include")
+    link_directories("/opt/local/lib")
+
     set_target_properties(libgrp PROPERTIES FRAMEWORK true)
     set_target_properties(libgrp PROPERTIES PUBLIC_HEADER "Source/libgrp.hpp")
     set_target_properties(libgrp PROPERTIES LINK_FLAGS "-framework Carbon")
@@ -65,7 +69,7 @@ if(UNITTESTS)
 	find_package(CPPUnit)
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE})
-	target_link_libraries(libgrpUnitTests libgrp)
+	target_link_libraries(libgrpUnitTests libgrp ${CPPUNIT_LIBRARY})
 endif()
 
 #Tell the developer the current build options
