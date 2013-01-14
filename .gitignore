@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+# Cmake build directory
+build/
+CMakeCache.txt
+cmake_install.cmake
