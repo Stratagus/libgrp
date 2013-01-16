@@ -1,6 +1,8 @@
 #include "main.hpp"
 #include <iostream>
 
+//Test the following classes
+#include "APITest/APITest.hpp"
 
 int main()
 {
@@ -10,6 +12,9 @@ int main()
     
     //Add tests to run
     //Example testRunner.addTest(<TestClassName>::suit());
+    testRunner.addTest(APITests::suite());
     
+    
+    testRunner.run();
     return 0;
 }

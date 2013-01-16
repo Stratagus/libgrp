@@ -20,36 +20,60 @@ GRPImage::~GRPImage()
     }
 }
 
-void GRPImage::LoadPalette(std::vector<char> *inputPalette)
-{
-    
-}
 void GRPImage::LoadPalette(std::string filePath)
 {
-}
-void GRPImage::LoadImage(std::vector<char> *inputImage)
-{
+    if(paletteData == NULL)
+    {
+        paletteData = new std::vector<char>;
+    }
+    else
+    {
+        delete paletteData;
+        paletteData = new std::vector<char>;
+    }
+    LoadFileToVector(filePath, paletteData);
     
+#warning Throw a error if the pallete is not 1024 or 768
 }
+
 void GRPImage::LoadImage(std::string filePath)
 {
-    
-}
-void GRPImage::ConvertImage()
-{
-    
-}
-
-std::vector<char> *GRPImage::SaveImage()
-{
-    return NULL;
-}
-void GRPImage::SaveImage(std::string filepath)
-{
-    
+    if(imageData == NULL)
+    {
+        imageData = new std::vector<char>;
+    }
+    else
+    {
+        delete imageData;
+        imageData = new std::vector<char>;
+    }
+    LoadFileToVector(filePath, imageData);
 }
 
-void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> destinationVector)
+void GRPImage::ExtractMetaData()
+{
+    
+    std::cout << "\n";
+    if(imageData)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            std::cout << imageData->at(i);
+        }
+        std::cout << '\n' << "Image Size: " << imageData->size() << "\n";
+    }
+    if(paletteData)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            std::cout << paletteData->at(i);
+        }
+        std::cout << '\n' << "Pallet Size: " << paletteData->size() << "\n";
+    }
+
+}
+
+void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
 {
     std::fstream inputFile(filePath.c_str());
     
@@ -65,7 +89,7 @@ void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> destinat
     if (length)
     {
         inputFile.seekg(0, std::ios::beg);
-        destinationVector.resize(static_cast<std::size_t>(length));
-        inputFile.read(&destinationVector.front(), static_cast<std::size_t>(length));
+        destinationVector->resize(static_cast<std::size_t>(length));
+        inputFile.read(&destinationVector->front(), static_cast<std::size_t>(length));
     }
 }

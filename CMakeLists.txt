@@ -27,11 +27,22 @@ set (UNITTEST_DIR "./UnitTests")
 set(LIBGRP_SOURCE
 	${SOURCE_DIR}/libgrp.hpp
 	${SOURCE_DIR}/libgrp.cpp
+	${SOURCE_DIR}/Exceptions/GRPException.hpp
+	${SOURCE_DIR}/Exceptions/GRPException.cpp
    )
 set(LIBGRP_UNITTEST_SOURCE
 	${UNITTEST_DIR}/main.hpp
 	${UNITTEST_DIR}/main.cpp
+	${UNITTEST_DIR}/APITest/APITest.hpp
+	${UNITTEST_DIR}/APITest/APITest.cpp
    )
+
+#Code groupings allow for IDEs to put files into collections
+#instead of simply throwing all files into a pile. This should
+#allow for easy navigation through the code base for novice and
+#heavy contributors.
+#source_group(libgrp FILES ${LIBGRP_SOURCE})
+#source_group(UnitTests FILES ${LIBGRP_UNITTEST_SOURCE})
 
 #Set of included libraries if the user does not have
 #a packaged version installed via DEB/RPM/Macports
