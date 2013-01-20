@@ -44,13 +44,16 @@ void APITests::TestNoFileOnOpenImage()
 
 void APITests::general()
 {
-    /*GRPImage *myImage = new GRPImage;
+    GRPImage *myImage = new GRPImage;
     
-    myImage->LoadImage("./marine.grp");
+    myImage->LoadImage("./zergling.grp");
     myImage->LoadPalette("./platform.wpe");
-    myImage->ExtractMetaData();
     std::cout << "Loaded image from file\n";
-    */
+    myImage->ExtractMetaData();
+    std::cout << "Got Images with " << myImage->getNumberOfFrames() << " # of Frames "
+              << "MaxWidth of: " << myImage->getMaxWidth() << " MaxHeight of: " << myImage->getMaxHeight() << '\n';
+    
+    
     
     CPPUNIT_ASSERT(true);
 }

@@ -31,6 +31,10 @@ public:
     std::vector<char> *SaveImage();
     void SaveImage(std::string filepath);
     
+    uint16_t getNumberOfFrames() const;
+    uint16_t getMaxWidth() const;
+    uint16_t getMaxHeight() const;
+    
 #warning Should be in protected
     void ExtractMetaData();
     
@@ -49,6 +53,12 @@ private:
     uint8_t frameTop;
     uint8_t frameWidth;
     uint8_t frameHeight;
+    
+    
+    //GrpInfo Header
+    int16_t numberOfFrames;
+    int16_t maxWidth;
+    int16_t maxHeight;
     
     uint32_t frameOffset;
     

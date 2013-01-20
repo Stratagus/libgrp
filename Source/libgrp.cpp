@@ -4,6 +4,10 @@ GRPImage::GRPImage()
 {
     imageData = NULL;
     paletteData = NULL;
+    
+    numberOfFrames = -1;
+    maxWidth = -1;
+    maxHeight = -1;
 }
 
 GRPImage::~GRPImage()
@@ -48,29 +52,32 @@ void GRPImage::LoadImage(std::string filePath)
         imageData = new std::vector<char>;
     }
     LoadFileToVector(filePath, imageData);
+    
+    //Load the numberOfFrames, maxWidth, maxHeigt
+    this->ExtractMetaData();
+}
+
+uint16_t GRPImage::getNumberOfFrames() const
+{
+    return numberOfFrames;
+}
+uint16_t GRPImage::getMaxWidth() const
+{
+    return maxWidth;
+}
+uint16_t GRPImage::getMaxHeight() const
+{
+    return maxHeight;
 }
 
 void GRPImage::ExtractMetaData()
 {
+    //Copy raw chunks of the Frame Header and load them
+    //into 16bit unsigned integers
+    memcpy(&numberOfFrames, &imageData->at(0), 2);
+    memcpy(&maxWidth, &imageData->at(2), 2);
+    memcpy(&maxHeight, &imageData->at(4), 2);
     
-    std::cout << "\n";
-    if(imageData)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            std::cout << imageData->at(i);
-        }
-        std::cout << '\n' << "Image Size: " << imageData->size() << "\n";
-    }
-    if(paletteData)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            std::cout << paletteData->at(i);
-        }
-        std::cout << '\n' << "Pallet Size: " << paletteData->size() << "\n";
-    }
-
 }
 
 void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
