@@ -4,6 +4,7 @@ GRPImage::GRPImage()
 {
     imageData = NULL;
     paletteData = NULL;
+    imageFrames = NULL;
     
     numberOfFrames = -1;
     maxWidth = -1;
@@ -22,6 +23,20 @@ GRPImage::~GRPImage()
         delete paletteData;
         paletteData = NULL;
     }
+    if(imageFrames != NULL)
+    {
+        delete imageFrames;
+        imageFrames = NULL;
+    }
+}
+
+void GRPImage::LoadPalette(std::vector<char> *inputPalette)
+{
+    if(paletteData != NULL)
+    {
+        delete paletteData;
+    }
+    paletteData = inputPalette;
 }
 
 void GRPImage::LoadPalette(std::string filePath)
@@ -37,7 +52,17 @@ void GRPImage::LoadPalette(std::string filePath)
     }
     LoadFileToVector(filePath, paletteData);
     
-#warning Throw a error if the pallete is not 1024 or 768
+#warning Throw a error if the pallete is not 1024 or 768 bit length
+}
+
+void GRPImage::LoadImage(std::vector<char> *inputImage)
+{
+    if(imageData != NULL)
+    {
+        delete imageData;
+    }
+    imageData = inputImage;
+    this->ExtractMetaData();
 }
 
 void GRPImage::LoadImage(std::string filePath)
@@ -79,6 +104,7 @@ void GRPImage::ExtractMetaData()
     memcpy(&maxHeight, &imageData->at(4), 2);
     
 }
+
 
 void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
 {

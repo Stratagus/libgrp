@@ -49,9 +49,10 @@ void APITests::general()
     myImage->LoadImage("./zergling.grp");
     myImage->LoadPalette("./platform.wpe");
     std::cout << "Loaded image from file\n";
-    myImage->ExtractMetaData();
-    std::cout << "Got Images with " << myImage->getNumberOfFrames() << " # of Frames "
-              << "MaxWidth of: " << myImage->getMaxWidth() << " MaxHeight of: " << myImage->getMaxHeight() << '\n';
+    std::cout << "GRPImage Specs -Frames: " << myImage->getNumberOfFrames()
+              << " -MaxWidth of: " << myImage->getMaxWidth() << " -MaxHeight of: " << myImage->getMaxHeight() << '\n';
+    
+    
     
     
     

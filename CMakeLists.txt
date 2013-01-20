@@ -27,6 +27,8 @@ set (UNITTEST_DIR "./UnitTests")
 set(LIBGRP_SOURCE
 	${SOURCE_DIR}/libgrp.hpp
 	${SOURCE_DIR}/libgrp.cpp
+	${SOURCE_DIR}/GRPFrame/GRPFrame.hpp
+	${SOURCE_DIR}/GRPFrame/GRPFrame.cpp
 	${SOURCE_DIR}/Exceptions/GRPException.hpp
 	${SOURCE_DIR}/Exceptions/GRPException.cpp
    )
