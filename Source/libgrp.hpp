@@ -17,11 +17,16 @@
  *  \copyright LGPL
  */
 
+#include <string.h>
+#include <cstddef>
+
 #include <vector>
 #include <string>
 #include <fstream>
 #include <list>
 #include <stdint.h>
+
+#include "ColorPalette/ColorPalette.hpp"
 
 #include "GRPFrame/GRPFrame.hpp"
 #include "Exceptions/GRPException.hpp"
@@ -107,6 +112,7 @@ public:
      * \note NA*/
     uint16_t getMaxHeight() const;
     
+
     void DecodeFrame(unsigned int frameNumber);
     
 protected:

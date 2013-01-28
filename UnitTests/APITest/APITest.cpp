@@ -45,15 +45,12 @@ void APITests::TestNoFileOnOpenImage()
 void APITests::general()
 {
     GRPImage *myImage = new GRPImage;
-    
+
     myImage->LoadImage("./zergling.grp");
     myImage->LoadPalette("./platform.wpe");
     std::cout << "Loaded image from file\n";
     std::cout << "GRPImage Specs -Frames: " << myImage->getNumberOfFrames()
               << " -MaxWidth of: " << myImage->getMaxWidth() << " -MaxHeight of: " << myImage->getMaxHeight() << '\n';
-    
-    
-    
     
     
     CPPUNIT_ASSERT(true);
