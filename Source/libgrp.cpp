@@ -95,6 +95,17 @@ uint16_t GRPImage::getMaxHeight() const
     return maxHeight;
 }
 
+void GRPImage::DecodeFrame(int frameNumber)
+{
+    if(frameNumber < 0)
+    {
+        throw "Bad frame number";
+    }
+    std::cout << "Decoding Frame: " << frameNumber << '\n';
+    
+    
+}
+
 void GRPImage::ExtractMetaData()
 {
     //Copy raw chunks of the Frame Header and load them

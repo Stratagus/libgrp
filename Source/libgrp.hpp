@@ -107,7 +107,7 @@ public:
      * \note NA*/
     uint16_t getMaxHeight() const;
     
-    void DecodeFrame(unsigned int frameNumber);
+    void DecodeFrame(int frameNumber);
     
 protected:
     //!Extract basic GRP information from the header

@@ -51,7 +51,7 @@ void APITests::general()
     std::cout << "Loaded image from file\n";
     std::cout << "GRPImage Specs -Frames: " << myImage->getNumberOfFrames()
               << " -MaxWidth of: " << myImage->getMaxWidth() << " -MaxHeight of: " << myImage->getMaxHeight() << '\n';
-    
+    myImage->DecodeFrame(3);
     
     
     
