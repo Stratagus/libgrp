@@ -12,6 +12,9 @@
 *.la
 *.a
 
+# Editor Intermediary Files
+*~
+
 # Cmake build directory
 build/
 CMakeCache.txt
