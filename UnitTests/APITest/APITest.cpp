@@ -54,9 +54,9 @@ BOOST_AUTO_TEST_CASE(Current)
     myImage->LoadImage(GRPIMAGEFILEPATH);
     //myImage->LoadPalette(PALLETTEFILEPATH);
     std::cout << "Loaded image from file\n";
-    std::cout << "GRPImage Specs -Frames: " << myImage->getNumberOfFrames()
-              << " -MaxWidth of: " << myImage->getMaxWidth() << " -MaxHeight of: " << myImage->getMaxHeight() << '\n';
-    myImage->DecodeFrame(3);
+    std::cout << "GRPImage Specs Frames: " << myImage->getNumberOfFrames()
+              << "  MaxWidth: " << myImage->getMaxWidth() << "  MaxHeight: " << myImage->getMaxHeight() << '\n';
+    //myImage->DecodeFrame(3);
     
     BOOST_ASSERT(true);
 }

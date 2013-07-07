@@ -5,6 +5,11 @@
 #include <vector>
 #include <fstream>
 
+#include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
+
+#warning debug include
+#include <iostream>
+
 class ColorPalette
 {
 	public:
@@ -28,7 +33,7 @@ class ColorPalette
         //!Load palette data from a file (.wpe)
         /*! Load a GRP Palette file to use when decoding/encoding
         * a GRPImage.
-        * \pre Filepath must be to a valid .wpe palette file
+        * \pre Filepath must be to a valid .pal palette file
         * \post The file is loaded into memory for the GRPImage
         * \param[in] filePath The file path to the palette file
         *\note NA

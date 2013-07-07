@@ -15,5 +15,7 @@ class ColorPaletteException : public GRPException
 {
 };
 
+class CurruptColorPaletteException : public ColorPaletteException {};
+
 
 #endif

@@ -32,8 +32,6 @@
 #include "GRPFrame/GRPFrame.hpp"
 #include "Exceptions/GRPException.hpp"
 
-
-
 #warning Temporary Debug includes
 #include <iostream>
 
@@ -117,8 +115,9 @@ protected:
     
 private:
     std::vector<char> *imageData;
+    std::vector<GRPFrame> *imageFrames;
     ColorPalette *currentPalette;
-    std::list<GRPFrame> *imageFrames;
+
     
     //GrpInfo Header
     int16_t numberOfFrames;

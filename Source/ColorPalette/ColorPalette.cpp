@@ -2,21 +2,27 @@
 
 ColorPalette::ColorPalette()
 {
-
+    paletteData = NULL;
 }
 
 ColorPalette::~ColorPalette()
 {
-
-}
-
-void ColorPalette::GenerateRedColorTable()
-{
-
+    if(paletteData != NULL)
+    {
+        delete paletteData;
+        paletteData = NULL;
+    }
 }
 
 void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
+    
+    if( (inputPalette != NULL) && ((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
+    {
+        CurruptColorPaletteException curruptPalette;
+        curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
+        throw(curruptPalette);
+    }
     if(paletteData != NULL)
     {
         delete paletteData;
@@ -36,18 +42,25 @@ void ColorPalette::LoadPalette(std::string filePath)
         paletteData = new std::vector<char>;
     }
     LoadFileToVector(filePath, paletteData);
-    
-#warning Throw a error if the pallete is not 1024 or 768 bit length
+    if((paletteData->size() != 768) && (paletteData->size() != 1024))
+    {
+        if(paletteData != NULL)
+        {
+            delete paletteData;
+            paletteData = NULL;
+        }
+        CurruptColorPaletteException curruptPalette;
+        curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
+        throw(curruptPalette);
+    }
 }
 
 void ColorPalette::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
 {
+    
     std::fstream inputFile(filePath.c_str());
     
-    inputFile.exceptions(
-                         std::ifstream::badbit
-                         | std::ifstream::failbit
-                         | std::ifstream::eofbit);
+    inputFile.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
     
     inputFile.seekg(0, std::ios::end);
     
