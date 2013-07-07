@@ -27,21 +27,33 @@ set (UNITTEST_DIR "./UnitTests")
 set(LIBGRP_SOURCE
 	${SOURCE_DIR}/libgrp.hpp
 	${SOURCE_DIR}/libgrp.cpp
-	${SOURCE_DIR}/ColorPalette/ColorPalette.hpp
-	${SOURCE_DIR}/ColorPalette/ColorPalette.cpp	
-	${SOURCE_DIR}/GRPFrame/GRPFrame.hpp
-	${SOURCE_DIR}/GRPFrame/GRPFrame.cpp
 	${SOURCE_DIR}/Exceptions/GRPException.hpp
 	${SOURCE_DIR}/Exceptions/GRPException.cpp
+
+   )
+set(GRPFRAME_SOURCE
+	${SOURCE_DIR}/GRPFrame/GRPFrame.hpp
+	${SOURCE_DIR}/GRPFrame/GRPFrame.cpp
+	${SOURCE_DIR}/Exceptions/GRPFrame/GRPFrameException.hpp
+	${SOURCE_DIR}/Exceptions/GRPFrame/GRPFrameException.cpp
+	)
+
+set(COLORPALETTE_SOURCE
+	${SOURCE_DIR}/ColorPalette/ColorPalette.hpp
+	${SOURCE_DIR}/ColorPalette/ColorPalette.cpp	
 	${SOURCE_DIR}/Exceptions/ColorPalette/ColorPaletteException.hpp
 	${SOURCE_DIR}/Exceptions/ColorPalette/ColorPaletteException.cpp
-   )
+	)
 set(LIBGRP_UNITTEST_SOURCE
 	${UNITTEST_DIR}/main.hpp
 	${UNITTEST_DIR}/main.cpp
 	${UNITTEST_DIR}/APITest/APITest.hpp
 	${UNITTEST_DIR}/APITest/APITest.cpp
    )
+
+source_group(Main FILES ${LIBGRP_SOURCE})
+source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
+source_group(GRPFrame FILES ${GRPFRAME_SOURCE})
 
 #Code groupings allow for IDEs to put files into collections
 #instead of simply throwing all files into a pile. This should
@@ -54,7 +66,7 @@ set(LIBGRP_UNITTEST_SOURCE
 #a packaged version installed via DEB/RPM/Macports
 set (LIBRARIES_DIR "./Libraries")
 
-add_library(libgrp SHARED ${LIBGRP_SOURCE})
+add_library(libgrp SHARED ${LIBGRP_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
 
 if(APPLE)
 	#Check MacPorts include/lib folders

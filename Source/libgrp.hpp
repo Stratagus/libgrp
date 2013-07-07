@@ -27,9 +27,11 @@
 #include <stdint.h>
 
 #include "ColorPalette/ColorPalette.hpp"
+#include "Exceptions/ColorPalette/ColorPaletteException.hpp"
 
 #include "GRPFrame/GRPFrame.hpp"
 #include "Exceptions/GRPException.hpp"
+
 
 
 #warning Temporary Debug includes
