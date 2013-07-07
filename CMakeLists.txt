@@ -33,6 +33,8 @@ set(LIBGRP_SOURCE
 	${SOURCE_DIR}/GRPFrame/GRPFrame.cpp
 	${SOURCE_DIR}/Exceptions/GRPException.hpp
 	${SOURCE_DIR}/Exceptions/GRPException.cpp
+	${SOURCE_DIR}/Exceptions/ColorPalette/ColorPaletteException.hpp
+	${SOURCE_DIR}/Exceptions/ColorPalette/ColorPaletteException.cpp
    )
 set(LIBGRP_UNITTEST_SOURCE
 	${UNITTEST_DIR}/main.hpp
