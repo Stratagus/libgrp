@@ -1,20 +1,12 @@
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE StrataExtractTests
+
 #include "main.hpp"
-#include <iostream>
 
-//Test the following classes
-#include "APITest/APITest.hpp"
+BOOST_AUTO_TEST_SUITE(MiscTests)
 
-int main()
+BOOST_AUTO_TEST_CASE(SetLogger)
 {
-    std::cout << "libGRP UnitTests\n";
-    
-    CppUnit::TextUi::TestRunner testRunner;
-    
-    //Add tests to run
-    //Example testRunner.addTest(<TestClassName>::suit());
-    testRunner.addTest(APITests::suite());
-    
-    
-    testRunner.run();
-    return 0;
+    BOOST_ASSERT(true);
 }
+BOOST_AUTO_TEST_SUITE_END()

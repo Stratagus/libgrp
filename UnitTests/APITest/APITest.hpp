@@ -1,29 +1,22 @@
-#ifndef GlyObjectTest_H
-#define GlyObjectTest_H
+#ifndef PublicAPIUnitTest_H
+#define PublicAPIUnitTest_H
+
+//Main boost include
+#include <boost/test/unit_test.hpp>
 
 
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestCaller.h>
+#ifdef __APPLE__
+#define GRPIMAGEFILEPATH "../../Documentation/SampleContent/SampleImage.grp"
+#define PALLETTEFILEPATH "../../Documentation/SampleContent/SamplePalette.pal"
 
-class APITests : public CppUnit::TestCase
-{
-public:
-    APITests();
+#else
+#define GRPIMAGEFILEPATH "../Documentation/SampleContent/SampleImage.grp"
+#define BADGRPIMAGEFILEPATH "/asdmalskd-sd_--dsdf--w-w-.grp"
 
-    void general();
-    
-    void TestNoFileOnOpenPalette();
-    void TestNoFileOnOpenImage();
-    
-    
-    static CppUnit::Test *suite()
-    {
-        CppUnit::TestSuite *suiteOfTests = new CppUnit::TestSuite("libgrp API unit tests");
-        suiteOfTests->addTest(new CppUnit::TestCaller<APITests>("No File on LoadPalette",   &APITests::general));
-        //suiteOfTests->addTest(new CppUnit::TestCaller<APITests>("No File on LoadPalette",   &APITests::TestNoFileOnOpenPalette));
-        //suiteOfTests->addTest(new CppUnit::TestCaller<APITests>("No File on LoadPalette",   &APITests::TestNoFileOnOpenImage));
-        return suiteOfTests;
-    }
-};
+#define PALLETTEFILEPATH "../Documentation/SampleContent/SamplePalette.pal"
+#define BADPALLETTEFILEPATH "/lksmdalksmdlkamsda.pal"
+
+#endif
+
+
 #endif

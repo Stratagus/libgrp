@@ -64,6 +64,10 @@ if(APPLE)
     set_target_properties(libgrp PROPERTIES LINK_FLAGS "-framework Carbon")
 endif()
 
+	#Temporary Includes
+    include_directories("~/dev/fakeroot/include")
+    link_directories("~/dev/fakeroot/lib")
+
 if(UNIX)
     set_target_properties(libgrp PROPERTIES VERSION ${LIBGRP_VERSION})
     set_target_properties(libgrp PROPERTIES SOVERSION ${LIBGRP_VERSION})
@@ -81,10 +85,10 @@ option(UNITTESTS "Compile Unittests" OFF)
 if(UNITTESTS)
 	#Search for the required libraries for the project to properly
 	#link and compile.
-	find_package(CPPUnit)
+	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE})
-	target_link_libraries(libgrpUnitTests libgrp ${CPPUNIT_LIBRARY})
+	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
 endif()
 
 #Tell the developer the current build options

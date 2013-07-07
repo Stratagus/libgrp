@@ -95,7 +95,7 @@ uint16_t GRPImage::getMaxHeight() const
     return maxHeight;
 }
 
-void GRPImage::DecodeFrame(int frameNumber)
+void GRPImage::DecodeFrame(unsigned int frameNumber)
 {
     if(frameNumber < 0)
     {

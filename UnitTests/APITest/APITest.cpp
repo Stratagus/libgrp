@@ -2,22 +2,20 @@
 
 #include "../../Source/libgrp.hpp"
 
-APITests::APITests() : CppUnit::TestCase("Sample UnitTest")
-{
-}
+BOOST_AUTO_TEST_SUITE(PublicAPITests)
 
 #warning Needs to be improved to tell what kind of error
-void APITests::TestNoFileOnOpenPalette()
+BOOST_AUTO_TEST_CASE(BadFilePathonOpenPallete)
 {
     GRPImage *testImage = new GRPImage();
     try
     {
         testImage->LoadPalette("/bad/file/path.wbe");
-        CPPUNIT_ASSERT(false);
+        BOOST_ASSERT(false);
     }
     catch (...)
     {
-        CPPUNIT_ASSERT(true);
+        BOOST_ASSERT(true);
     }
     
     delete testImage;
@@ -25,33 +23,41 @@ void APITests::TestNoFileOnOpenPalette()
 }
 
 #warning Needs to be improved to tell what kind of error
-void APITests::TestNoFileOnOpenImage()
+BOOST_AUTO_TEST_CASE(BadFilePathonOpenImage)
 {
     GRPImage *testImage = new GRPImage();
     try
     {
         testImage->LoadImage("/bad/file/path.wbe");
-        CPPUNIT_ASSERT(false);
+        BOOST_ASSERT(false);
     }
     catch (...)
     {
-        CPPUNIT_ASSERT(true);
+        BOOST_ASSERT(true);
     }
     
     delete testImage;
     testImage = NULL;
 }
 
-void APITests::general()
+BOOST_AUTO_TEST_CASE(QueryGRPImage)
+{
+    GRPImage sampleImage;
+    sampleImage.LoadImage(GRPIMAGEFILEPATH);
+    BOOST_ASSERT((sampleImage.getNumberOfFrames() == 296) && (sampleImage.getMaxHeight() == 128) && (sampleImage.getMaxWidth() == 128));
+}
+BOOST_AUTO_TEST_CASE(Current)
 {
     GRPImage *myImage = new GRPImage;
 
-    myImage->LoadImage("./zergling.grp");
-    myImage->LoadPalette("./platform.wpe");
+    
+    myImage->LoadImage(GRPIMAGEFILEPATH);
+    myImage->LoadPalette(PALLETTEFILEPATH);
     std::cout << "Loaded image from file\n";
     std::cout << "GRPImage Specs -Frames: " << myImage->getNumberOfFrames()
               << " -MaxWidth of: " << myImage->getMaxWidth() << " -MaxHeight of: " << myImage->getMaxHeight() << '\n';
     myImage->DecodeFrame(3);
     
-    CPPUNIT_ASSERT(true);
+    BOOST_ASSERT(true);
 }
+BOOST_AUTO_TEST_SUITE_END()

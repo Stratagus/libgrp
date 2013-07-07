@@ -7,6 +7,8 @@ class GRPFileExceptions : public std::exception
 {
     
 public:
+protected:
+private:
     
 };
 

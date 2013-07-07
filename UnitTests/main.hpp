@@ -1,5 +1,5 @@
 /*!
- *  \brief     Cppunit Test Runner
+ *  \brief     Unit Test Runner
  *  \details   The main testrunner for libgrp,
  *              tests for the different classes are written in there
  *              label of <classname>Test.h with the same file structure
@@ -11,8 +11,10 @@
 #ifndef libgrpTestMain_H
 #define libgrpTestMain_H
 
-//CPPUnut Test Includes
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestCaller.h>
+//Main boost include
+#include <boost/test/unit_test.hpp>
+
+//Test the following classes
+#include "APITest/APITest.hpp"
+
 #endif
