@@ -1,5 +1,5 @@
-#ifndef grpexception_H
-#define grpexception_H
+#ifndef GRPException_H
+#define GRPException_H
 
 #include <exception>
 #include <string>

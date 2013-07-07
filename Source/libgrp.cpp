@@ -3,8 +3,8 @@
 GRPImage::GRPImage()
 {
     imageData = NULL;
-    paletteData = NULL;
     imageFrames = NULL;
+    currentPalette = NULL;
     
     numberOfFrames = -1;
     maxWidth = -1;
@@ -18,41 +18,16 @@ GRPImage::~GRPImage()
         delete imageData;
         imageData = NULL;
     }
-    if(paletteData != NULL)
+    if(currentPalette != NULL)
     {
-        delete paletteData;
-        paletteData = NULL;
+        delete currentPalette;
+        currentPalette = NULL;
     }
     if(imageFrames != NULL)
     {
         delete imageFrames;
         imageFrames = NULL;
     }
-}
-
-void GRPImage::LoadPalette(std::vector<char> *inputPalette)
-{
-    if(paletteData != NULL)
-    {
-        delete paletteData;
-    }
-    paletteData = inputPalette;
-}
-
-void GRPImage::LoadPalette(std::string filePath)
-{
-    if(paletteData == NULL)
-    {
-        paletteData = new std::vector<char>;
-    }
-    else
-    {
-        delete paletteData;
-        paletteData = new std::vector<char>;
-    }
-    LoadFileToVector(filePath, paletteData);
-    
-#warning Throw a error if the pallete is not 1024 or 768 bit length
 }
 
 void GRPImage::LoadImage(std::vector<char> *inputImage)

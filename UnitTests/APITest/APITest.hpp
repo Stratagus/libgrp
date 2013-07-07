@@ -15,7 +15,6 @@
 
 #define PALLETTEFILEPATH "../Documentation/SampleContent/SamplePalette.pal"
 #define BADPALLETTEFILEPATH "/lksmdalksmdlkamsda.pal"
-
 #endif
 
 

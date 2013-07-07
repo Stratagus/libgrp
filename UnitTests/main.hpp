@@ -16,5 +16,7 @@
 
 //Test the following classes
 #include "APITest/APITest.hpp"
+#include "ColorPaletteTests/ColorPaletteTests.hpp"
+#include "GRPFrameTests/GRPFrameTests.hpp"
 
 #endif

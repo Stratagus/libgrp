@@ -51,9 +51,23 @@ set(LIBGRP_UNITTEST_SOURCE
 	${UNITTEST_DIR}/APITest/APITest.cpp
    )
 
+set(COLORPALETTE_UNITTEST_SOURCE
+	${UNITTEST_DIR}/ColorPaletteTests/ColorPaletteTests.hpp
+	${UNITTEST_DIR}/ColorPaletteTests/ColorPaletteTests.cpp
+	)
+
+set(GRPFRAME_UNITTEST_SOURCE
+	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.hpp
+	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.cpp
+	)
+
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
 source_group(GRPFrame FILES ${GRPFRAME_SOURCE})
+
+source_group(MainTests FILES ${LIBGRP_UNITTEST_SOURCE})
+source_group(ColorPaletteTests FILES ${COLORPALETTE_UNITTEST_SOURCE})
+source_group(GRPFrameTests FILES ${GRPFRAME_UNITTEST_SOURCE})
 
 #Code groupings allow for IDEs to put files into collections
 #instead of simply throwing all files into a pile. This should
@@ -101,7 +115,7 @@ if(UNITTESTS)
 	#link and compile.
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
-	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE})
+	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE})
 	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
 endif()
 
