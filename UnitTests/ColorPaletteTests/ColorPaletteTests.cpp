@@ -25,6 +25,7 @@ BOOST_AUTO_TEST_CASE(LoadCurruptPaletteFile)
 BOOST_AUTO_TEST_CASE(GenerateTransparentColorsTable)
 {
     ColorPalette samplePalette;
+    samplePalette.LoadPalette(PALLETTEFILEPATH);
     samplePalette.GenerateTransparentColorsTable();
 }
 

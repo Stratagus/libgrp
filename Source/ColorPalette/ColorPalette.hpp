@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <math.h>
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
 
 #warning debug include
 #include <iostream>
-#include <math.h>
 
 #define MAXIMUMNUMBEROFCOLORSPERPALETTE 256
 
@@ -21,11 +21,18 @@
 #define GREENCOLOR		1
 #define BLUECOLOR		2
 
-#define NRELEM(elem,nr)	transparentColorTable->at((elem)*3+nr)
+#define NRELEM(elem,nr)	paletteData->at((elem)*3+nr)
 
 #define REDELEM(elem) 	NRELEM(elem,REDCOLOR)
 #define GREENELEM(elem) NRELEM(elem,GREENCOLOR)
 #define BLUEELEM(elem)	NRELEM(elem,BLUECOLOR)
+
+struct ColorElement
+{
+    uint8_t RedColor;
+    uint8_t BlueColor;
+    uint8_t GreenColor;
+};
 
 class ColorPalette
 {
@@ -58,6 +65,11 @@ class ColorPalette
         void LoadPalette(std::string filePath);
 
         void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
+    
+        char GetRedEFromPaletteData(int elementNumber);
+        char GetGreenElementFromPaletteData(int elementNumber);
+        char GetBlueElementFromPaletteData(int elementNumber);
+    
 
     void GenerateTransparentColorsTable();
 

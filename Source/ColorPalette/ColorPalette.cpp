@@ -85,7 +85,8 @@ void ColorPalette::GenerateTransparentColorsTable()
     if(transparentColorTable == NULL)
     {
         //Create a vector with the max number of colors
-        transparentColorTable = new std::vector<char>(MAXIMUMNUMBEROFCOLORSPERPALETTE);
+        transparentColorTable = new std::vector<char>;
+        transparentColorTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
     }
     
     
@@ -109,8 +110,9 @@ void ColorPalette::GenerateTransparentColorsTable()
      we need a 256x256 table. */
     
     int maxpalettecolor=256;
-    for (col2 = 0; col2 < maxpalettecolor; col2++)
+    for (col2 = 0; col2 < MAXIMUMNUMBEROFCOLORSPERPALETTE; col2++)
     {
+        std::cout << "Current col2: " << col2 << '\n';
         fr2 = (float)REDELEM(col2) * LIGHTLEVELUNDER;
         fg2 = (float)GREENELEM(col2) * LIGHTLEVELUNDER;
         fb2 = (float)BLUEELEM(col2) * LIGHTLEVELUNDER;
@@ -125,8 +127,10 @@ void ColorPalette::GenerateTransparentColorsTable()
             ib = (long)(fb + fb2);
             
             lowest = 655350.0;
-            for  (findcol = 0; findcol < maxpalettecolor; findcol++)
+            for  (findcol = 0; findcol < MAXIMUMNUMBEROFCOLORSPERPALETTE; findcol++)
             {
+                
+                //std::cout << "FindCol: " << findcol << " Current Inside Access: " << " RED " <<(findcol - ir) << " GREEN " <<(findcol - ig) << " BLUE " <<(findcol - ib) << " of vector size "  << paletteData->size() << '\n';
                 absr = ((float)REDELEM(findcol) - ir) * 30;//r-percentage RED in any color
                 absg = ((float)GREENELEM(findcol) - ig) * 59;//g-percentage GREEN in any color
                 absb = ((float)BLUEELEM(findcol) - ib) * 11;//b-percentage BLUE in any color
@@ -138,6 +142,8 @@ void ColorPalette::GenerateTransparentColorsTable()
                     bestfit = findcol;
                 }
             }
+            //std::cout << "Bestfit " << bestfit << " to position " << (col2 * MAXIMUMNUMBEROFCOLORSPERPALETTE + col) << '\n';
+            transparentColorTable->at((col2 * MAXIMUMNUMBEROFCOLORSPERPALETTE + col)) = bestfit;
             //outfortrbuffer[col2 * maxpalettecolor + col] = bestfit;
         }
     }
