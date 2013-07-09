@@ -80,6 +80,16 @@ void ColorPalette::LoadPaletteFileToVector(std::string filePath, std::vector<cha
     }
 }
 
+colorValues ColorPalette::GetColorFromPalette(int colorNumber)
+{
+    colorValues selectedColor;
+    selectedColor.RedElement = paletteData->at((colorNumber * 3) + 0);
+    selectedColor.BlueElement = paletteData->at((colorNumber * 3) + 2);
+    selectedColor.GreenElement = paletteData->at((colorNumber * 3) + 1);
+    
+    return selectedColor;
+}
+
 void ColorPalette::GenerateTransparentColorsTable()
 {
     if(transparentColorTable == NULL)
@@ -88,6 +98,11 @@ void ColorPalette::GenerateTransparentColorsTable()
         transparentColorTable = new std::vector<char>;
         transparentColorTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
     }
+    
+    colorValues currentColor;
+    colorValues currentOnLightColor;
+    colorValues currentUnderLightColor;
+    colorValues currentCombinedLightColor;
     
     
     float fr, fg, fb;
@@ -113,29 +128,48 @@ void ColorPalette::GenerateTransparentColorsTable()
     for (col2 = 0; col2 < MAXIMUMNUMBEROFCOLORSPERPALETTE; col2++)
     {
         std::cout << "Current col2: " << col2 << '\n';
-        fr2 = (float)REDELEM(col2) * LIGHTLEVELUNDER;
-        fg2 = (float)GREENELEM(col2) * LIGHTLEVELUNDER;
-        fb2 = (float)BLUEELEM(col2) * LIGHTLEVELUNDER;
+        //fr2 = (float)REDELEM(col2) * LIGHTLEVELUNDER;
+        //fg2 = (float)GREENELEM(col2) * LIGHTLEVELUNDER;
+        //fb2 = (float)BLUEELEM(col2) * LIGHTLEVELUNDER;
+        
+        currentUnderLightColor = GetColorFromPalette(col2);
+        
         for (col = 0; col < maxpalettecolor; col++)
         {
-            fr= (float)REDELEM(col) * LIGHTLEVELON;
-            fg= (float)GREENELEM(col) * LIGHTLEVELON;
-            fb= (float)BLUEELEM(col) * LIGHTLEVELON;
+            //fr= (float)REDELEM(col) * LIGHTLEVELON;
+            //fg= (float)GREENELEM(col) * LIGHTLEVELON;
+            //fb= (float)BLUEELEM(col) * LIGHTLEVELON;
+            currentOnLightColor = GetColorFromPalette(col);
             
-            ir = (long)(fr + fr2);
-            ig = (long)(fg + fg2);
-            ib = (long)(fb + fb2);
+            
+            
+            currentCombinedLightColor.RedElement = (currentOnLightColor.RedElement + currentUnderLightColor.RedElement);
+            currentCombinedLightColor.BlueElement = (currentOnLightColor.BlueElement + currentUnderLightColor.BlueElement);
+            currentCombinedLightColor.GreenElement = (currentOnLightColor.GreenElement + currentUnderLightColor.GreenElement);
+            //ir = (long)(fr + fr2);
+            //ig = (long)(fg + fg2);
+            //ib = (long)(fb + fb2);
             
             lowest = 655350.0;
             for  (findcol = 0; findcol < MAXIMUMNUMBEROFCOLORSPERPALETTE; findcol++)
             {
                 
                 //std::cout << "FindCol: " << findcol << " Current Inside Access: " << " RED " <<(findcol - ir) << " GREEN " <<(findcol - ig) << " BLUE " <<(findcol - ib) << " of vector size "  << paletteData->size() << '\n';
-                absr = ((float)REDELEM(findcol) - ir) * 30;//r-percentage RED in any color
-                absg = ((float)GREENELEM(findcol) - ig) * 59;//g-percentage GREEN in any color
-                absb = ((float)BLUEELEM(findcol) - ib) * 11;//b-percentage BLUE in any color
                 
-                coldif = sqrt(absr*absr + absg*absg + absb*absb);
+                currentColor = GetColorFromPalette(findcol);
+                currentColor.RedElement = (currentColor.RedElement - currentCombinedLightColor.RedElement) * 30;
+                currentColor.BlueElement = (currentColor.BlueElement - currentCombinedLightColor.BlueElement) * 59;
+                currentColor.GreenElement = (currentColor.GreenElement - currentCombinedLightColor.GreenElement) * 11;
+                
+                //absr = ((float)REDELEM(findcol) - ir) * 30;//r-percentage RED in any color
+                //absg = ((float)GREENELEM(findcol) - ig) * 59;//g-percentage GREEN in any color
+                //absb = ((float)BLUEELEM(findcol) - ib) * 11;//b-percentage BLUE in any color
+                
+                //coldif = sqrt(absr*absr + absg*absg + absb*absb);
+                coldif = sqrt((currentColor.RedElement * currentColor.RedElement) +
+                              (currentColor.BlueElement * currentColor.BlueElement) +
+                              (currentColor.GreenElement * currentColor.GreenElement));
+                
                 if  (coldif < lowest)//found best equality
                 {
                     lowest = coldif;

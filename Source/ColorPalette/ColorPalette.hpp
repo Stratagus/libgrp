@@ -11,6 +11,8 @@
 #warning debug include
 #include <iostream>
 
+//The maximum number of colors supported by the table
+//ie (256*256) Table
 #define MAXIMUMNUMBEROFCOLORSPERPALETTE 256
 
 #define LIGHTLEVELON    0.5                  /* Percent of color 1 */
@@ -27,11 +29,16 @@
 #define GREENELEM(elem) NRELEM(elem,GREENCOLOR)
 #define BLUEELEM(elem)	NRELEM(elem,BLUECOLOR)
 
-struct ColorElement
+//Used to select a specific color from the Palette
+//Each color in the palette has three elements, Red(Byte 0), Green (Byte 1) and Blue (Byte 3)
+//So to select a color from the Palette (for example the third color we would go 3 sets of 3 down
+// the list (3*3). Which we will be at the Red (at Byte 0), we then simple add 1 (for Green) or
+// 2 (for Blue) to get the element of that specific color.
+struct colorValues
 {
-    uint8_t RedColor;
-    uint8_t BlueColor;
-    uint8_t GreenColor;
+    float RedElement;
+    float BlueElement;
+    float GreenElement;
 };
 
 class ColorPalette
@@ -66,16 +73,20 @@ class ColorPalette
 
         void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
     
-        char GetRedEFromPaletteData(int elementNumber);
-        char GetGreenElementFromPaletteData(int elementNumber);
-        char GetBlueElementFromPaletteData(int elementNumber);
     
-
-    void GenerateTransparentColorsTable();
+        void GenerateTransparentColorsTable();
 
 	protected:
         std::vector<char> *paletteData;
         std::vector<char> *transparentColorTable;
+    
+        //!Gets the Red/Blue/Green values for a specific color in the Palette
+        /*! Details
+         * \pre
+         * \post
+         * \warning
+         * \note NA*/
+        colorValues GetColorFromPalette(int colorNumber);
 	private:
 };
 
