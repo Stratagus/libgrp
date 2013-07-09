@@ -1,3 +1,13 @@
+/*!
+ *  \brief     A datastructure for holding a GRP Palette
+ *  \details   Datastructure that generates the color tables, loads the palette
+ *              and allows for easy color access.
+ *  \author    Bradley Clemetson, GRPLib Authors https://sourceforge.net/projects/grplib
+ *  \version   0.0.1
+ *  \date      July 8, 2013
+ *  \copyright LGPL
+ */
+
 #ifndef ColorPalette_Header
 #define ColorPalette_Header
 
@@ -8,26 +18,13 @@
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
 
-#warning debug include
+#warning debug include 
+#warning Finish documentation
 #include <iostream>
 
 //The maximum number of colors supported by the table
 //ie (256*256) Table
 #define MAXIMUMNUMBEROFCOLORSPERPALETTE 256
-
-#define LIGHTLEVELON    0.5                  /* Percent of color 1 */
-#define LIGHTLEVELUNDER (1-LIGHTLEVELON)     /* Percent of color 2 */
-
-//Define the base colors
-#define REDCOLOR		0
-#define GREENCOLOR		1
-#define BLUECOLOR		2
-
-#define NRELEM(elem,nr)	paletteData->at((elem)*3+nr)
-
-#define REDELEM(elem) 	NRELEM(elem,REDCOLOR)
-#define GREENELEM(elem) NRELEM(elem,GREENCOLOR)
-#define BLUEELEM(elem)	NRELEM(elem,BLUECOLOR)
 
 //Used to select a specific color from the Palette
 //Each color in the palette has three elements, Red(Byte 0), Green (Byte 1) and Blue (Byte 3)
@@ -71,15 +68,32 @@ class ColorPalette
         */
         void LoadPalette(std::string filePath);
 
+        //!Load palette data from a file (.wpe)
+        /*! Load a GRP Palette file to use when decoding/encoding
+        * a GRPImage.
+        * \pre Filepath must be to a valid .pal palette file
+        * \post The file is loaded into memory for the GRPImage
+        * \param[in] filePath The file path to the palette file
+        *\note NA
+        */
         void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
     
-    
+        //!Generates the TransparentColor Table to be applied to the GRP images
+        /* \pre A valid GRP Palette must be loaded to paletteData
+         * \post A transparent color table will be generated based off
+         *      the palette file input.
+         * \note NA*/
         void GenerateTransparentColorsTable();
+    
+        //!Generates the GreyscaleColor Table to be applied to the GRP images
+        /* \pre A valid GRP Palette must be loaded to paletteData
+        * \post A greyscale color table will be generated based off
+        *      the palette file input.
+        * \note NA*/
+        void GenerateGreyscaleTable();
 
 	protected:
-        std::vector<char> *paletteData;
-        std::vector<char> *transparentColorTable;
-    
+
         //!Gets the Red/Blue/Green values for a specific color in the Palette
         /*! Details
          * \pre
@@ -87,6 +101,16 @@ class ColorPalette
          * \warning
          * \note NA*/
         colorValues GetColorFromPalette(int colorNumber);
+    
+        //The raw PaletteData file
+        std::vector<char> *paletteData;
+        //The generated Transparent Color Table
+        std::vector<char> *transparentColorsTable;
+        //The generated Greyscale Table
+        std::vector<char> *greyscaleTable;
+        //The generated RBG Table
+        std::vector<char> *rgbTable;
+    
 	private:
 };
 

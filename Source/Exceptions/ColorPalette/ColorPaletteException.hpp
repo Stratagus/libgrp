@@ -16,6 +16,6 @@ class ColorPaletteException : public GRPException
 };
 
 class CurruptColorPaletteException : public ColorPaletteException {};
-
+class NoPaletteLoadedException : public ColorPaletteException {};
 
 #endif

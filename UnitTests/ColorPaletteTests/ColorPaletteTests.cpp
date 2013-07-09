@@ -29,6 +29,13 @@ BOOST_AUTO_TEST_CASE(GenerateTransparentColorsTable)
     samplePalette.GenerateTransparentColorsTable();
 }
 
+BOOST_AUTO_TEST_CASE(GenerateGreyScaleTable)
+{
+    ColorPalette samplePalette;
+    samplePalette.LoadPalette(PALLETTEFILEPATH);
+    samplePalette.GenerateGreyscaleTable();
+}
+
 #warning Write tests for set std::vectors of paletteData
 
 
