@@ -22,6 +22,12 @@ BOOST_AUTO_TEST_CASE(LoadCurruptPaletteFile)
     BOOST_REQUIRE_THROW(curruptPalette.LoadPalette(CURRUPTPALLETTEFILEPATH), CurruptColorPaletteException);
 }
 
+BOOST_AUTO_TEST_CASE(GenerateTransparentColorsTable)
+{
+    ColorPalette samplePalette;
+    samplePalette.GenerateTransparentColorsTable();
+}
+
 #warning Write tests for set std::vectors of paletteData
 
 

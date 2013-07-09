@@ -9,6 +9,23 @@
 
 #warning debug include
 #include <iostream>
+#include <math.h>
+
+#define MAXIMUMNUMBEROFCOLORSPERPALETTE 256
+
+#define LIGHTLEVELON    0.5                  /* Percent of color 1 */
+#define LIGHTLEVELUNDER (1-LIGHTLEVELON)     /* Percent of color 2 */
+
+//Define the base colors
+#define REDCOLOR		0
+#define GREENCOLOR		1
+#define BLUECOLOR		2
+
+#define NRELEM(elem,nr)	transparentColorTable->at((elem)*3+nr)
+
+#define REDELEM(elem) 	NRELEM(elem,REDCOLOR)
+#define GREENELEM(elem) NRELEM(elem,GREENCOLOR)
+#define BLUEELEM(elem)	NRELEM(elem,BLUECOLOR)
 
 class ColorPalette
 {
@@ -40,17 +57,13 @@ class ColorPalette
         */
         void LoadPalette(std::string filePath);
 
-        void LoadFileToVector(std::string filePath, std::vector<char> *destinationVector);
+        void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
 
-		void GenerateColorTables();
-		void GenerateRedColorTable();
-		void GenerateGreenColorTable();
-		void GenerateBlueColorTable();
-		void GenerateBlackColorTable();
-		void GenerateWhiteColorTable();
+    void GenerateTransparentColorsTable();
 
 	protected:
         std::vector<char> *paletteData;
+        std::vector<char> *transparentColorTable;
 	private:
 };
 

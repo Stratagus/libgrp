@@ -120,9 +120,9 @@ private:
 
     
     //GrpInfo Header
-    int16_t numberOfFrames;
-    int16_t maxWidth;
-    int16_t maxHeight;
+    uint16_t numberOfFrames;
+    uint16_t maxWidth;
+    uint16_t maxHeight;
     
 };
 
