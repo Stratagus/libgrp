@@ -31,6 +31,13 @@ set(LIBGRP_SOURCE
 	${SOURCE_DIR}/Exceptions/GRPException.cpp
 
    )
+set(GRPIMAGE_SOURCE
+	${SOURCE_DIR}/GRPImage/GRPImage.hpp
+	${SOURCE_DIR}/GRPImage/GRPImage.cpp
+	${SOURCE_DIR}/GRPImage/GRPImageException.hpp
+	${SOURCE_DIR}/GRPImage/GRPImageException.cpp
+	)
+
 set(GRPFRAME_SOURCE
 	${SOURCE_DIR}/GRPFrame/GRPFrame.hpp
 	${SOURCE_DIR}/GRPFrame/GRPFrame.cpp
@@ -56,6 +63,11 @@ set(COLORPALETTE_UNITTEST_SOURCE
 	${UNITTEST_DIR}/ColorPaletteTests/ColorPaletteTests.cpp
 	)
 
+set(GRPIMAGE_UNITTEST_SOURCE
+	${UNITTEST_DIR}/GRPImageTests/GRPImageTests.hpp
+	${UNITTEST_DIR}/GRPImageTests/GRPImageTests.cpp
+	)
+
 set(GRPFRAME_UNITTEST_SOURCE
 	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.hpp
 	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.cpp
@@ -63,10 +75,12 @@ set(GRPFRAME_UNITTEST_SOURCE
 
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
+source_group(GRPImage FILES ${GRPIMAGE_SOURCE})
 source_group(GRPFrame FILES ${GRPFRAME_SOURCE})
 
 source_group(MainTests FILES ${LIBGRP_UNITTEST_SOURCE})
 source_group(ColorPaletteTests FILES ${COLORPALETTE_UNITTEST_SOURCE})
+source_group(GRPImageTests FILES ${GRPIMAGE_UNITTEST_SOURCE})
 source_group(GRPFrameTests FILES ${GRPFRAME_UNITTEST_SOURCE})
 
 #Code groupings allow for IDEs to put files into collections
@@ -80,7 +94,7 @@ source_group(GRPFrameTests FILES ${GRPFRAME_UNITTEST_SOURCE})
 #a packaged version installed via DEB/RPM/Macports
 set (LIBRARIES_DIR "./Libraries")
 
-add_library(libgrp SHARED ${LIBGRP_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
+add_library(libgrp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
 
 if(APPLE)
 	#Check MacPorts include/lib folders
@@ -115,7 +129,7 @@ if(UNITTESTS)
 	#link and compile.
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
-	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE})
+	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE} ${GRPIMAGE_UNITTEST_SOURCE})
 	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
 endif()
 
