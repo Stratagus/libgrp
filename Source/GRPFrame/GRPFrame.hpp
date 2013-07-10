@@ -1,7 +1,7 @@
 #ifndef GRPFrame_Header
 #define GRPFrame_Header
 
-#include <stdint.h>
+#include "../Exceptions/GRPFrame/GRPFrameException.hpp"
 
 class GRPFrame
 {

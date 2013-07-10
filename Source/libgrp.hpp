@@ -7,7 +7,7 @@
  *
  */
 #include "GRPImage/GRPImage.hpp"
-#include "GRPImage/GRPImageException.hpp"
+#include "Exceptions/GRPImage/GRPImageException.hpp"
 
 #include "GRPFrame/GRPFrame.hpp"
 #include "Exceptions/GRPException.hpp"

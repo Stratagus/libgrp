@@ -13,6 +13,8 @@
 #include "../GRPFrame/GRPFrame.hpp"
 #include "../ColorPalette/ColorPalette.hpp"
 
+#include "../Exceptions/GRPImage/GRPImageException.hpp"
+
 class GRPImage
 {
     

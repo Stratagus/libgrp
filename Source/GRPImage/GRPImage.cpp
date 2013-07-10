@@ -72,9 +72,11 @@ uint16_t GRPImage::getMaxHeight() const
 
 void GRPImage::DecodeFrame(unsigned int frameNumber)
 {
-    if(frameNumber < 0)
+    if(frameNumber > numberOfFrames)
     {
-        throw "Bad frame number";
+        GRPImageInvalidFrameNumber invalidFrameError;
+        invalidFrameError.SetErrorMessage("Invalid Frame Number");
+        throw invalidFrameError;
     }
     std::cout << "Decoding Frame: " << frameNumber << '\n';
     

@@ -34,8 +34,8 @@ set(LIBGRP_SOURCE
 set(GRPIMAGE_SOURCE
 	${SOURCE_DIR}/GRPImage/GRPImage.hpp
 	${SOURCE_DIR}/GRPImage/GRPImage.cpp
-	${SOURCE_DIR}/GRPImage/GRPImageException.hpp
-	${SOURCE_DIR}/GRPImage/GRPImageException.cpp
+	${SOURCE_DIR}/Exceptions/GRPImage/GRPImageException.hpp
+	${SOURCE_DIR}/Exceptions/GRPImage/GRPImageException.cpp
 	)
 
 set(GRPFRAME_SOURCE
