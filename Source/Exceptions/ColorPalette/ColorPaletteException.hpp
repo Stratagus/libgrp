@@ -11,11 +11,10 @@
  * \post NA
  * \note */
 
-class ColorPaletteException : public GRPException
-{
-};
+class ColorPaletteException : public GRPException{};
 
 class CurruptColorPaletteException : public ColorPaletteException {};
 class NoPaletteLoadedException : public ColorPaletteException {};
+class OutofBoundsColorException : public ColorPaletteException {};
 
 #endif

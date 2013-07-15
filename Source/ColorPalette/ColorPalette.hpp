@@ -14,13 +14,21 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <limits>
 #include <math.h>
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
 
-#warning debug include 
+#if VERBOSE
+    #include <iostream>
+#endif
+
+//#define DUMPCOLORTABLE
+#define DUMPPALETTEDATA 1
+#define DUMPTRANSPARENTTABLE 1
+#define DUMPGREYSCALETABLE 1
+
 #warning Finish documentation
-#include <iostream>
 
 //The maximum number of colors supported by the table
 //ie (256*256) Table
@@ -55,6 +63,8 @@ class ColorPalette
         *      to use with the GRPImage.
         * \warning This will not make a copy of the std::vector<char> data
         *      so if you delete the vector before/during processing it will crash.
+        * \warning The method will not delete the vector, called remains responsible for
+        *       inputPalette vector deallocation.
         * \note NA*/
         void LoadPalette(std::vector<char> *inputPalette);
     
@@ -67,16 +77,6 @@ class ColorPalette
         *\note NA
         */
         void LoadPalette(std::string filePath);
-
-        //!Load palette data from a file (.wpe)
-        /*! Load a GRP Palette file to use when decoding/encoding
-        * a GRPImage.
-        * \pre Filepath must be to a valid .pal palette file
-        * \post The file is loaded into memory for the GRPImage
-        * \param[in] filePath The file path to the palette file
-        *\note NA
-        */
-        void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
     
         //!Generates the TransparentColor Table to be applied to the GRP images
         /* \pre A valid GRP Palette must be loaded to paletteData
@@ -91,9 +91,29 @@ class ColorPalette
         *      the palette file input.
         * \note NA*/
         void GenerateGreyscaleTable();
+  
+#warning Document method?
+        //!Generates the RGBColor Table to be applied to the GRP images
+        /* \pre
+         * \param[in] startGlowColor
+         * \param[in] endGlowColor
+         * \param[in] maxGradations
+         * \post
+         * \note NA*/
+        void GenerateRGBTable(int startGlowColor, int endGlowColor, int maxGradations);
 
 	protected:
 
+        //!Generates the Glow Colors of a specific image
+        /*! Details here
+         * \pre
+         * \post
+         * \param [in] maxGradation How fine set of colors to be generated
+         * \param [in] startingColor The starting color to begin color shades
+         * \param [in] endingColor The target color of the gradient generation
+         * \note NA*/
+        std::vector<colorValues> GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor);
+    
         //!Gets the Red/Blue/Green values for a specific color in the Palette
         /*! Details
          * \pre
@@ -102,8 +122,9 @@ class ColorPalette
          * \note NA*/
         colorValues GetColorFromPalette(int colorNumber);
     
-        //The raw PaletteData file
-        std::vector<char> *paletteData;
+        //Loaded formatted Palette Data
+        std::vector<colorValues> *formattedPaletteData;
+    
         //The generated Transparent Color Table
         std::vector<char> *transparentColorsTable;
         //The generated Greyscale Table
