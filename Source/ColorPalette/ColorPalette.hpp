@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <limits>
 #include <math.h>
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
@@ -21,6 +22,11 @@
 #if VERBOSE
     #include <iostream>
 #endif
+
+//#define DUMPCOLORTABLE
+#define DUMPPALETTEDATA 1
+#define DUMPTRANSPARENTTABLE 1
+#define DUMPGREYSCALETABLE 1
 
 #warning Finish documentation
 
@@ -57,6 +63,8 @@ class ColorPalette
         *      to use with the GRPImage.
         * \warning This will not make a copy of the std::vector<char> data
         *      so if you delete the vector before/during processing it will crash.
+        * \warning The method will not delete the vector, called remains responsible for
+        *       inputPalette vector deallocation.
         * \note NA*/
         void LoadPalette(std::vector<char> *inputPalette);
     
@@ -96,6 +104,16 @@ class ColorPalette
 
 	protected:
 
+        //!Generates the Glow Colors of a specific image
+        /*! Details here
+         * \pre
+         * \post
+         * \param [in] maxGradation How fine set of colors to be generated
+         * \param [in] startingColor The starting color to begin color shades
+         * \param [in] endingColor The target color of the gradient generation
+         * \note NA*/
+        std::vector<colorValues> GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor);
+    
         //!Gets the Red/Blue/Green values for a specific color in the Palette
         /*! Details
          * \pre
@@ -104,8 +122,6 @@ class ColorPalette
          * \note NA*/
         colorValues GetColorFromPalette(int colorNumber);
     
-        //The raw PaletteData file
-        std::vector<char> *paletteData;
         //Loaded formatted Palette Data
         std::vector<colorValues> *formattedPaletteData;
     

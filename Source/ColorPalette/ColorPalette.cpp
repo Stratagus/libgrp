@@ -5,7 +5,6 @@ ColorPalette::ColorPalette()
 #if VERBOSE >= 5
     std::cout << "Constructing ColorPalette Object.\n";
 #endif
-    paletteData = NULL;
     transparentColorsTable = NULL;
     greyscaleTable = NULL;
     rgbTable = NULL;
@@ -14,17 +13,6 @@ ColorPalette::ColorPalette()
 
 ColorPalette::~ColorPalette()
 {
-    #if VERBOSE >= 5
-        std::cout << "Deconstructing ColorPalette Object.\n";
-    #endif
-    if(paletteData != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating palleteData.\n";
-        #endif
-        delete paletteData;
-        paletteData = NULL;
-    }
     if(formattedPaletteData != NULL)
     {
         #if VERBOSE >= 5
@@ -61,18 +49,37 @@ ColorPalette::~ColorPalette()
 
 void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
-    
+    colorValues currentColorProcessing;
     if( (inputPalette != NULL) && ((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
     {
         CurruptColorPaletteException curruptPalette;
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
         throw(curruptPalette);
     }
-    if(paletteData != NULL)
+    
+    //Start loading the Palette into the formattedPaletteData Vector.
+    for(int loadCurrentColor = 0; loadCurrentColor < (inputPalette->size() / 3); loadCurrentColor++)
     {
-        delete paletteData;
+        currentColorProcessing.RedElement = inputPalette->at((3 * loadCurrentColor));
+        currentColorProcessing.GreenElement = inputPalette->at((3 * loadCurrentColor) + 1);
+        currentColorProcessing.BlueElement = inputPalette->at((3 * loadCurrentColor) + 2);
+        
+        formattedPaletteData->at(loadCurrentColor) = currentColorProcessing;
     }
-    paletteData = inputPalette;
+    
+#if DUMPPALETTEDATA
+    std::ofstream outputPalleteData("ColorPalette.dat");
+    colorValues currentWriteColor;
+    for(int currentColor = 0; currentColor < formattedPaletteData->size(); currentColor++)
+    {
+        currentWriteColor = formattedPaletteData->at(currentColor);
+        
+        outputPalleteData.put(currentWriteColor.RedElement);
+        outputPalleteData.put(currentWriteColor.GreenElement);
+        outputPalleteData.put(currentWriteColor.BlueElement);
+    }
+    outputPalleteData.close();
+#endif
 }
 
 void ColorPalette::LoadPalette(std::string filePath)
@@ -84,15 +91,7 @@ void ColorPalette::LoadPalette(std::string filePath)
     int inputFileSize;
     colorValues currentColorProcessing;
     
-    if(paletteData == NULL)
-    {
-        paletteData = new std::vector<char>;
-    }
-    else
-    {
-        delete paletteData;
-        paletteData = new std::vector<char>;
-    }
+
     
     std::ifstream inputFile(filePath.c_str(), std::ios::binary);
     inputFile.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
@@ -106,11 +105,6 @@ void ColorPalette::LoadPalette(std::string filePath)
     //Check to see if the file size matches a GRP Palette.
     if((inputFileSize != 768) && (inputFileSize != 1024))
     {
-        if(paletteData != NULL)
-        {
-            delete paletteData;
-            paletteData = NULL;
-        }
         CurruptColorPaletteException curruptPalette;
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
         throw(curruptPalette);
@@ -150,16 +144,39 @@ void ColorPalette::LoadPalette(std::string filePath)
                   << " Green: " <<currentColorProcessing.GreenElement << '\n';
     }
 #endif
+    
+#if DUMPPALETTEDATA
+    std::ofstream outputPalleteData("ColorPalette.dat");
+    colorValues currentWriteColor;
+    for(int currentColor = 0; currentColor < formattedPaletteData->size(); currentColor++)
+    {
+        currentWriteColor = formattedPaletteData->at(currentColor);
+        
+        outputPalleteData.put(currentWriteColor.RedElement);
+        outputPalleteData.put(currentWriteColor.GreenElement);
+        outputPalleteData.put(currentWriteColor.BlueElement);
+    }
+    outputPalleteData.close();
+#endif
 }
 
 colorValues ColorPalette::GetColorFromPalette(int colorNumber)
 {
+    if(colorNumber < 0 || colorNumber > formattedPaletteData->size())
+    {
+        #if VERBOSE >= 1
+            std::cout << "Tried to access color " << colorNumber << '\n';
+        #endif
+        OutofBoundsColorException colorBoundsError;
+        colorBoundsError.SetErrorMessage("Attempted color selection of the bounds");
+        throw colorBoundsError;
+    }
     return formattedPaletteData->at(colorNumber);
 }
 
 void ColorPalette::GenerateTransparentColorsTable()
 {
-    if(paletteData == NULL)
+    if(formattedPaletteData == NULL)
     {
         NoPaletteLoadedException paletteError;
         paletteError.SetErrorMessage("No Palette file is loaded!!");
@@ -220,11 +237,20 @@ void ColorPalette::GenerateTransparentColorsTable()
             transparentColorsTable->at((currentSelectedColor2 * MAXIMUMNUMBEROFCOLORSPERPALETTE + currentSelectedColor)) = bestfit;
         }
     }
+    
+#if DUMPTRANSPARENTTABLE
+    std::ofstream outputTransparentTable("TransparentTable.dat");
+    for(int currentColor = 0; currentColor < transparentColorsTable->size(); currentColor++)
+    {
+        outputTransparentTable.put(transparentColorsTable->at(currentColor));
+    }
+    outputTransparentTable.close();
+#endif
 }
 
 void ColorPalette::GenerateGreyscaleTable()
 {
-    if(paletteData == NULL)
+    if(formattedPaletteData == NULL)
     {
         NoPaletteLoadedException paletteError;
         paletteError.SetErrorMessage("No Palette file is loaded!!");
@@ -259,7 +285,9 @@ void ColorPalette::GenerateGreyscaleTable()
         currentColor.BlueElement = (int) currentColor.BlueElement;
         currentColor.GreenElement = (int) currentColor.GreenElement;
         
-        lowest = 655350.0;
+        //Max value of an float
+        //lowest = 655350.0;
+        lowest = std::numeric_limits<float>::max();
         for  (findcol = 0; findcol < maxpalettecolor; findcol++)
         {
             findColor = GetColorFromPalette(findcol);
@@ -279,4 +307,25 @@ void ColorPalette::GenerateGreyscaleTable()
         }
         greyscaleTable->at(currentColorIndex) = bestfit;
     }
+#if DUMPGREYSCALETABLE
+    std::ofstream outputGreyscaleTable("GreyScaleTable.dat");
+    for(int currentColor = 0; currentColor < greyscaleTable->size(); currentColor++)
+    {
+        outputGreyscaleTable.put(greyscaleTable->at(currentColor));
+    }
+    outputGreyscaleTable.close();
+#endif
+}
+std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor)
+{
+    #if VERBOSE >= 2
+        std::cout << "Creating vector of size: " << maxGradation << '\n';
+    #endif
+    std::vector<colorValues> finalGlowColors;
+    finalGlowColors.resize(maxGradation);
+    
+    colorValues fColor;
+    fColor = startingColor;
+    
+    
 }
