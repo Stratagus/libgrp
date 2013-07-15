@@ -509,7 +509,9 @@ std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(int constrai
                 bestFittingColor = findColor;
             }
         }
+        finalConstrainedColorTable.at(currentColor) = GetColorFromPalette(bestFittingColor);
     }
+    return finalConstrainedColorTable;
 }
 
 colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValues operationColor)
