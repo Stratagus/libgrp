@@ -237,6 +237,20 @@ void ColorPalette::GenerateTransparentColorsTable()
             transparentColorsTable->at((currentSelectedColor2 * MAXIMUMNUMBEROFCOLORSPERPALETTE + currentSelectedColor)) = bestfit;
         }
     }
+
+#if VERBOSE >= 5
+    std::cout << "Generated values of Greyscale Table with size: " << transparentColorsTable->size() << '\n';
+    
+    //Start loading the Palette into the formattedPaletteData Vector.
+    for(int loadCurrentColor = 0; loadCurrentColor < transparentColorsTable->size(); loadCurrentColor++)
+    {
+        //std::cout << "Color: " << loadCurrentColor
+        //<< "  Red: " << currentColorProcessing.RedElement
+        //<< " Blue: " << currentColorProcessing.BlueElement
+        //<< " Green: " <<currentColorProcessing.GreenElement << '\n';
+        std::cout << (int) transparentColorsTable->at(loadCurrentColor) << '\n';
+    }
+#endif
     
 #if DUMPTRANSPARENTTABLE
     std::ofstream outputTransparentTable("TransparentTable.dat");
@@ -316,16 +330,61 @@ void ColorPalette::GenerateGreyscaleTable()
     outputGreyscaleTable.close();
 #endif
 }
+
+#warning Untested
 std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor)
 {
     #if VERBOSE >= 2
         std::cout << "Creating vector of size: " << maxGradation << '\n';
     #endif
+    
+    
     std::vector<colorValues> finalGlowColors;
     finalGlowColors.resize(maxGradation);
     
-    colorValues fColor;
-    fColor = startingColor;
+    colorValues trColor, currentProcessColor;
+	
+    int i = 0;
     
+    float mgr3 = maxGradation/3;
+	float mgr31 = mgr3*1.67;
+    for(; i < mgr3; i++)
+    {
+        currentProcessColor.RedElement = (startingColor.RedElement * (i/mgr31 + 0.4));
+        currentProcessColor.GreenElement = (startingColor.GreenElement * (i/mgr31 + 0.4));
+        currentProcessColor.BlueElement = (startingColor.BlueElement * (i/mgr31 + 0.4));
+        finalGlowColors.at(i) = currentProcessColor;
+    }
     
+    float mgr23 = mgr3 * 2;
+    trColor.RedElement = endingColor.RedElement - startingColor.RedElement;
+    trColor.GreenElement = endingColor.GreenElement - startingColor.GreenElement;
+    trColor.BlueElement = endingColor.BlueElement - startingColor.BlueElement;
+    
+    for(; i < maxGradation; i++)
+    {
+        float togo = (i-mgr3)/mgr23;
+        currentProcessColor.RedElement = (startingColor.RedElement + trColor.RedElement * togo);
+        currentProcessColor.GreenElement = (startingColor.GreenElement + trColor.GreenElement * togo);
+        currentProcessColor.BlueElement = (startingColor.BlueElement + trColor.BlueElement * togo);
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    
+    if(endingColor.RedElement && endingColor.GreenElement && endingColor.BlueElement)
+    {
+        currentProcessColor.RedElement = 255;
+        currentProcessColor.GreenElement = 255;
+        currentProcessColor.BlueElement = 255;
+        
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    else
+    {
+        currentProcessColor.RedElement = 0;
+        currentProcessColor.GreenElement = 0;
+        currentProcessColor.BlueElement = 0;
+        
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    return finalGlowColors;
 }
