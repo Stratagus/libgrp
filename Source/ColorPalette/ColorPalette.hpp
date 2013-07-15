@@ -25,17 +25,17 @@
 
 //Uncomment each to dump the raw output vectors to files
 //for inspection.
-#define DUMPPALETTEDATA 1
+#define DUMPPALETTEDATA 0
 #define DUMPTRANSPARENTTABLE 1
-#define DUMPGREYSCALETABLE 1
-#define DUMPGLOWTABLE 1
+#define DUMPGREYSCALETABLE 0
+#define DUMPGLOWTABLE 0
 #define DUMPCOLORIZETABLE 0
 
-#define DUMPSHADOWTABLE 1
-#define DUMPLIGHTTABLE 1
-#define DUMPREDTABLE 1
-#define DUMPGREENTABLE 1
-#define DUMPBLUETABLE 1
+#define DUMPSHADOWTABLE 0
+#define DUMPLIGHTTABLE 0
+#define DUMPREDTABLE 0
+#define DUMPGREENTABLE 0
+#define DUMPBLUETABLE 0
 
 #warning Finish documentation
 
@@ -96,21 +96,21 @@ class ColorPalette
     
         //!Generates the GreyscaleColor Table to be applied to the GRP images
         /* \pre A valid GRP Palette must be loaded to paletteData
-        * \post A greyscale color table will be generated based off
-        *      the palette file input.
-        * \note NA*/
+         * \post A greyscale color table will be generated based off
+         *      the palette file input.
+         * \note NA*/
         void GenerateGreyscaleTable();
   
 #warning Document method?
         //!Generates Colorization tables
-        /*! Details here
-        * \pre
-        * \post
-        * \param [in]
-        * \param [in]
-        * \param [in]
-        * \returns
-        * \note NA*/
+        /*! Generates Colorization table (the table colors the start 
+         *  from startingGlowColor and transform to endingglowColor.
+         * \pre A valid palette file must be loaded
+         * \returns A table with colors from startingGlowColor to endingGlowColor
+         * \param [in] maxGradation The number of colors (shades) to generate
+         * \param [in] startingGlowColor The starting color
+         * \param [in] endingGlowColor The target color to generate towards
+         * \note NA*/
         std::vector<char> *GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
     
         //!Generate Colortable with the rules of passed in color and multiplicator
@@ -123,62 +123,80 @@ class ColorPalette
          * \note NA*/
         std::vector<colorValues> GenerateTableWithConstraints(colorValues baseColor, float addGradation);
     
+        //!Generate all base color tables
+        /*!A simple convience method to call all the different
+         *  table generators.
+         * \pre A valid palette file must be loaded.
+         * \post Shadow/Light/Red/Green/Blue tables are generated
+         * \note NA*/
+        void GenerateBasicColorTables();
+    
         //!Generate the Shadow Table
-        /*! Details here
-         * \pre
-         * \post
+        /*! Generates different shades of black that 
+         *  can/will be applied to unit shadows
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
          * \note NA*/
         void GenerateShadowtable();
     
-        //!Generate the Shadow Table
-        /*! Details here
-         * \pre
-         * \post
+        //!Generate the Light Table
+        /*! Generates different shade of white that
+         *  can/will be applied to images for highlights.
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
          * \note NA*/
         void GenerateLighttable();
-        //!Generate the Shadow Table
-        /*! Details here
-         * \pre
-         * \post
+    
+        //!Generate the Red Table
+        /*! Generates multiple shades of Red that
+         *  can/will be used for different art assets (blood, ect)
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
          * \note NA*/
         void GenerateRedtable();
-        //!Generate the Shadow Table
-        /*! Details here
-         * \pre
-         * \post
-         * \note NA*/
+    
+        //!Generate the Green Table
+        /*! Generates multiple shades of Green that
+        *  can/will be used for different art assets (plants, ect)
+        * \pre A valid palette file must be loaded
+        * \post Generates a 8192byte set of shades
+        * \note NA*/
         void GenerateGreentable();
-        //!Generate the Shadow Table
-        /*! Details here
-         * \pre
-         * \post
+    
+        //!Generate the Blue Table
+        /*! Generates multiple shades of Blue that
+         *  can/will be used for different art assets (water, ect)
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
          * \note NA*/
         void GenerateBluetable();
 
 	protected:
 
         //!Generates the Glow Colors of a specific image
-        /*! Details here
-         * \pre
-         * \post
+        /*! Generates a byte glow table (shades) based on the
+         *  color values entered in initialColor to finalColor
+         * \pre A palette file must be loaded, colorvalues defined and maxGradation
+         *       a positive value.
+         * \returns A colorValues vector containing the best fit colors from the palette
          * \param [in] maxGradation How fine set of colors to be generated
          * \param [in] startingColor The starting color to begin color shades
          * \param [in] endingColor The target color of the gradient generation
          * \note NA*/
-        std::vector<colorValues> GenerateGlowColors(int maxGradation, colorValues initialColor, colorValues finalColor);
+        std::vector<colorValues> GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor);
     
         //!Gets the Red/Blue/Green values for a specific color in the Palette
-        /*! Details
-         * \pre
-         * \post
-         * \warning
+        /*! A simple getter to grab the Red/Blue/Green elements of a specific
+         *      color.
+         * \pre A palette must be loaded and colorNumber a valid Color palette #
+         * \returns A colorValues struct with the loaded element values.
          * \note NA*/
         colorValues GetColorFromPalette(int colorNumber);
     
         //!Gets the difference in between two colors
         /*! Subtracts the operationColor from the Initialcolor
-         * \pre
-         * \post
+         * \pre Both colorValues structs must be declared and defined
+         * \returns A new colorValues struct of initialColor - operationColor
          * \note difference = initialColor - operationColor NA*/  
         colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
     

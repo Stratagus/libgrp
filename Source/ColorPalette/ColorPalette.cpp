@@ -368,7 +368,7 @@ void ColorPalette::GenerateGreyscaleTable()
 }
 
 
-std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues initialColor, colorValues finalColor)
+std::vector<colorValues> ColorPalette::GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor)
 {
     #if VERBOSE >= 2
         std::cout << "GlowColors-Creating vector of size: " << maxGradation << '\n';
@@ -679,4 +679,14 @@ void ColorPalette::GenerateBluetable()
     }
     outputBlueTable.close();
 #endif
+}
+
+void ColorPalette::GenerateBasicColorTables()
+{
+    GenerateGreyscaleTable();
+    GenerateShadowtable();
+    GenerateLighttable();
+    GenerateRedtable();
+    GenerateGreentable();
+    GenerateBluetable();
 }
