@@ -26,7 +26,7 @@
 //Uncomment each to dump the raw output vectors to files
 //for inspection.
 #define DUMPPALETTEDATA 0
-#define DUMPTRANSPARENTTABLE 1
+#define DUMPTRANSPARENTTABLE 0
 #define DUMPGREYSCALETABLE 0
 #define DUMPGLOWTABLE 0
 #define DUMPCOLORIZETABLE 0
