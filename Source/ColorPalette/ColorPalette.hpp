@@ -116,6 +116,13 @@ class ColorPalette
          * \returns
          * \note NA*/
         std::vector<colorValues> GenerateTableWithConstraints(colorValues baseColor, float addGradation);
+    
+        //!Generate the Shadow Table
+        /*! Details here
+         * \pre
+         * \post
+         * \note NA*/
+        void GenerateShadowtable();
 
 	protected:
 
@@ -151,8 +158,10 @@ class ColorPalette
         std::vector<char> *transparentColorsTable;
         //The generated Greyscale Table
         std::vector<char> *greyscaleTable;
-        //The generated RBG Table
-        std::vector<char> *rgbTable;
+    
+        //The generated Shadow Color Table (Black)
+        std::vector<char> *shadowTable;
+    
     
 	private:
 };

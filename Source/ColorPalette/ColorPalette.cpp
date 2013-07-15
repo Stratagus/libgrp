@@ -7,7 +7,7 @@ ColorPalette::ColorPalette()
 #endif
     transparentColorsTable = NULL;
     greyscaleTable = NULL;
-    rgbTable = NULL;
+    shadowTable = NULL;
     formattedPaletteData = NULL;
 }
 
@@ -37,13 +37,13 @@ ColorPalette::~ColorPalette()
         delete greyscaleTable;
         greyscaleTable = NULL;
     }
-    if(rgbTable != NULL)
+    if(shadowTable != NULL)
     {
         #if VERBOSE >= 5
-            std::cout << "Deallocating rgbTable.\n";
+            std::cout << "Deallocating shadowTable.\n";
         #endif
-        delete rgbTable;
-        rgbTable = NULL;
+        delete shadowTable;
+        shadowTable = NULL;
     }
 }
 
@@ -526,4 +526,14 @@ colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValu
     difference.BlueElement = initialColor.BlueElement - operationColor.BlueElement;
     
     return difference;
+}
+
+void GenerateShadowtable()
+{
+    colorValues blackColor;
+    blackColor.RedElement = 0;
+    blackColor.GreenElement = 0;
+    blackColor.BlueElement = 0;
+    
+    
 }
