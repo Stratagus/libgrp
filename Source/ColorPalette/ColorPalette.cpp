@@ -9,6 +9,10 @@ ColorPalette::ColorPalette()
     greyscaleTable = NULL;
     shadowTable = NULL;
     formattedPaletteData = NULL;
+    lightTable = NULL;
+    redTable = NULL;
+    greenTable = NULL;
+    blueTable =NULL;
 }
 
 ColorPalette::~ColorPalette()
@@ -44,6 +48,38 @@ ColorPalette::~ColorPalette()
         #endif
         delete shadowTable;
         shadowTable = NULL;
+    }
+    if(lightTable != NULL)
+    {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating lightTable.\n";
+        #endif
+        delete lightTable;
+        lightTable = NULL;
+    }
+    if(redTable != NULL)
+    {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating redTable.\n";
+        #endif
+        delete redTable;
+        redTable = NULL;
+    }
+    if(greenTable != NULL)
+    {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating greenTable.\n";
+        #endif
+        delete greenTable;
+        greenTable = NULL;
+    }
+    if(blueTable != NULL)
+    {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating blueTable.\n";
+        #endif
+        delete blueTable;
+        blueTable = NULL;
     }
 }
 
@@ -336,12 +372,12 @@ void ColorPalette::GenerateGreyscaleTable()
 std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues initialColor, colorValues finalColor)
 {
     #if VERBOSE >= 2
-        std::cout << "Creating vector of size: " << maxGradation << '\n';
+        std::cout << "GlowColors-Creating vector of size: " << maxGradation << '\n';
     #endif
     
     
     std::vector<colorValues> finalGlowColors;
-    finalGlowColors.resize(maxGradation);
+    finalGlowColors.resize(maxGradation + 1);
     
     colorValues trColor, currentProcessColor;
     
@@ -402,7 +438,7 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colo
 #endif
     return finalGlowColors;
 }
-std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
+std::vector<char> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
 {
     if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
     {
@@ -411,18 +447,17 @@ std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, 
         throw gradationError;
     }
     
-    std::vector<colorValues> finalColorizedTable;
-    #warning Need to figure out the size
-    finalColorizedTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
+    std::vector<char> *finalColorizedTable = new std::vector<char>;
+    finalColorizedTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * maxGradation);
     
     colorValues firstColor, secondColor, differenceColor;
     float lowest, totalColorDifference;
-    int currentBestFit = -1;
+    int currentBestFit = -1, currentColor, currentGradation, findColor;
     std::vector<colorValues> glowColors = GenerateGlowColors(maxGradation, startingGlowColor, endingGlowColor);
     
-    for(int currentColor = 0; currentColor < maxGradation; currentColor++)
+    for(currentColor = 0; currentColor < maxGradation; currentColor++)
     {
-        for(int currentGradation = 0; currentGradation < maxGradation; currentGradation++)
+        for(currentGradation = 0; currentGradation < maxGradation; currentGradation++)
         {
             firstColor = GetColorFromPalette(currentColor);
             firstColor.RedElement = glowColors.at(currentGradation).RedElement * (currentGradation + 1);
@@ -434,7 +469,7 @@ std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, 
             firstColor.BlueElement /= maxGradation;
             
             lowest = 655350.0;
-            for (int findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
+            for (findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
             {
                 secondColor = GetColorFromPalette(findColor);
                 differenceColor = GetColorDifference(secondColor, firstColor);
@@ -452,10 +487,8 @@ std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, 
                     currentBestFit = findColor;
                 }
             }
+            finalColorizedTable->at(MAXIMUMNUMBEROFCOLORSPERPALETTE * currentGradation + currentColor) = currentBestFit;
         }
-#warning need to build the vector here!!
-        //outbuf[grad*maxpalettecolor+col] = bestfit;
-        finalColorizedTable.at(maxGradation * MAXIMUMNUMBEROFCOLORSPERPALETTE + currentColor) = GetColorFromPalette(currentBestFit);
     }
     return finalColorizedTable;
 }
@@ -528,12 +561,123 @@ colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValu
     return difference;
 }
 
-void GenerateShadowtable()
+void ColorPalette::GenerateShadowtable()
 {
     colorValues blackColor;
     blackColor.RedElement = 0;
     blackColor.GreenElement = 0;
     blackColor.BlueElement = 0;
     
+    if(shadowTable != NULL);
+    {
+        delete shadowTable;
+        shadowTable = NULL;
+    }
     
+    shadowTable = GenerateColorizedTable(32, blackColor, blackColor);
+#if DUMPSHADOWTABLE
+    std::ofstream outputShadowTable("ShadowTable.dat");
+    for(int currentColor = 0; currentColor < shadowTable->size(); currentColor++)
+    {
+        outputShadowTable.put(shadowTable->at(currentColor));
+    }
+    outputShadowTable.close();
+#endif
+}
+
+void ColorPalette::GenerateLighttable()
+{
+    colorValues whiteColor;
+    whiteColor.RedElement = 240;
+    whiteColor.GreenElement = 240;
+    whiteColor.BlueElement = 240;
+    
+    if(lightTable != NULL)
+    {
+        delete lightTable;
+        lightTable = NULL;
+    }
+    lightTable = GenerateColorizedTable(32, whiteColor, whiteColor);
+#if DUMPLIGHTTABLE
+    std::ofstream outputLightTable("LightTable.dat");
+    for(int currentColor = 0; currentColor < lightTable->size(); currentColor++)
+    {
+        outputLightTable.put(lightTable->at(currentColor));
+    }
+    outputLightTable.close();
+#endif
+}
+void ColorPalette::GenerateRedtable()
+{
+    colorValues redColor;
+    redColor.RedElement = 120;
+    redColor.GreenElement = 0;
+    redColor.BlueElement = 0;
+    
+    colorValues lightRedColor;
+    lightRedColor.RedElement = 224;
+    lightRedColor.GreenElement = 228;
+    lightRedColor.BlueElement = 144;
+    
+    if(redTable != NULL)
+    {
+        delete redTable;
+        redTable = NULL;
+    }
+    redTable = GenerateColorizedTable(32, redColor, lightRedColor);
+    
+#if DUMPREDTABLE
+    std::ofstream outputRedTable("RedTable.dat");
+    for(int currentColor = 0; currentColor < redTable->size(); currentColor++)
+    {
+        outputRedTable.put(redTable->at(currentColor));
+    }
+    outputRedTable.close();
+#endif
+}
+void ColorPalette::GenerateGreentable()
+{
+    colorValues greenColor;
+    greenColor.RedElement = 0;
+    greenColor.GreenElement = 140;
+    greenColor.BlueElement = 0;
+    
+    colorValues lightGreenColor;
+    lightGreenColor.RedElement = 252;
+    lightGreenColor.GreenElement = 252;
+    lightGreenColor.BlueElement = 56;
+    
+    greenTable = GenerateColorizedTable(32, greenColor, lightGreenColor);
+    
+#if DUMPGREENTABLE
+    std::ofstream outputGreenTable("GreenTable.dat");
+    for(int currentColor = 0; currentColor < greenTable->size(); currentColor++)
+    {
+        outputGreenTable.put(greenTable->at(currentColor));
+    }
+    outputGreenTable.close();
+#endif
+}
+void ColorPalette::GenerateBluetable()
+{
+    colorValues blueColor;
+    blueColor.RedElement = 0;
+    blueColor.GreenElement = 60;
+    blueColor.BlueElement = 150;
+    
+    colorValues lightBlueColor;
+    lightBlueColor.RedElement = 204;
+    lightBlueColor.GreenElement = 248;
+    lightBlueColor.BlueElement = 248;
+    
+    blueTable = GenerateColorizedTable(32, blueColor, lightBlueColor);
+    
+#if DUMPBLUETABLE
+    std::ofstream outputBlueTable("BlueTable.dat");
+    for(int currentColor = 0; currentColor < blueTable->size(); currentColor++)
+    {
+        outputBlueTable.put(blueTable->at(currentColor));
+    }
+    outputBlueTable.close();
+#endif
 }

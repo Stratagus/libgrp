@@ -29,7 +29,13 @@
 #define DUMPTRANSPARENTTABLE 1
 #define DUMPGREYSCALETABLE 1
 #define DUMPGLOWTABLE 1
-#define DUMPCOLORIZETABLE 1
+#define DUMPCOLORIZETABLE 0
+
+#define DUMPSHADOWTABLE 1
+#define DUMPLIGHTTABLE 1
+#define DUMPREDTABLE 1
+#define DUMPGREENTABLE 1
+#define DUMPBLUETABLE 1
 
 #warning Finish documentation
 
@@ -105,7 +111,7 @@ class ColorPalette
         * \param [in]
         * \returns
         * \note NA*/
-        std::vector<colorValues> GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
+        std::vector<char> *GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
     
         //!Generate Colortable with the rules of passed in color and multiplicator
         /*! Details here
@@ -123,6 +129,31 @@ class ColorPalette
          * \post
          * \note NA*/
         void GenerateShadowtable();
+    
+        //!Generate the Shadow Table
+        /*! Details here
+         * \pre
+         * \post
+         * \note NA*/
+        void GenerateLighttable();
+        //!Generate the Shadow Table
+        /*! Details here
+         * \pre
+         * \post
+         * \note NA*/
+        void GenerateRedtable();
+        //!Generate the Shadow Table
+        /*! Details here
+         * \pre
+         * \post
+         * \note NA*/
+        void GenerateGreentable();
+        //!Generate the Shadow Table
+        /*! Details here
+         * \pre
+         * \post
+         * \note NA*/
+        void GenerateBluetable();
 
 	protected:
 
@@ -159,9 +190,20 @@ class ColorPalette
         //The generated Greyscale Table
         std::vector<char> *greyscaleTable;
     
+        //The generated Light Color Table (White)
+        std::vector<char> *lightTable;
+    
         //The generated Shadow Color Table (Black)
         std::vector<char> *shadowTable;
     
+        //The generated Red Color Table
+        std::vector<char> *redTable;
+    
+        //The generated Green Color Table
+        std::vector<char> *greenTable;
+    
+        //The generated Blue Color Table
+        std::vector<char> *blueTable;
     
 	private:
 };
