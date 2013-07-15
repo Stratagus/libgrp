@@ -136,7 +136,7 @@ void ColorPalette::LoadPalette(std::string filePath)
     //is a valid GRP Palette.
     inputFile.seekg (0, std::ios::end);
     inputFileSize = inputFile.tellg();
-    inputFile.seekg (0, inputFile.beg);
+    inputFile.seekg (0, std::ios::beg);
     
     //Check to see if the file size matches a GRP Palette.
     if((inputFileSize != 768) && (inputFileSize != 1024))
@@ -316,8 +316,7 @@ void ColorPalette::GenerateGreyscaleTable()
     
     greyscaleTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
-    colorValues currentColor;
-    colorValues findColor;
+    colorValues currentColor, findColor;
     float lowest, colorDifference;
     int currentColorIndex,findcol,bestfit=0;
     
@@ -359,7 +358,7 @@ void ColorPalette::GenerateGreyscaleTable()
         greyscaleTable->at(currentColorIndex) = bestfit;
     }
 #if DUMPGREYSCALETABLE
-    std::ofstream outputGreyscaleTable("GreyScaleTable.dat");
+    std::ofstream outputGreyscaleTable("tomono.grd");
     for(int currentColor = 0; currentColor < greyscaleTable->size(); currentColor++)
     {
         outputGreyscaleTable.put(greyscaleTable->at(currentColor));
@@ -576,7 +575,7 @@ void ColorPalette::GenerateShadowtable()
     
     shadowTable = GenerateColorizedTable(32, blackColor, blackColor);
 #if DUMPSHADOWTABLE
-    std::ofstream outputShadowTable("ShadowTable.dat");
+    std::ofstream outputShadowTable("toblack.grd");
     for(int currentColor = 0; currentColor < shadowTable->size(); currentColor++)
     {
         outputShadowTable.put(shadowTable->at(currentColor));
@@ -599,7 +598,7 @@ void ColorPalette::GenerateLighttable()
     }
     lightTable = GenerateColorizedTable(32, whiteColor, whiteColor);
 #if DUMPLIGHTTABLE
-    std::ofstream outputLightTable("LightTable.dat");
+    std::ofstream outputLightTable("towhite.grd");
     for(int currentColor = 0; currentColor < lightTable->size(); currentColor++)
     {
         outputLightTable.put(lightTable->at(currentColor));
@@ -627,7 +626,7 @@ void ColorPalette::GenerateRedtable()
     redTable = GenerateColorizedTable(32, redColor, lightRedColor);
     
 #if DUMPREDTABLE
-    std::ofstream outputRedTable("RedTable.dat");
+    std::ofstream outputRedTable("tored.grd");
     for(int currentColor = 0; currentColor < redTable->size(); currentColor++)
     {
         outputRedTable.put(redTable->at(currentColor));
@@ -650,7 +649,7 @@ void ColorPalette::GenerateGreentable()
     greenTable = GenerateColorizedTable(32, greenColor, lightGreenColor);
     
 #if DUMPGREENTABLE
-    std::ofstream outputGreenTable("GreenTable.dat");
+    std::ofstream outputGreenTable("togreen.grd");
     for(int currentColor = 0; currentColor < greenTable->size(); currentColor++)
     {
         outputGreenTable.put(greenTable->at(currentColor));
@@ -673,7 +672,7 @@ void ColorPalette::GenerateBluetable()
     blueTable = GenerateColorizedTable(32, blueColor, lightBlueColor);
     
 #if DUMPBLUETABLE
-    std::ofstream outputBlueTable("BlueTable.dat");
+    std::ofstream outputBlueTable("toblue.grd");
     for(int currentColor = 0; currentColor < blueTable->size(); currentColor++)
     {
         outputBlueTable.put(blueTable->at(currentColor));
