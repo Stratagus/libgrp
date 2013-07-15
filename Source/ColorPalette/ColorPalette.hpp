@@ -146,7 +146,7 @@ class ColorPalette
         colorValues GetColorFromPalette(int colorNumber);
     
         //!Gets the difference in between two colors
-        /*! Details
+        /*! Subtracts the operationColor from the Initialcolor
          * \pre
          * \post
          * \note difference = initialColor - operationColor NA*/  

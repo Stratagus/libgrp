@@ -219,9 +219,10 @@ void ColorPalette::GenerateTransparentColorsTable()
             for  (findcol = 0; findcol < MAXIMUMNUMBEROFCOLORSPERPALETTE; findcol++)
             {
                 currentColor = GetColorFromPalette(findcol);
-                currentColor.RedElement = (currentColor.RedElement - currentCombinedLightColor.RedElement) * 30;
-                currentColor.BlueElement = (currentColor.BlueElement - currentCombinedLightColor.BlueElement) * 59;
-                currentColor.GreenElement = (currentColor.GreenElement - currentCombinedLightColor.GreenElement) * 11;
+                currentColor = GetColorDifference(currentColor, currentCombinedLightColor);
+                currentColor.RedElement *= 30;
+                currentColor.BlueElement *= 59;
+                currentColor.GreenElement *= 11;
 
                 colorDifference = sqrt((currentColor.RedElement * currentColor.RedElement) +
                               (currentColor.BlueElement * currentColor.BlueElement) +
@@ -305,10 +306,10 @@ void ColorPalette::GenerateGreyscaleTable()
         for  (findcol = 0; findcol < maxpalettecolor; findcol++)
         {
             findColor = GetColorFromPalette(findcol);
-            
-            findColor.RedElement = (findColor.RedElement - currentColor.RedElement) * 30;
-            findColor.BlueElement = (findColor.BlueElement - currentColor.BlueElement) * 11;
-            findColor.GreenElement = (findColor.GreenElement - currentColor.GreenElement) * 59;
+            findColor = GetColorDifference(findColor, currentColor);
+            findColor.RedElement *= 30;
+            findColor.BlueElement *= 11;
+            findColor.GreenElement *= 59;
             
     	    colorDifference = sqrt((findColor.RedElement * findColor.RedElement) +
                           (findColor.BlueElement * findColor.BlueElement) +
