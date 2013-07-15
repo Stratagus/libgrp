@@ -23,10 +23,13 @@
     #include <iostream>
 #endif
 
-//#define DUMPCOLORTABLE
+//Uncomment each to dump the raw output vectors to files
+//for inspection.
 #define DUMPPALETTEDATA 1
 #define DUMPTRANSPARENTTABLE 1
 #define DUMPGREYSCALETABLE 1
+#define DUMPGLOWTABLE 1
+#define DUMPCOLORIZETABLE 1
 
 #warning Finish documentation
 
@@ -93,14 +96,26 @@ class ColorPalette
         void GenerateGreyscaleTable();
   
 #warning Document method?
-        //!Generates the RGBColor Table to be applied to the GRP images
-        /* \pre
-         * \param[in] startGlowColor
-         * \param[in] endGlowColor
-         * \param[in] maxGradations
+        //!Generates Colorization tables
+        /*! Details here
+        * \pre
+        * \post
+        * \param [in]
+        * \param [in]
+        * \param [in]
+        * \returns
+        * \note NA*/
+        std::vector<colorValues> GenerateColorizedTable(int maxGradation, int startingGlowColor, int endingGlowColor);
+    
+        //!Generate Colortable with the rules of passed in color and multiplicator
+        /*! Details here
+         * \pre
          * \post
+         * \param [in]
+         * \param [in]
+         * \returns
          * \note NA*/
-        void GenerateRGBTable(int startGlowColor, int endGlowColor, int maxGradations);
+        std::vector<colorValues> GenerateTableWithConstraints(int constraintColor, float addGradation);
 
 	protected:
 
@@ -112,7 +127,15 @@ class ColorPalette
          * \param [in] startingColor The starting color to begin color shades
          * \param [in] endingColor The target color of the gradient generation
          * \note NA*/
-        std::vector<colorValues> GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor);
+        std::vector<colorValues> GenerateGlowColors(int maxGradation, int startingColor, int endingColor);
+    
+        //!Retrieve "Redness" from byte
+        /*! Detail here
+         * \pre
+         * \post
+         * \param [in]
+         * \note NA*/
+        colorValues GenerateBaseColor(int inputColor);
     
         //!Gets the Red/Blue/Green values for a specific color in the Palette
         /*! Details
@@ -121,6 +144,13 @@ class ColorPalette
          * \warning
          * \note NA*/
         colorValues GetColorFromPalette(int colorNumber);
+    
+        //!Gets the difference in between two colors
+        /*! Details
+         * \pre
+         * \post
+         * \note difference = initialColor - operationColor NA*/  
+        colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
     
         //Loaded formatted Palette Data
         std::vector<colorValues> *formattedPaletteData;

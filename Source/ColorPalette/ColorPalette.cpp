@@ -331,8 +331,8 @@ void ColorPalette::GenerateGreyscaleTable()
 #endif
 }
 
-#warning Untested
-std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues startingColor, colorValues endingColor)
+
+std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, int startingColor, int endingColor)
 {
     #if VERBOSE >= 2
         std::cout << "Creating vector of size: " << maxGradation << '\n';
@@ -342,35 +342,38 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colo
     std::vector<colorValues> finalGlowColors;
     finalGlowColors.resize(maxGradation);
     
-    colorValues trColor, currentProcessColor;
+    colorValues trColor, currentProcessColor, initialColor, finalColor;
 	
+    initialColor = GenerateBaseColor(startingColor);
+    finalColor = GenerateBaseColor(endingColor);
+    
     int i = 0;
     
     float mgr3 = maxGradation/3;
 	float mgr31 = mgr3*1.67;
     for(; i < mgr3; i++)
     {
-        currentProcessColor.RedElement = (startingColor.RedElement * (i/mgr31 + 0.4));
-        currentProcessColor.GreenElement = (startingColor.GreenElement * (i/mgr31 + 0.4));
-        currentProcessColor.BlueElement = (startingColor.BlueElement * (i/mgr31 + 0.4));
+        currentProcessColor.RedElement = (initialColor.RedElement * (i/mgr31 + 0.4));
+        currentProcessColor.GreenElement = (initialColor.GreenElement * (i/mgr31 + 0.4));
+        currentProcessColor.BlueElement = (initialColor.BlueElement * (i/mgr31 + 0.4));
         finalGlowColors.at(i) = currentProcessColor;
     }
     
     float mgr23 = mgr3 * 2;
-    trColor.RedElement = endingColor.RedElement - startingColor.RedElement;
-    trColor.GreenElement = endingColor.GreenElement - startingColor.GreenElement;
-    trColor.BlueElement = endingColor.BlueElement - startingColor.BlueElement;
+    trColor.RedElement = finalColor.RedElement - initialColor.RedElement;
+    trColor.GreenElement = finalColor.GreenElement - initialColor.GreenElement;
+    trColor.BlueElement = finalColor.BlueElement - initialColor.BlueElement;
     
     for(; i < maxGradation; i++)
     {
         float togo = (i-mgr3)/mgr23;
-        currentProcessColor.RedElement = (startingColor.RedElement + trColor.RedElement * togo);
-        currentProcessColor.GreenElement = (startingColor.GreenElement + trColor.GreenElement * togo);
-        currentProcessColor.BlueElement = (startingColor.BlueElement + trColor.BlueElement * togo);
+        currentProcessColor.RedElement = (initialColor.RedElement + trColor.RedElement * togo);
+        currentProcessColor.GreenElement = (initialColor.GreenElement + trColor.GreenElement * togo);
+        currentProcessColor.BlueElement = (initialColor.BlueElement + trColor.BlueElement * togo);
         finalGlowColors.at(i) = currentProcessColor;
     }
     
-    if(endingColor.RedElement && endingColor.GreenElement && endingColor.BlueElement)
+    if(finalColor.RedElement && finalColor.GreenElement && finalColor.BlueElement)
     {
         currentProcessColor.RedElement = 255;
         currentProcessColor.GreenElement = 255;
@@ -386,5 +389,144 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colo
         
         finalGlowColors.at(i) = currentProcessColor;
     }
+    
+#if DUMPGLOWTABLE 
+    std::ofstream outGlowTable("GlowTable.dat");
+    for(int currentColor = 0; currentColor < finalGlowColors.size(); currentColor++)
+    {
+        currentProcessColor = finalGlowColors.at(currentColor);
+        outGlowTable.put(currentProcessColor.RedElement);
+        outGlowTable.put(currentProcessColor.GreenElement);
+        outGlowTable.put(currentProcessColor.BlueElement);
+        
+    }
+    outGlowTable.close();
+#endif
     return finalGlowColors;
+}
+std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, int startingGlowColor, int endingGlowColor)
+{
+    std::vector<colorValues> finalColorizedTable;
+    #warning Need to figure out the size
+    finalColorizedTable.resize(1);
+    
+    colorValues firstColor, secondColor, differenceColor;
+    float lowest, totalColorDifference;
+    int currentBestFit = -1;
+    std::vector<colorValues> glowColors = GenerateGlowColors(maxGradation, startingGlowColor, endingGlowColor);
+    
+    for(int currentColor = 0; currentColor < maxGradation; currentColor++)
+    {
+        for(int currentGradation = 0; currentGradation < maxGradation; currentGradation++)
+        {
+            firstColor = GetColorFromPalette(currentColor);
+            firstColor.RedElement = glowColors.at(currentGradation).RedElement * (currentGradation + 1);
+            firstColor.GreenElement = glowColors.at(currentGradation).GreenElement * (currentGradation + 1);
+            firstColor.BlueElement = glowColors.at(currentGradation).BlueElement * (currentGradation + 1);
+            
+            firstColor.RedElement /= maxGradation;
+            firstColor.GreenElement /= maxGradation;
+            firstColor.BlueElement /= maxGradation;
+            
+            lowest = 655350.0;
+            for (int findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
+            {
+                secondColor = GetColorFromPalette(findColor);
+                differenceColor = GetColorDifference(secondColor, firstColor);
+                differenceColor.RedElement *= 33;
+                differenceColor.GreenElement *= 33;
+                differenceColor.BlueElement *= 33;
+                
+                totalColorDifference = sqrt( (differenceColor.RedElement * differenceColor.RedElement) +
+                                             (differenceColor.GreenElement * differenceColor.GreenElement) +
+                                            (differenceColor.BlueElement * differenceColor.BlueElement));
+                
+                if(totalColorDifference < lowest)
+                {
+                    lowest = totalColorDifference;
+                    currentBestFit = findColor;
+                }
+            }
+        }
+#warning need to build the vector here!!
+        //outbuf[grad*maxpalettecolor+col] = bestfit;
+    }
+    return finalColorizedTable;
+}
+
+std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(int constraintColor, float addGradation)
+{
+    std::vector<colorValues> finalConstrainedColorTable;
+    finalConstrainedColorTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
+    
+    colorValues firstColor, secondColor, cachedColor, differenceColor, baseColor;
+    
+    baseColor = GenerateBaseColor(constraintColor);
+    
+    int bestFittingColor = -1;
+    float lowest, finalColorDifference;
+    
+    for (int currentColor = 0; currentColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; currentColor ++)
+    {
+        cachedColor = GetColorFromPalette(currentColor);
+        
+#warning Assuming (int) type cast on red element
+        firstColor.RedElement = (float) cachedColor.RedElement * baseColor.RedElement * (int)(addGradation / 100);
+        if(firstColor.RedElement > 255)
+        {
+            firstColor.RedElement = 255;
+        }
+        
+        firstColor.GreenElement = (float) cachedColor.GreenElement * baseColor.GreenElement * (int) (addGradation / 100);
+        if(firstColor.GreenElement > 255)
+        {
+            firstColor.GreenElement = 255;
+        }
+        
+        firstColor.BlueElement = (float) cachedColor.BlueElement * baseColor.BlueElement * (int) (addGradation / 100);
+        if(firstColor.BlueElement > 255)
+        {
+            firstColor.BlueElement = 255;
+        }
+        
+        lowest = 655350;
+        
+        for(int findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
+        {
+            secondColor = GetColorFromPalette(findColor);
+            differenceColor = GetColorDifference(secondColor, firstColor);
+            differenceColor.RedElement *= baseColor.RedElement;
+            differenceColor.GreenElement *= baseColor.GreenElement;
+            differenceColor.BlueElement *= baseColor.BlueElement;
+            
+            finalColorDifference = sqrtf((differenceColor.RedElement * differenceColor.RedElement) +
+                                         (differenceColor.GreenElement * differenceColor.GreenElement) +
+                                         (differenceColor.BlueElement * differenceColor.BlueElement));
+            if(finalColorDifference < lowest)
+            {
+                lowest = finalColorDifference;
+                bestFittingColor = findColor;
+            }
+        }
+    }
+}
+
+colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValues operationColor)
+{
+    colorValues difference;
+    difference.RedElement = initialColor.RedElement - operationColor.RedElement;
+    difference.GreenElement = initialColor.GreenElement - operationColor.GreenElement;
+    difference.BlueElement = initialColor.BlueElement - operationColor.BlueElement;
+    
+    return difference;
+}
+
+colorValues ColorPalette::GenerateBaseColor(int inputColor)
+{
+    colorValues finalColorValues;
+    finalColorValues.RedElement = ((inputColor >> 16) & 0xff);
+    finalColorValues.GreenElement = ((inputColor >> 8) & 0xff);
+    finalColorValues.BlueElement = (inputColor & 0xff);
+    
+    return finalColorValues;
 }
