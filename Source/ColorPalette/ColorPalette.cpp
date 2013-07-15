@@ -407,9 +407,16 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, int 
 }
 std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, int startingGlowColor, int endingGlowColor)
 {
+    if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
+    {
+        InvalidGradationValueException gradationError;
+        gradationError.SetErrorMessage("Invalid maxGradation size");
+        throw gradationError;
+    }
+    
     std::vector<colorValues> finalColorizedTable;
     #warning Need to figure out the size
-    finalColorizedTable.resize(1);
+    finalColorizedTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
     colorValues firstColor, secondColor, differenceColor;
     float lowest, totalColorDifference;
@@ -451,6 +458,7 @@ std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, 
         }
 #warning need to build the vector here!!
         //outbuf[grad*maxpalettecolor+col] = bestfit;
+        finalColorizedTable.at(maxGradation * MAXIMUMNUMBEROFCOLORSPERPALETTE + currentColor) = GetColorFromPalette(currentBestFit);
     }
     return finalColorizedTable;
 }
