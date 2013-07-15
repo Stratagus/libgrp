@@ -314,7 +314,7 @@ void ColorPalette::GenerateGreyscaleTable()
         greyscaleTable = new std::vector<char>;
     }
     
-    greyscaleTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
+    greyscaleTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
     colorValues currentColor;
     colorValues findColor;
