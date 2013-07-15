@@ -67,16 +67,6 @@ class ColorPalette
         *\note NA
         */
         void LoadPalette(std::string filePath);
-
-        //!Load palette data from a file (.wpe)
-        /*! Load a GRP Palette file to use when decoding/encoding
-        * a GRPImage.
-        * \pre Filepath must be to a valid .pal palette file
-        * \post The file is loaded into memory for the GRPImage
-        * \param[in] filePath The file path to the palette file
-        *\note NA
-        */
-        void LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector);
     
         //!Generates the TransparentColor Table to be applied to the GRP images
         /* \pre A valid GRP Palette must be loaded to paletteData
