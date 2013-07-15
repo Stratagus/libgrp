@@ -105,7 +105,7 @@ class ColorPalette
         * \param [in]
         * \returns
         * \note NA*/
-        std::vector<colorValues> GenerateColorizedTable(int maxGradation, int startingGlowColor, int endingGlowColor);
+        std::vector<colorValues> GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
     
         //!Generate Colortable with the rules of passed in color and multiplicator
         /*! Details here
@@ -115,7 +115,7 @@ class ColorPalette
          * \param [in]
          * \returns
          * \note NA*/
-        std::vector<colorValues> GenerateTableWithConstraints(int constraintColor, float addGradation);
+        std::vector<colorValues> GenerateTableWithConstraints(colorValues baseColor, float addGradation);
 
 	protected:
 
@@ -127,15 +127,7 @@ class ColorPalette
          * \param [in] startingColor The starting color to begin color shades
          * \param [in] endingColor The target color of the gradient generation
          * \note NA*/
-        std::vector<colorValues> GenerateGlowColors(int maxGradation, int startingColor, int endingColor);
-    
-        //!Retrieve "Redness" from byte
-        /*! Detail here
-         * \pre
-         * \post
-         * \param [in]
-         * \note NA*/
-        colorValues GenerateBaseColor(int inputColor);
+        std::vector<colorValues> GenerateGlowColors(int maxGradation, colorValues initialColor, colorValues finalColor);
     
         //!Gets the Red/Blue/Green values for a specific color in the Palette
         /*! Details

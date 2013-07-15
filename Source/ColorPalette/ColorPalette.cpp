@@ -333,7 +333,7 @@ void ColorPalette::GenerateGreyscaleTable()
 }
 
 
-std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, int startingColor, int endingColor)
+std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, colorValues initialColor, colorValues finalColor)
 {
     #if VERBOSE >= 2
         std::cout << "Creating vector of size: " << maxGradation << '\n';
@@ -343,10 +343,7 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, int 
     std::vector<colorValues> finalGlowColors;
     finalGlowColors.resize(maxGradation);
     
-    colorValues trColor, currentProcessColor, initialColor, finalColor;
-	
-    initialColor = GenerateBaseColor(startingColor);
-    finalColor = GenerateBaseColor(endingColor);
+    colorValues trColor, currentProcessColor;
     
     int i = 0;
     
@@ -405,7 +402,7 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(int maxGradation, int 
 #endif
     return finalGlowColors;
 }
-std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, int startingGlowColor, int endingGlowColor)
+std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
 {
     if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
     {
@@ -463,14 +460,13 @@ std::vector<colorValues> ColorPalette::GenerateColorizedTable(int maxGradation, 
     return finalColorizedTable;
 }
 
-std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(int constraintColor, float addGradation)
+std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues baseColor, float addGradation)
 {
     std::vector<colorValues> finalConstrainedColorTable;
     finalConstrainedColorTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
-    colorValues firstColor, secondColor, cachedColor, differenceColor, baseColor;
+    colorValues firstColor, secondColor, cachedColor, differenceColor;
     
-    baseColor = GenerateBaseColor(constraintColor);
     
     int bestFittingColor = -1;
     float lowest, finalColorDifference;
@@ -530,14 +526,4 @@ colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValu
     difference.BlueElement = initialColor.BlueElement - operationColor.BlueElement;
     
     return difference;
-}
-
-colorValues ColorPalette::GenerateBaseColor(int inputColor)
-{
-    colorValues finalColorValues;
-    finalColorValues.RedElement = ((inputColor >> 16) & 0xff);
-    finalColorValues.GreenElement = ((inputColor >> 8) & 0xff);
-    finalColorValues.BlueElement = (inputColor & 0xff);
-    
-    return finalColorValues;
 }
