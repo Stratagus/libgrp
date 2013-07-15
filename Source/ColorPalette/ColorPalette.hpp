@@ -91,6 +91,16 @@ class ColorPalette
         *      the palette file input.
         * \note NA*/
         void GenerateGreyscaleTable();
+  
+#warning Document method?
+        //!Generates the RGBColor Table to be applied to the GRP images
+        /* \pre
+         * \param[in] startGlowColor
+         * \param[in] endGlowColor
+         * \param[in] maxGradations
+         * \post
+         * \note NA*/
+        void GenerateRGBTable(int startGlowColor, int endGlowColor, int maxGradations);
 
 	protected:
 
@@ -104,6 +114,9 @@ class ColorPalette
     
         //The raw PaletteData file
         std::vector<char> *paletteData;
+        //Loaded formatted Palette Data
+        std::vector<colorValues> *formattedPaletteData;
+    
         //The generated Transparent Color Table
         std::vector<char> *transparentColorsTable;
         //The generated Greyscale Table

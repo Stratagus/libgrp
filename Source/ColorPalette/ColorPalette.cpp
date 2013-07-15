@@ -6,6 +6,7 @@ ColorPalette::ColorPalette()
     transparentColorsTable = NULL;
     greyscaleTable = NULL;
     rgbTable = NULL;
+    formattedPaletteData = NULL;
 }
 
 ColorPalette::~ColorPalette()
@@ -14,6 +15,11 @@ ColorPalette::~ColorPalette()
     {
         delete paletteData;
         paletteData = NULL;
+    }
+    if(formattedPaletteData != NULL)
+    {
+        delete formattedPaletteData;
+        formattedPaletteData = NULL;
     }
     if(transparentColorsTable != NULL)
     {
@@ -50,6 +56,10 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 
 void ColorPalette::LoadPalette(std::string filePath)
 {
+    int inputFileSize;
+    colorValues currentColorProcessing;
+    
+    //std::cout << "Passed in filepath: " << filePath << '\n';
     if(paletteData == NULL)
     {
         paletteData = new std::vector<char>;
@@ -59,8 +69,19 @@ void ColorPalette::LoadPalette(std::string filePath)
         delete paletteData;
         paletteData = new std::vector<char>;
     }
-    LoadPaletteFileToVector(filePath, paletteData);
-    if((paletteData->size() != 768) && (paletteData->size() != 1024))
+    
+    std::ifstream inputFile(filePath.c_str(), std::ios::binary);
+    inputFile.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
+    
+    //Find the file size as to allow for checking if the file
+    //is a valid GRP Palette.
+    inputFile.seekg (0, std::ios::end);
+    inputFileSize = inputFile.tellg();
+    inputFile.seekg (0, inputFile.beg);
+    //std::cout << "File size is: " << inputFileSize << '\n';
+    
+    //Check to see if the file size matches a GRP Palette.
+    if((inputFileSize != 768) && (inputFileSize != 1024))
     {
         if(paletteData != NULL)
         {
@@ -71,6 +92,60 @@ void ColorPalette::LoadPalette(std::string filePath)
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
         throw(curruptPalette);
     }
+    
+    //Since the file passed the check allocated or resize the vector
+    //to the proper size.
+    if(formattedPaletteData == NULL)
+    {
+        formattedPaletteData = new std::vector<colorValues>;
+    }
+    formattedPaletteData->resize(inputFileSize / 3);
+    
+    //Start loading the Palette into the formattedPaletteData Vector.
+    for(int loadCurrentColor = 0; loadCurrentColor < (inputFileSize / 3); loadCurrentColor++)
+    {
+        //inputFile >> currentColorProcessing.RedElement;
+        //inputFile >> currentColorProcessing.GreenElement;
+        //inputFile >> currentColorProcessing.BlueElement;
+        
+        currentColorProcessing.RedElement = inputFile.get();
+        currentColorProcessing.GreenElement = inputFile.get();
+        currentColorProcessing.BlueElement = inputFile.get();
+        
+        //std::cout << "Elements are Red: " << currentColorProcessing.RedElement << " Blue: " <<currentColorProcessing.BlueElement << " Green: " <<currentColorProcessing.GreenElement << '\n';
+        
+        formattedPaletteData->at(loadCurrentColor) = currentColorProcessing;
+    }
+    
+    /*
+     #warning Old Debug code, as I am unsure the new loading system will work I would rather not toss the old system yet
+     LoadPaletteFileToVector(filePath, paletteData);
+    colorValues selectedColor;
+    for(int loadCurrentColor = 0; loadCurrentColor < (inputFileSize / 3); loadCurrentColor++)
+    {
+        currentColorProcessing = formattedPaletteData->at(loadCurrentColor);
+        
+        selectedColor.RedElement = paletteData->at((loadCurrentColor * 3) + 0);
+        selectedColor.BlueElement = paletteData->at((loadCurrentColor * 3) + 2);
+        selectedColor.GreenElement = paletteData->at((loadCurrentColor * 3) + 1);
+        std::cout << "Old R: " << selectedColor.RedElement << " B: " << selectedColor.BlueElement << " G: " << selectedColor.GreenElement << '\n'
+        << "New R: " << currentColorProcessing.RedElement << " B: " << currentColorProcessing.BlueElement << " G: " << currentColorProcessing.GreenElement << '\n';
+    }
+    
+    std::ofstream outfile("test.dat");
+    std::ofstream outfile2("test2.dat");
+    for (int loadCurrentColor = 0; loadCurrentColor < (inputFileSize / 3); loadCurrentColor++)
+    {
+        currentColorProcessing = formattedPaletteData->at(loadCurrentColor);
+        outfile.put(currentColorProcessing.RedElement);
+        outfile.put(currentColorProcessing.BlueElement);
+        outfile.put(currentColorProcessing.GreenElement);
+        
+        outfile2.put(selectedColor.RedElement = paletteData->at((loadCurrentColor * 3) + 0));
+        outfile2.put(selectedColor.BlueElement = paletteData->at((loadCurrentColor * 3) + 2));
+        outfile2.put(selectedColor.GreenElement = paletteData->at((loadCurrentColor * 3) + 1));
+    }*/
+
 }
 
 void ColorPalette::LoadPaletteFileToVector(std::string filePath, std::vector<char> *destinationVector)
