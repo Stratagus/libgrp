@@ -227,12 +227,12 @@ void ColorPalette::GenerateTransparentColorsTable()
     
     transparentColorsTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
-    colorValues currentColor;
     colorValues currentOnLightColor;
     colorValues currentUnderLightColor;
     colorValues currentCombinedLightColor;
+    colorValues differenceColor;
 
-    float leastColorDifference,colorDifference;
+    float leastColorDifference,currentColorDifference;
     
     
     int currentSelectedColor, currentSelectedColor2, findcol, bestfit = 0;
@@ -240,33 +240,40 @@ void ColorPalette::GenerateTransparentColorsTable()
     for (currentSelectedColor2 = 0; currentSelectedColor2 < MAXIMUMNUMBEROFCOLORSPERPALETTE; currentSelectedColor2++)
     {
         currentUnderLightColor = GetColorFromPalette(currentSelectedColor2);
+        currentUnderLightColor.RedElement *= LIGHTLEVELUNDER;
+        currentUnderLightColor.GreenElement *= LIGHTLEVELUNDER;
+        currentUnderLightColor.BlueElement *= LIGHTLEVELUNDER;
         
         for (currentSelectedColor = 0; currentSelectedColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; currentSelectedColor++)
         {
             currentOnLightColor = GetColorFromPalette(currentSelectedColor);
+            currentOnLightColor.RedElement *= LIGHTLEVELON;
+            currentOnLightColor.GreenElement *= LIGHTLEVELON;
+            currentOnLightColor.BlueElement *= LIGHTLEVELON;
         
-            currentCombinedLightColor.RedElement = (currentOnLightColor.RedElement + currentUnderLightColor.RedElement);
-            currentCombinedLightColor.BlueElement = (currentOnLightColor.BlueElement + currentUnderLightColor.BlueElement);
-            currentCombinedLightColor.GreenElement = (currentOnLightColor.GreenElement + currentUnderLightColor.GreenElement);
+            currentCombinedLightColor.RedElement = (long) (currentOnLightColor.RedElement + currentUnderLightColor.RedElement);
+            currentCombinedLightColor.GreenElement = (long) (currentOnLightColor.GreenElement + currentUnderLightColor.GreenElement);
+            currentCombinedLightColor.BlueElement = (long) (currentOnLightColor.BlueElement + currentUnderLightColor.BlueElement);
             
             //Set the maximum value of a float to avoid false differences
             leastColorDifference = 655350.0;
             
             for  (findcol = 0; findcol < MAXIMUMNUMBEROFCOLORSPERPALETTE; findcol++)
             {
-                currentColor = GetColorFromPalette(findcol);
-                currentColor = GetColorDifference(currentColor, currentCombinedLightColor);
-                currentColor.RedElement *= 30;
-                currentColor.BlueElement *= 59;
-                currentColor.GreenElement *= 11;
-
-                colorDifference = sqrt((currentColor.RedElement * currentColor.RedElement) +
-                              (currentColor.BlueElement * currentColor.BlueElement) +
-                              (currentColor.GreenElement * currentColor.GreenElement));
+                differenceColor = GetColorFromPalette(findcol);
+                differenceColor = GetColorDifference(differenceColor, currentCombinedLightColor);
+                differenceColor.RedElement *= 30;
+                differenceColor.GreenElement *= 59;
+                differenceColor.BlueElement *= 11;
                 
-                if  (colorDifference < leastColorDifference)//found best equality
+
+                currentColorDifference = sqrt((differenceColor.RedElement * differenceColor.RedElement) +
+                              (differenceColor.BlueElement * differenceColor.BlueElement) +
+                              (differenceColor.GreenElement * differenceColor.GreenElement));
+                
+                if  (currentColorDifference < leastColorDifference)//found best equality
                 {
-                    leastColorDifference = colorDifference;
+                    leastColorDifference = currentColorDifference;
                     bestfit = findcol;
                 }
             }

@@ -37,11 +37,12 @@
 #define DUMPGREENTABLE 0
 #define DUMPBLUETABLE 0
 
-#warning Finish documentation
-
 //The maximum number of colors supported by the table
 //ie (256*256) Table
 #define MAXIMUMNUMBEROFCOLORSPERPALETTE 256
+
+#define LIGHTLEVELON    0.5                  /* Percent of color 1 */
+#define LIGHTLEVELUNDER (1-LIGHTLEVELON)     /* Percent of color 2 */
 
 //Used to select a specific color from the Palette
 //Each color in the palette has three elements, Red(Byte 0), Green (Byte 1) and Blue (Byte 3)
@@ -101,7 +102,6 @@ class ColorPalette
          * \note NA*/
         void GenerateGreyscaleTable();
   
-#warning Document method?
         //!Generates Colorization tables
         /*! Generates Colorization table (the table colors the start 
          *  from startingGlowColor and transform to endingglowColor.
