@@ -2,6 +2,9 @@
 
 ColorPalette::ColorPalette()
 {
+#if VERBOSE >= 5
+    std::cout << "Constructing ColorPalette Object.\n";
+#endif
     paletteData = NULL;
     transparentColorsTable = NULL;
     greyscaleTable = NULL;
@@ -11,28 +14,46 @@ ColorPalette::ColorPalette()
 
 ColorPalette::~ColorPalette()
 {
+    #if VERBOSE >= 5
+        std::cout << "Deconstructing ColorPalette Object.\n";
+    #endif
     if(paletteData != NULL)
     {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating palleteData.\n";
+        #endif
         delete paletteData;
         paletteData = NULL;
     }
     if(formattedPaletteData != NULL)
     {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating formattedPalleteData.\n";
+        #endif
         delete formattedPaletteData;
         formattedPaletteData = NULL;
     }
     if(transparentColorsTable != NULL)
     {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating transparentColorsTable.\n";
+        #endif
         delete transparentColorsTable;
         transparentColorsTable = NULL;
     }
     if(greyscaleTable != NULL)
     {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating greyscaleTable.\n";
+        #endif
         delete greyscaleTable;
         greyscaleTable = NULL;
     }
     if(rgbTable != NULL)
     {
+        #if VERBOSE >= 5
+            std::cout << "Deallocating rgbTable.\n";
+        #endif
         delete rgbTable;
         rgbTable = NULL;
     }
@@ -56,6 +77,10 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 
 void ColorPalette::LoadPalette(std::string filePath)
 {
+#if VERBOSE >= 2
+    std::cout << "Loading Palette from file: " << filePath << '\n';
+#endif
+    
     int inputFileSize;
     colorValues currentColorProcessing;
     
@@ -95,6 +120,9 @@ void ColorPalette::LoadPalette(std::string filePath)
     //to the proper size.
     if(formattedPaletteData == NULL)
     {
+        #if VERBOSE >= 5
+        std::cout << "Initializing formattedPaletteData.\n";
+        #endif
         formattedPaletteData = new std::vector<colorValues>;
     }
     formattedPaletteData->resize(inputFileSize / 3);
@@ -108,16 +136,25 @@ void ColorPalette::LoadPalette(std::string filePath)
         
         formattedPaletteData->at(loadCurrentColor) = currentColorProcessing;
     }
+    
+#if VERBOSE >= 5
+    std::cout << "Loaded contents of Pallete\n";
+    
+    //Start loading the Palette into the formattedPaletteData Vector.
+    for(int loadCurrentColor = 0; loadCurrentColor < (inputFileSize / 3); loadCurrentColor++)
+    {
+        currentColorProcessing = formattedPaletteData->at(loadCurrentColor);
+        std::cout << "Color: " << loadCurrentColor
+                  << "  Red: " << currentColorProcessing.RedElement
+                  << " Blue: " << currentColorProcessing.BlueElement
+                  << " Green: " <<currentColorProcessing.GreenElement << '\n';
+    }
+#endif
 }
 
 colorValues ColorPalette::GetColorFromPalette(int colorNumber)
 {
-    colorValues selectedColor;
-    selectedColor.RedElement = paletteData->at((colorNumber * 3) + 0);
-    selectedColor.BlueElement = paletteData->at((colorNumber * 3) + 2);
-    selectedColor.GreenElement = paletteData->at((colorNumber * 3) + 1);
-    
-    return selectedColor;
+    return formattedPaletteData->at(colorNumber);
 }
 
 void ColorPalette::GenerateTransparentColorsTable()

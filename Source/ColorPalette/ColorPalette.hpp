@@ -18,9 +18,11 @@
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
 
-#warning debug include 
+#if VERBOSE
+    #include <iostream>
+#endif
+
 #warning Finish documentation
-#include <iostream>
 
 //The maximum number of colors supported by the table
 //ie (256*256) Table
