@@ -514,7 +514,6 @@ std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues 
     {
         cachedColor = GetColorFromPalette(currentColor);
         
-#warning Assuming (int) type cast on red element
         firstColor.RedElement = (float) cachedColor.RedElement * baseColor.RedElement * (int)(addGradation / 100);
         if(firstColor.RedElement > 255)
         {
@@ -567,7 +566,7 @@ colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValu
     return difference;
 }
 
-void ColorPalette::GenerateShadowtable()
+void ColorPalette::GenerateShadowtable(int gradation)
 {
     colorValues blackColor;
     blackColor.RedElement = 0;
@@ -580,7 +579,7 @@ void ColorPalette::GenerateShadowtable()
         shadowTable = NULL;
     }
     
-    shadowTable = GenerateColorizedTable(32, blackColor, blackColor);
+    shadowTable = GenerateColorizedTable(gradation, blackColor, blackColor);
 #if DUMPSHADOWTABLE
     std::ofstream outputShadowTable("toblack.grd");
     for(int currentColor = 0; currentColor < shadowTable->size(); currentColor++)
@@ -591,7 +590,7 @@ void ColorPalette::GenerateShadowtable()
 #endif
 }
 
-void ColorPalette::GenerateLighttable()
+void ColorPalette::GenerateLighttable(int gradation)
 {
     colorValues whiteColor;
     whiteColor.RedElement = 240;
@@ -603,7 +602,7 @@ void ColorPalette::GenerateLighttable()
         delete lightTable;
         lightTable = NULL;
     }
-    lightTable = GenerateColorizedTable(32, whiteColor, whiteColor);
+    lightTable = GenerateColorizedTable(gradation, whiteColor, whiteColor);
 #if DUMPLIGHTTABLE
     std::ofstream outputLightTable("towhite.grd");
     for(int currentColor = 0; currentColor < lightTable->size(); currentColor++)
@@ -613,7 +612,7 @@ void ColorPalette::GenerateLighttable()
     outputLightTable.close();
 #endif
 }
-void ColorPalette::GenerateRedtable()
+void ColorPalette::GenerateRedtable(int gradation)
 {
     colorValues redColor;
     redColor.RedElement = 120;
@@ -630,7 +629,7 @@ void ColorPalette::GenerateRedtable()
         delete redTable;
         redTable = NULL;
     }
-    redTable = GenerateColorizedTable(32, redColor, lightRedColor);
+    redTable = GenerateColorizedTable(gradation, redColor, lightRedColor);
     
 #if DUMPREDTABLE
     std::ofstream outputRedTable("tored.grd");
@@ -641,7 +640,7 @@ void ColorPalette::GenerateRedtable()
     outputRedTable.close();
 #endif
 }
-void ColorPalette::GenerateGreentable()
+void ColorPalette::GenerateGreentable(int gradation)
 {
     colorValues greenColor;
     greenColor.RedElement = 0;
@@ -653,7 +652,7 @@ void ColorPalette::GenerateGreentable()
     lightGreenColor.GreenElement = 252;
     lightGreenColor.BlueElement = 56;
     
-    greenTable = GenerateColorizedTable(32, greenColor, lightGreenColor);
+    greenTable = GenerateColorizedTable(gradation, greenColor, lightGreenColor);
     
 #if DUMPGREENTABLE
     std::ofstream outputGreenTable("togreen.grd");
@@ -664,7 +663,7 @@ void ColorPalette::GenerateGreentable()
     outputGreenTable.close();
 #endif
 }
-void ColorPalette::GenerateBluetable()
+void ColorPalette::GenerateBluetable(int gradation)
 {
     colorValues blueColor;
     blueColor.RedElement = 0;
@@ -676,7 +675,7 @@ void ColorPalette::GenerateBluetable()
     lightBlueColor.GreenElement = 248;
     lightBlueColor.BlueElement = 248;
     
-    blueTable = GenerateColorizedTable(32, blueColor, lightBlueColor);
+    blueTable = GenerateColorizedTable(gradation, blueColor, lightBlueColor);
     
 #if DUMPBLUETABLE
     std::ofstream outputBlueTable("toblue.grd");
@@ -688,13 +687,13 @@ void ColorPalette::GenerateBluetable()
 #endif
 }
 
-void ColorPalette::GenerateBasicColorTables()
+void ColorPalette::GenerateBasicColorTables(int gradation)
 {
     GenerateTransparentColorsTable();
     GenerateGreyscaleTable();
-    GenerateShadowtable();
-    GenerateLighttable();
-    GenerateRedtable();
-    GenerateGreentable();
-    GenerateBluetable();
+    GenerateShadowtable(gradation);
+    GenerateLighttable(gradation);
+    GenerateRedtable(gradation);
+    GenerateGreentable(gradation);
+    GenerateBluetable(gradation);
 }

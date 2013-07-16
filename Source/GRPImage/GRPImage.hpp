@@ -76,6 +76,8 @@ public:
     void SetColorPalette(ColorPalette *selectedColorPalette);
     
 protected:
+    void unpackGRPImages();
+    
     //!Extract basic GRP information from the header
     /*!Extract basic information about the GRP image data
      * including the numberOfFrames, maxWidth and maxHeight. This
@@ -101,10 +103,28 @@ private:
     ColorPalette *currentPalette;
     
     
+    
     //GrpInfo Header
-    uint16_t numberOfFrames;
-    uint16_t maxWidth;
-    uint16_t maxHeight;
+    unsigned int numberOfFrames;
+    unsigned int maxWidth;
+    unsigned int maxHeight;
+    
+    //Stuff from old implementation
+    int wminx,wminy,wmaxx,wmaxy;
+    int wmaximx,wmaximy;
+    int sizexwarppict,sizeywarppict;
+    int ctextures;
+    int ostatoksizexwarp;
+    char *vidmem;
+    int  gr_gamernr;
+    char *_transpcolors_;
+    int *_mulyy_;
+    char *tableforunitcolor;
+    short int wcomandcolor;
+    short int wcomcolor;
+    unsigned char gr_color;
+    unsigned char gr_maxcolordesen;
+    int wmaxdwordwritel;
     
 };
 #endif

@@ -93,6 +93,12 @@ void GRPImage::ExtractMetaData()
 }
 
 
+void GRPImage::unpackGRPImages()
+{
+    int oldwmaximx = wmaximx;			//change internal variables
+    int oldgr_gamernr = gr_gamernr;		//and videobufer
+}
+
 void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
 {
     std::fstream inputFile(filePath.c_str());

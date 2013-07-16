@@ -129,7 +129,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded.
          * \post Shadow/Light/Red/Green/Blue tables are generated
          * \note NA*/
-        void GenerateBasicColorTables();
+        void GenerateBasicColorTables(int gradation = 32);
     
         //!Generate the Shadow Table
         /*! Generates different shades of black that 
@@ -137,7 +137,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded
          * \post Generates a 8192byte set of shades
          * \note NA*/
-        void GenerateShadowtable();
+        void GenerateShadowtable(int gradation = 32);
     
         //!Generate the Light Table
         /*! Generates different shade of white that
@@ -145,7 +145,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded
          * \post Generates a 8192byte set of shades
          * \note NA*/
-        void GenerateLighttable();
+        void GenerateLighttable(int gradation = 32);
     
         //!Generate the Red Table
         /*! Generates multiple shades of Red that
@@ -153,7 +153,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded
          * \post Generates a 8192byte set of shades
          * \note NA*/
-        void GenerateRedtable();
+        void GenerateRedtable(int gradation = 32);
     
         //!Generate the Green Table
         /*! Generates multiple shades of Green that
@@ -161,7 +161,7 @@ class ColorPalette
         * \pre A valid palette file must be loaded
         * \post Generates a 8192byte set of shades
         * \note NA*/
-        void GenerateGreentable();
+        void GenerateGreentable(int gradation = 32);
     
         //!Generate the Blue Table
         /*! Generates multiple shades of Blue that
@@ -169,7 +169,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded
          * \post Generates a 8192byte set of shades
          * \note NA*/
-        void GenerateBluetable();
+        void GenerateBluetable(int gradation = 32);
 
 	protected:
 
