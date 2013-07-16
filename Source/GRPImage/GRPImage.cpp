@@ -20,7 +20,6 @@ GRPImage::~GRPImage()
     }
     if(currentPalette != NULL)
     {
-        delete currentPalette;
         currentPalette = NULL;
     }
     if(imageFrames != NULL)
@@ -112,5 +111,17 @@ void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destina
         inputFile.seekg(0, std::ios::beg);
         destinationVector->resize(static_cast<std::size_t>(length));
         inputFile.read(&destinationVector->front(), static_cast<std::size_t>(length));
+    }
+}
+
+void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
+{
+    if(selectedColorPalette != NULL)
+    {
+        currentPalette = selectedColorPalette;
+    }
+    else
+    {
+            throw "Invalid color palette";
     }
 }

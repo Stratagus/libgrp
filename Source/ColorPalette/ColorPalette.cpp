@@ -690,6 +690,7 @@ void ColorPalette::GenerateBluetable()
 
 void ColorPalette::GenerateBasicColorTables()
 {
+    GenerateTransparentColorsTable();
     GenerateGreyscaleTable();
     GenerateShadowtable();
     GenerateLighttable();

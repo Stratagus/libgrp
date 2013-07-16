@@ -3,9 +3,9 @@
  *  \details   Datastructure that generates the color tables, loads the palette
  *              and allows for easy color access.
  *  \author    Bradley Clemetson, GRPLib Authors https://sourceforge.net/projects/grplib
- *  \version   0.0.1
+ *  \version   1.0.0
  *  \date      July 8, 2013
- *  \copyright LGPL
+ *  \copyright LGPLv2
  */
 
 #ifndef ColorPalette_Header

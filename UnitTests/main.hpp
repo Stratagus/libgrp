@@ -18,5 +18,6 @@
 #include "APITest/APITest.hpp"
 #include "ColorPaletteTests/ColorPaletteTests.hpp"
 #include "GRPFrameTests/GRPFrameTests.hpp"
+#include "GRPImageTests/GRPImageTests.hpp"
 
 #endif

@@ -2,10 +2,10 @@
  *  \brief     The main
  *  \details   This class runs all the underlying generic functions required
  * 				for nearly all objects in the framework
- *  \author    Bradley Clemetson
+ *  \author    Bradley Clemetson, GRPLib Authors https://sourceforge.net/projects/grplib
  *  \version   0.0.1
  *  \date      Jan 13, 2013
- *  \copyright LGPL
+ *  \copyright LGPLv2
  */
 #ifndef GRPImage_Header
 #define GRPImage_Header
@@ -52,6 +52,7 @@ public:
      * \returns The number of image frames in a GRP Image.
      */
     uint16_t getNumberOfFrames() const;
+    
     //!Return the maximum width of any GRP image Frame
     /*! Returns the maximum width of any GRP image Frame
      *  allowing for easier decoding and encoding to a
@@ -72,6 +73,7 @@ public:
     
     
     void DecodeFrame(unsigned int frameNumber);
+    void SetColorPalette(ColorPalette *selectedColorPalette);
     
 protected:
     //!Extract basic GRP information from the header
