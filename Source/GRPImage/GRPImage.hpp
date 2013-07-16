@@ -45,6 +45,8 @@ public:
      */
     void LoadImage(std::string filePath);
     
+    void ProcessGRPImage();
+    
     //!Return the number of frames in a GRPImage
     /*! Return the number of frames in a GRP image animation.
      * \pre GRP image data must be defined and loaded into
@@ -60,7 +62,7 @@ public:
      * \pre GRPImage must be defined and have imageData loaded
      * \returns The maximum width of any individual GRP Frame.
      * \note NA*/
-    uint16_t getMaxWidth() const;
+    uint16_t getMaxImageWidth() const;
     //!Return the maximum height of any GRP image Frame
     /*! Returns the maximum height of any GRP image Frame
      *  allowing for easier decoding and encoding to a
@@ -68,15 +70,17 @@ public:
      * \pre GRPImage must be defined and have imageData loaded
      * \returns The maximum height of any individual GRP Frame.
      * \note NA*/
-    uint16_t getMaxHeight() const;
+    uint16_t getMaxImageHeight() const;
     
     
     
-    void DecodeFrame(unsigned int frameNumber);
+ 
     void SetColorPalette(ColorPalette *selectedColorPalette);
+    void UnpackGRPImages();
     
 protected:
-    void unpackGRPImages();
+    
+    void LoadImageToFrame(unsigned int FrameNumber);
     
     //!Extract basic GRP information from the header
     /*!Extract basic information about the GRP image data
@@ -105,26 +109,8 @@ private:
     
     
     //GrpInfo Header
-    unsigned int numberOfFrames;
-    unsigned int maxWidth;
-    unsigned int maxHeight;
-    
-    //Stuff from old implementation
-    int wminx,wminy,wmaxx,wmaxy;
-    int wmaximx,wmaximy;
-    int sizexwarppict,sizeywarppict;
-    int ctextures;
-    int ostatoksizexwarp;
-    char *vidmem;
-    int  gr_gamernr;
-    char *_transpcolors_;
-    int *_mulyy_;
-    char *tableforunitcolor;
-    short int wcomandcolor;
-    short int wcomcolor;
-    unsigned char gr_color;
-    unsigned char gr_maxcolordesen;
-    int wmaxdwordwritel;
-    
+    uint16_t numberOfFrames;
+    uint16_t maxImageWidth;
+    uint16_t maxImageHeight;
 };
 #endif

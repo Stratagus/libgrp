@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(QueryGRPImage)
 {
     GRPImage sampleImage;
     sampleImage.LoadImage(GRPIMAGEFILEPATH);
-    BOOST_ASSERT((sampleImage.getNumberOfFrames() == 296) && (sampleImage.getMaxHeight() == 128) && (sampleImage.getMaxWidth() == 128));
+    BOOST_ASSERT((sampleImage.getNumberOfFrames() == 296) && (sampleImage.getMaxImageHeight() == 128) && (sampleImage.getMaxImageWidth() == 128));
 }
 BOOST_AUTO_TEST_CASE(Current)
 {
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(Current)
     //myImage->LoadPalette(PALLETTEFILEPATH);
     std::cout << "Loaded image from file\n";
     std::cout << "GRPImage Specs Frames: " << myImage->getNumberOfFrames()
-              << "  MaxWidth: " << myImage->getMaxWidth() << "  MaxHeight: " << myImage->getMaxHeight() << '\n';
+              << "  MaxWidth: " << myImage->getMaxImageWidth() << "  MaxHeight: " << myImage->getMaxImageHeight() << '\n';
     //myImage->DecodeFrame(3);
     
     BOOST_ASSERT(true);

@@ -11,6 +11,8 @@ BOOST_AUTO_TEST_CASE(LoadGRP)
     GRPImage sampleImage;
     sampleImage.LoadImage(GRPIMAGEFILEPATH);
     sampleImage.SetColorPalette(&samplePalette);
+    sampleImage.ProcessGRPImage();
+    
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -7,8 +7,8 @@ GRPImage::GRPImage()
     currentPalette = NULL;
     
     numberOfFrames = -1;
-    maxWidth = -1;
-    maxHeight = -1;
+    maxImageWidth = -1;
+    maxImageHeight = -1;
 }
 
 GRPImage::~GRPImage()
@@ -60,24 +60,19 @@ uint16_t GRPImage::getNumberOfFrames() const
 {
     return numberOfFrames;
 }
-uint16_t GRPImage::getMaxWidth() const
+uint16_t GRPImage::getMaxImageWidth() const
 {
-    return maxWidth;
+    return maxImageWidth;
 }
-uint16_t GRPImage::getMaxHeight() const
+uint16_t GRPImage::getMaxImageHeight() const
 {
-    return maxHeight;
+    return maxImageHeight;
 }
 
-void GRPImage::DecodeFrame(unsigned int frameNumber)
+void GRPImage::LoadImageToFrame(unsigned int FrameNumber)
 {
-    if(frameNumber > numberOfFrames)
-    {
-        GRPImageInvalidFrameNumber invalidFrameError;
-        invalidFrameError.SetErrorMessage("Invalid Frame Number");
-        throw invalidFrameError;
-    }
-    std::cout << "Decoding Frame: " << frameNumber << '\n';
+#warning Error checking here
+    unsigned int currentXPosition = 0, currentYPosition = 0;
     
     
 }
@@ -87,16 +82,15 @@ void GRPImage::ExtractMetaData()
     //Copy raw chunks of the Frame Header and load them
     //into 16bit unsigned integers
     memcpy(&numberOfFrames, &imageData->at(0), 2);
-    memcpy(&maxWidth, &imageData->at(2), 2);
-    memcpy(&maxHeight, &imageData->at(4), 2);
+    memcpy(&maxImageWidth, &imageData->at(2), 2);
+    memcpy(&maxImageHeight, &imageData->at(4), 2);
     
 }
 
 
-void GRPImage::unpackGRPImages()
+void GRPImage::UnpackGRPImages()
 {
-    int oldwmaximx = wmaximx;			//change internal variables
-    int oldgr_gamernr = gr_gamernr;		//and videobufer
+
 }
 
 void GRPImage::LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
@@ -130,4 +124,20 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
     {
             throw "Invalid color palette";
     }
+}
+
+void GRPImage::ProcessGRPImage()
+{
+#warning For loop for all Frames
+    if(imageFrames == NULL)
+    {
+        imageFrames = new std::vector<GRPFrame>;
+    }
+    std::cout << "Number of Frames: " << numberOfFrames << '\n';
+    imageFrames->resize(numberOfFrames);
+    LoadImageToFrame(0);
+    //for(int currentProcessFrame = 0; currentProcessFrame < numberOfFrames; currentProcessFrame++)
+    //{
+    //    std::cout << "Unpacking Frame: " << currentProcessFrame << '\n';
+    //}
 }
