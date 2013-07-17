@@ -34,7 +34,7 @@ void GRPImage::LoadImage(std::vector<char> *inputImage)
     this->ExtractMetaData();
 }
 
-void GRPImage::LoadImage(std::string filePath)
+void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
 {
     if(imageData == NULL)
     {
@@ -92,7 +92,8 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
         std::cout << "Problem";
     }
     //The current image pixel that we are working on
-    uint8_t currentDataPacket;
+    uint8_t rawPacket, convertedPacket;
+    
     
     //Save the original file pointer position to continue loading GRPHeaders
     std::ifstream::pos_type currentHeaderFilePosition = inputFile.tellg();
@@ -100,7 +101,7 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
     //Goto the GRPFrame data
     inputFile.seekg(targetFrame->dataOffset);
 
-#warning Processing here
+
     
     //Finished put the file position back
     inputFile.seekg(currentHeaderFilePosition);
@@ -152,12 +153,13 @@ void GRPImage::LoadFileToVector(std::string filePath, std::vector<unsigned char>
 
 void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 {
-    if(selectedColorPalette != NULL)
-    {
-        currentPalette = selectedColorPalette;
-    }
-    else
-    {
-            throw "Invalid color palette";
-    }
+    currentPalette = selectedColorPalette;
+    //if(selectedColorPalette != NULL)
+    //{
+     //   ;
+    //}
+    //else
+    //{
+     //       throw "Invalid color palette";
+    //}
 }

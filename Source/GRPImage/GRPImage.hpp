@@ -45,7 +45,7 @@ public:
      * \param[in] filePath The file path to the grp image file
      * \note NA
      */
-    void LoadImage(std::string filePath);
+    void LoadImage(std::string filePath, bool removeDuplicates = false);
     
     //!Return the number of frames in a GRPImage
     /*! Return the number of frames in a GRP image animation.

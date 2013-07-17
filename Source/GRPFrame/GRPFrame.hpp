@@ -1,7 +1,7 @@
 #ifndef GRPFrame_Header
 #define GRPFrame_Header
 
-#include <vector>
+#include <list>
 #include "../Exceptions/GRPFrame/GRPFrameException.hpp"
 
 #warning Get a way to query the caller for max width and height
@@ -27,7 +27,7 @@ public:
     uint32_t dataOffset;
     
     //The loaded data
-    std::vector<char> frameData;
+    std::list<uint8_t> frameData;
 
 protected:
     //The actual width and Height of the image (NOT THE FRAME!!!)
