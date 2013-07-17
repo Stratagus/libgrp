@@ -15,6 +15,7 @@
 
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
 #include <list>
+#include <fstream>
 
 class GRPImage
 {
@@ -46,8 +47,6 @@ public:
      */
     void LoadImage(std::string filePath);
     
-    void ProcessGRPImage();
-    
     //!Return the number of frames in a GRPImage
     /*! Return the number of frames in a GRP image animation.
      * \pre GRP image data must be defined and loaded into
@@ -74,13 +73,12 @@ public:
     uint16_t getMaxImageHeight() const;
     
     
-    
  
     void SetColorPalette(ColorPalette *selectedColorPalette);
     
 protected:
     
-    void LoadImageToFrame(unsigned int FrameNumber);
+    void DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame);
     
     //!Extract basic GRP information from the header
     /*!Extract basic information about the GRP image data
@@ -103,7 +101,7 @@ protected:
     
 private:
     std::vector<unsigned char> *imageData;
-    std::vector<GRPFrame> *imageFrames;
+    std::list<GRPFrame *> imageFrames;
     ColorPalette *currentPalette;
     
     

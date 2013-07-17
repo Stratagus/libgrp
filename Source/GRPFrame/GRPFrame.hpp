@@ -14,7 +14,7 @@ public:
     
     void SetFrameSize(unsigned int inputFrameWidth, unsigned int inputFrameHeight);
     
-    std::vector<char> frameData;
+    
     //Tells us where to begin drawing
     uint8_t xPosition;
     uint8_t yPosition;
@@ -25,6 +25,9 @@ public:
     
     //Offset of the Framedata (starting at the beginning of the file)
     uint32_t dataOffset;
+    
+    //The loaded data
+    std::vector<char> frameData;
 
 protected:
     //The actual width and Height of the image (NOT THE FRAME!!!)

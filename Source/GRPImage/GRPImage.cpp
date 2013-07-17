@@ -3,7 +3,6 @@
 GRPImage::GRPImage()
 {
     imageData = NULL;
-    imageFrames = NULL;
     currentPalette = NULL;
     
     numberOfFrames = -1;
@@ -21,11 +20,6 @@ GRPImage::~GRPImage()
     if(currentPalette != NULL)
     {
         currentPalette = NULL;
-    }
-    if(imageFrames != NULL)
-    {
-        delete imageFrames;
-        imageFrames = NULL;
     }
 }
 #warning Add error checking
@@ -63,36 +57,53 @@ void GRPImage::LoadImage(std::string filePath)
     //Find the Maximum Image Width & Height
     inputFile.read((char *) &maxImageWidth, 2);
     inputFile.read((char *) &maxImageHeight, 2);
-
-    //Expand the GRPFrames vector to allocate enough memory
-    if(imageFrames == NULL)
-    {
-        imageFrames = new std::vector<GRPFrame>;
-    }
-    imageFrames->resize(numberOfFrames);
     
-    //Load each GRP Header into a GRPFrame
+    //Load each GRP Header into a GRPFrame & Allocate the 
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
     {
-        GRPFrame *currentImageFrame;
+        GRPFrame *currentImageFrame = new GRPFrame;
         
-        currentImageFrame = &imageFrames->at(currentGRPFrame);
         inputFile.read((char *) &currentImageFrame->xPosition, 1);
         inputFile.read((char *) &currentImageFrame->yPosition, 1);
         inputFile.read((char *) &currentImageFrame->width, 1);
         inputFile.read((char *) &currentImageFrame->height, 1);
         inputFile.read((char *) &currentImageFrame->dataOffset, 4);
+        
+        //Decode Frame here
+        DecodeGRPFrameData(inputFile, currentImageFrame);
+        
+        std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->width << " Height: "
+                                       << (int) currentImageFrame->height << "\nxPosition: " << (int) currentImageFrame->xPosition
+                                       << " yPosition: " << (int) currentImageFrame->yPosition << " with offset " << (int)currentImageFrame->dataOffset << '\n';
+        
+        imageFrames.insert(imageFrames.end(), currentImageFrame);
     }
-    std::cout << "Finished loading headers!\n";
-    
-    //std::cout << "Frame demensions " << (int) imageFrames->at(currentGRPFrame).imageWidth << "x" << (int) imageFrames->at(currentGRPFrame).imageHeight << "  SkipLeft: " << (int) imageFrames->at(currentGRPFrame).skipLeft << " SkipUp: " << (int)imageFrames->at(currentGRPFrame).skipUp << '\n' << "Offset " << (unsigned int) imageFrames->at(currentGRPFrame).offset << '\n';
-    
-    //Now that we have the metadata of the image lets start processing bytes :D
-    //The current (X,Y) pixel we are processing, we will skip the blank areas of the GRP
+    std::cout << "Finished loading grpimages!\n";
     
     
-    //std::cout << "Peek: " << inputFile.peek() << " at " << inputFile.tellg() << '\n';
     
+}
+
+void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame)
+{
+    if(targetFrame == NULL || currentPalette == NULL)
+    {
+        #warning throw here
+        std::cout << "Problem";
+    }
+    //The current image pixel that we are working on
+    uint8_t currentDataPacket;
+    
+    //Save the original file pointer position to continue loading GRPHeaders
+    std::ifstream::pos_type currentHeaderFilePosition = inputFile.tellg();
+    
+    //Goto the GRPFrame data
+    inputFile.seekg(targetFrame->dataOffset);
+
+#warning Processing here
+    
+    //Finished put the file position back
+    inputFile.seekg(currentHeaderFilePosition);
 }
 
 uint16_t GRPImage::getNumberOfFrames() const
@@ -106,21 +117,6 @@ uint16_t GRPImage::getMaxImageWidth() const
 uint16_t GRPImage::getMaxImageHeight() const
 {
     return maxImageHeight;
-}
-
-void GRPImage::LoadImageToFrame(unsigned int FrameNumber)
-{
-#warning Error checking here
-    unsigned int currentXPosition = 0, currentYPosition = 0;
-    
-    //Allocate the GRPFrame
-    GRPFrame myFrame;
-    myFrame.SetFrameSize(128, 128);
-    //myFrame.frameData.begin()
-   // std::vector<char>::iterator currentPosition = imageData->begin() + 5;
-    //std::copy(currentPosition, myFrame.frameData.end(), myFrame.frameData.begin());
-    
-    
 }
 
 void GRPImage::ExtractMetaData()
@@ -164,20 +160,4 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
     {
             throw "Invalid color palette";
     }
-}
-
-void GRPImage::ProcessGRPImage()
-{
-#warning For loop for all Frames
-    if(imageFrames == NULL)
-    {
-        imageFrames = new std::vector<GRPFrame>;
-    }
-    std::cout << "Number of Frames: " << numberOfFrames << '\n';
-    imageFrames->resize(numberOfFrames);
-    LoadImageToFrame(0);
-    //for(int currentProcessFrame = 0; currentProcessFrame < numberOfFrames; currentProcessFrame++)
-    //{
-    //    std::cout << "Unpacking Frame: " << currentProcessFrame << '\n';
-    //}
 }
