@@ -4,18 +4,31 @@
 #include <vector>
 #include "../Exceptions/GRPFrame/GRPFrameException.hpp"
 
+#warning Get a way to query the caller for max width and height
+
 class GRPFrame
 {
 public:
     GRPFrame();
     ~GRPFrame();
-    //Frameheader Information
-    uint8_t frameLeft; 
-    uint8_t frameTop;
-    uint8_t frameWidth;
-    uint8_t frameHeight;
+    
+    void SetFrameSize(unsigned int inputFrameWidth, unsigned int inputFrameHeight);
+    
+    std::vector<char> frameData;
+    //Tells us where to begin drawing
+    uint8_t xPosition;
+    uint8_t yPosition;
+    
+    //The actual width/height of the image in the frame
+    uint8_t width;
+    uint8_t height;
+    
+    //Offset of the Framedata (starting at the beginning of the file)
+    uint32_t dataOffset;
+
 protected:
-    std::vector<char> *frameData;
+    //The actual width and Height of the image (NOT THE FRAME!!!)
+
 private:
 };
 

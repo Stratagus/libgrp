@@ -14,6 +14,7 @@
 #include "../ColorPalette/ColorPalette.hpp"
 
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
+#include <list>
 
 class GRPImage
 {
@@ -76,7 +77,6 @@ public:
     
  
     void SetColorPalette(ColorPalette *selectedColorPalette);
-    void UnpackGRPImages();
     
 protected:
     
@@ -99,16 +99,15 @@ protected:
      *      file path. destinationVector must be defined and initialized (blank).
      * \post The destinationVector contains the data from the file at path sourceFilePath
      * \note NA*/
-    void LoadFileToVector(std::string sourceFilePath, std::vector<char> *destinationVector);
+    void LoadFileToVector(std::string sourceFilePath, std::vector<unsigned char> *destinationVector);
     
 private:
-    std::vector<char> *imageData;
+    std::vector<unsigned char> *imageData;
     std::vector<GRPFrame> *imageFrames;
     ColorPalette *currentPalette;
     
     
-    
-    //GrpInfo Header
+    //GRPiamge Header
     uint16_t numberOfFrames;
     uint16_t maxImageWidth;
     uint16_t maxImageHeight;
