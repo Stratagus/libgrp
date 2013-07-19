@@ -179,6 +179,30 @@ class ColorPalette
          * \post Generates a 8192byte set of shades
          * \note NA*/
         void GenerateBluetable(int gradation = 32);
+    
+        //Loaded formatted Palette Data
+        std::vector<colorValues> *formattedPaletteData;
+    
+        //The generated Transparent Color Table
+        std::vector<uint8_t> *transparentColorsTable;
+    
+        //The generated Greyscale Table
+        std::vector<uint8_t> *greyscaleTable;
+    
+        //The generated Light Color Table (White)
+        std::vector<uint8_t> *lightTable;
+    
+        //The generated Shadow Color Table (Black)
+        std::vector<uint8_t> *shadowTable;
+    
+        //The generated Red Color Table
+        std::vector<uint8_t> *redTable;
+    
+        //The generated Green Color Table
+        std::vector<uint8_t> *greenTable;
+    
+        //The generated Blue Color Table
+        std::vector<uint8_t> *blueTable;
 
 	protected:
 
@@ -209,28 +233,7 @@ class ColorPalette
          * \note difference = initialColor - operationColor NA*/  
         colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
     
-        //Loaded formatted Palette Data
-        std::vector<colorValues> *formattedPaletteData;
-    
-        //The generated Transparent Color Table
-        std::vector<uint8_t> *transparentColorsTable;
-        //The generated Greyscale Table
-        std::vector<uint8_t> *greyscaleTable;
-    
-        //The generated Light Color Table (White)
-        std::vector<uint8_t> *lightTable;
-    
-        //The generated Shadow Color Table (Black)
-        std::vector<uint8_t> *shadowTable;
-    
-        //The generated Red Color Table
-        std::vector<uint8_t> *redTable;
-    
-        //The generated Green Color Table
-        std::vector<uint8_t> *greenTable;
-    
-        //The generated Blue Color Table
-        std::vector<uint8_t> *blueTable;
+
     
 	private:
 };

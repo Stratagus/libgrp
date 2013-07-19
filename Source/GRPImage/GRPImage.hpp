@@ -30,6 +30,8 @@
 #endif
 
 
+enum GRPImageType {STANDARD, SHADOW};
+
 class GRPImage
 {
     

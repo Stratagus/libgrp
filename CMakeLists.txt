@@ -28,6 +28,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
 #without having to manually change each individual filepath, they
 #also act as shortcuts.
 set (SOURCE_DIR "./Source")
+set (SAMPLESOURCE_DIR "./SampleSource")
 set (UNITTEST_DIR "./UnitTests")
 
 
@@ -79,6 +80,10 @@ set(GRPFRAME_UNITTEST_SOURCE
 	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.hpp
 	${UNITTEST_DIR}/GRPFrameTests/GRPFrameTests.cpp
 	)
+
+set(SAMPLES_SHOWPALETTE_SOURCE
+	${SAMPLESOURCE_DIR}/ShowPalette/main.hpp
+	${SAMPLESOURCE_DIR}/ShowPalette/main.cpp)
 
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
@@ -140,6 +145,13 @@ if(UNITTESTS)
 	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
 endif()
 
+option(SAMPLECODE "Compile SampleCode" OFF)
+if(SAMPLECODE)
+	find_package(SDL REQUIRED)
+	add_executable(ShowPalette ${SAMPLES_SHOWPALETTE_SOURCE})
+	target_link_libraries(ShowPalette libgrp ${SDL_LIBRARY})
+endif()
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")
-message (" Verbose Level: ${VERBOSE} [-DVERBOSE=[(1-5)] 1-Min 5-Max\n")
+message(" Verbose Level: ${VERBOSE} [-DVERBOSE=[(1-5)] 1-Min 5-Max")
+message(" Sample Code: ${SAMPLECODE} [-DSAMPLECODE=(off-on)\n")
