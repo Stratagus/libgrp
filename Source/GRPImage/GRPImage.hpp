@@ -8,7 +8,7 @@
  *  \copyright LGPLv2
  *  \section basicsGRPFormat Basic Format Aspects
  *  \section conventions Naming Conventions
- *  \section advancedGRPFormat Advanced Format Aspects
+ *  \section av
  *  ![Diagram of GRP file layout] (GRPFileLayout.png)
  */
 #ifndef GRPImage_Header
@@ -20,6 +20,15 @@
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
 #include <list>
 #include <fstream>
+
+//Allow Windows to use 8/16/32 byte values
+#if defined(_WIN32)
+#include <stdint.h>
+    typedef uint8_t u_int8_t;
+    typedef uint16_t u_int16_t;
+    typedef uint32_t u_int32_t;
+#endif
+
 
 class GRPImage
 {
@@ -83,16 +92,6 @@ public:
 protected:
     
     void DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame);
-    
-    //!Extract basic GRP information from the header
-    /*!Extract basic information about the GRP image data
-     * including the numberOfFrames, maxWidth and maxHeight. This
-     * function is ran on the imageData immediatly after the data is loaded.
-     * \pre imageData must be defined and contain valid GRP Image data.
-     * \post numberOfFrames,maxWidth,maxHeight are given the correct
-     *       GRP image metadata values.
-     * \note NA*/
-    void ExtractMetaData();
     
     //!Load file into a std::vector<char>
     /*!Subroutine function to load a file into the internal imageData or

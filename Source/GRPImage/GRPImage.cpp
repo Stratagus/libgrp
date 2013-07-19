@@ -22,16 +22,9 @@ GRPImage::~GRPImage()
         currentPalette = NULL;
     }
 }
-#warning Add error checking
+#warning MUST IMPLEMENT
 void GRPImage::LoadImage(std::vector<char> *inputImage)
 {
-    
-    if(imageData != NULL)
-    {
-        delete imageData;
-    }
-    //imageData = inputImage;
-    this->ExtractMetaData();
 }
 
 void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
@@ -118,16 +111,6 @@ uint16_t GRPImage::getMaxImageWidth() const
 uint16_t GRPImage::getMaxImageHeight() const
 {
     return maxImageHeight;
-}
-
-void GRPImage::ExtractMetaData()
-{
-    //Copy raw chunks of the Frame Header and load them
-    //into 16bit unsigned integers
-    memcpy(&numberOfFrames, &imageData->at(0), 2);
-    memcpy(&maxImageWidth, &imageData->at(2), 2);
-    memcpy(&maxImageHeight, &imageData->at(4), 2);
-    
 }
 
 void GRPImage::LoadFileToVector(std::string filePath, std::vector<unsigned char> *destinationVector)
