@@ -1,4 +1,7 @@
-/*!
+#ifndef ColorPalette_Header
+#define ColorPalette_Header
+
+/*!Hello
  *  \brief     A datastructure for holding a GRP Palette
  *  \details   Datastructure that generates the color tables, loads the palette
  *              and allows for easy color access.
@@ -8,8 +11,6 @@
  *  \copyright LGPLv2
  */
 
-#ifndef ColorPalette_Header
-#define ColorPalette_Header
 
 #include <string>
 #include <vector>

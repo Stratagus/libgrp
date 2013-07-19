@@ -2,10 +2,14 @@
  *  \brief     The main
  *  \details   This class runs all the underlying generic functions required
  * 				for nearly all objects in the framework
- *  \author    Bradley Clemetson, GRPLib Authors https://sourceforge.net/projects/grplib
+ *  \author    Bradley Clemetson, from GRPLib Authors
  *  \version   0.0.1
  *  \date      Jan 13, 2013
  *  \copyright LGPLv2
+ *  \section basicsGRPFormat Basic Format Aspects
+ *  \section conventions Naming Conventions
+ *  \section advancedGRPFormat Advanced Format Aspects
+ *  ![Diagram of GRP file layout] (GRPFileLayout.png)
  */
 #ifndef GRPImage_Header
 #define GRPImage_Header

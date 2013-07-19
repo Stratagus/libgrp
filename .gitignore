@@ -19,3 +19,6 @@
 build/
 CMakeCache.txt
 cmake_install.cmake
+
+#Doxygen Output Directory
+Documentation/GeneratedDocumentation
