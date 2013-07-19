@@ -36,15 +36,18 @@ int main(int count,char *argv[])
     //Allocate a simple background
     std::vector<int8_t> windowBackground(WINDOWWIDTH * WINDOWHEIGHT);
     
+    //Setup simple gradient
     for (int i=0;i<WINDOWHEIGHT;i++)
         for (int j=0;j<WINDOWWIDTH;j++)
             windowBackground[i*WINDOWWIDTH+j]=(int8_t)j;
     
+    //Do an initial update on the screen
     UpdateSurface(colorPalettePreviewWindow, windowBackground);
     //Wait for user interaction
     while (SDL_WaitEvent(&keyPressedEvent))
     {
         //Figure out what kind of input device caused the event
+        //Be it mouse, keyboard; we only care about the keyboard though
         switch (keyPressedEvent.type)
         {
             //Check what input device polled
@@ -52,16 +55,19 @@ int main(int count,char *argv[])
             {
                 switch (*SDL_GetKeyName(keyPressedEvent.key.keysym.sym))
                 {
+                    //If the 'w' key is pressed load the previous color table
                     case 'w':
                         std::cout << "Previous Table -\n";
                         UpdateSurface(colorPalettePreviewWindow, windowBackground);
                         break;
                     
+                    //If the 'e' key is pressed load the next color table
                     case 'e':
                         std::cout << "Next Table +\n";
                         UpdateSurface(colorPalettePreviewWindow, windowBackground);
                         break;
                         
+                    //If the 'q' key is pressed quit the application
                     case 'q':
                         std::cout << "Exiting ShowPalette\n";
                         SDL_Quit();
@@ -103,7 +109,6 @@ void UpdateSurface(SDL_Surface *targetSurface, std::vector<int8_t> background)
 {
     if (SDL_MUSTLOCK(targetSurface))
         SDL_LockSurface(targetSurface);
-    //memmove(targetSurface->pixels, &background,WINDOWWIDTH*WINDOWHEIGHT);
     std::copy(background.begin(), background.end(), (char *)targetSurface->pixels);
     if (SDL_MUSTLOCK(targetSurface))
         SDL_UnlockSurface(targetSurface);
