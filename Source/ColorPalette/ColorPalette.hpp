@@ -111,7 +111,7 @@ class ColorPalette
          * \param [in] startingGlowColor The starting color
          * \param [in] endingGlowColor The target color to generate towards
          * \note NA*/
-        std::vector<char> *GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
+        std::vector<uint8_t> *GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor);
     
         //!Generate Colortable with the rules of passed in color and multiplicator
         /*! Details here
@@ -204,24 +204,24 @@ class ColorPalette
         std::vector<colorValues> *formattedPaletteData;
     
         //The generated Transparent Color Table
-        std::vector<char> *transparentColorsTable;
+        std::vector<uint8_t> *transparentColorsTable;
         //The generated Greyscale Table
-        std::vector<char> *greyscaleTable;
+        std::vector<uint8_t> *greyscaleTable;
     
         //The generated Light Color Table (White)
-        std::vector<char> *lightTable;
+        std::vector<uint8_t> *lightTable;
     
         //The generated Shadow Color Table (Black)
-        std::vector<char> *shadowTable;
+        std::vector<uint8_t> *shadowTable;
     
         //The generated Red Color Table
-        std::vector<char> *redTable;
+        std::vector<uint8_t> *redTable;
     
         //The generated Green Color Table
-        std::vector<char> *greenTable;
+        std::vector<uint8_t> *greenTable;
     
         //The generated Blue Color Table
-        std::vector<char> *blueTable;
+        std::vector<uint8_t> *blueTable;
     
 	private:
 };

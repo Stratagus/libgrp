@@ -222,7 +222,7 @@ void ColorPalette::GenerateTransparentColorsTable()
     if(transparentColorsTable == NULL)
     {
         //Create a vector with the max number of colors
-        transparentColorsTable = new std::vector<char>;
+        transparentColorsTable = new std::vector<uint8_t>;
     }
     
     transparentColorsTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * MAXIMUMNUMBEROFCOLORSPERPALETTE);
@@ -318,7 +318,7 @@ void ColorPalette::GenerateGreyscaleTable()
     if(greyscaleTable == NULL)
     {
         //Create a vector with the max number of colors
-        greyscaleTable = new std::vector<char>;
+        greyscaleTable = new std::vector<uint8_t>;
     }
     
     greyscaleTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
@@ -444,7 +444,7 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(unsigned int maxGradat
 #endif
     return finalGlowColors;
 }
-std::vector<char> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
+std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
 {
     if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
     {
@@ -453,7 +453,7 @@ std::vector<char> *ColorPalette::GenerateColorizedTable(int maxGradation, colorV
         throw gradationError;
     }
     
-    std::vector<char> *finalColorizedTable = new std::vector<char>;
+    std::vector<uint8_t> *finalColorizedTable = new std::vector<uint8_t>;
     finalColorizedTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * maxGradation);
     
     colorValues firstColor, secondColor, differenceColor;
