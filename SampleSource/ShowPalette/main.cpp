@@ -28,7 +28,10 @@ int main(int count,char *argv[])
     //Get our palette loaded up into a SDL Colors
     ColorPalette myColorPalette;
     myColorPalette.LoadPalette(PALLETTEFILEPATH);
-    myColorPalette.GenerateBasicColorTables();
+    
+    //If you want to force the generation of derived color tables
+    //at the start. Otherwise they are generated upon request.
+    //myColorPalette.GenerateColorTables();
     
     //Load the PaletteColors into SDL colors to be displayed.
     LoadSDLColors(colorPalettePreviewWindow, myColorPalette);
@@ -94,24 +97,29 @@ int main(int count,char *argv[])
 
 void LoadSDLColors(SDL_Surface *targetSurface, ColorPalette sourceColorPalette)
 {
-    SDL_Color sdlColors[sourceColorPalette.formattedPaletteData->size()];
-    for(int currentColor = 0; currentColor < sourceColorPalette.formattedPaletteData->size(); currentColor++)
+    colorValues currentProcessingColor;
+    SDL_Color sdlColors[sourceColorPalette.GetNumberOfColors()];
+    for(int currentColor = 0; currentColor < sourceColorPalette.GetNumberOfColors(); currentColor++)
     {
-        sdlColors[currentColor].r = sourceColorPalette.formattedPaletteData->at(currentColor).RedElement;
-        sdlColors[currentColor].g = sourceColorPalette.formattedPaletteData->at(currentColor).GreenElement;
-        sdlColors[currentColor].b = sourceColorPalette.formattedPaletteData->at(currentColor).BlueElement;
+        currentProcessingColor = sourceColorPalette.GetColorFromPalette(currentColor);
+        sdlColors[currentColor].r = currentProcessingColor.RedElement;
+        sdlColors[currentColor].g = currentProcessingColor.GreenElement;
+        sdlColors[currentColor].b = currentProcessingColor.BlueElement;
     }
     //Could save the SDL_SetPalette error, but for sample code it's not important
-    SDL_SetPalette(targetSurface,SDL_LOGPAL|SDL_PHYSPAL,sdlColors,0,sourceColorPalette.formattedPaletteData->size());
+    SDL_SetPalette(targetSurface,SDL_LOGPAL|SDL_PHYSPAL,sdlColors,0,sourceColorPalette.GetNumberOfColors());
 }
 
 void UpdateSurface(SDL_Surface *targetSurface, std::vector<int8_t> background)
 {
     if (SDL_MUSTLOCK(targetSurface))
         SDL_LockSurface(targetSurface);
+    
     std::copy(background.begin(), background.end(), (char *)targetSurface->pixels);
+    
     if (SDL_MUSTLOCK(targetSurface))
         SDL_UnlockSurface(targetSurface);
+    
     //update screen
     SDL_UpdateRect(targetSurface, 0, 0, 0, 0);
 }

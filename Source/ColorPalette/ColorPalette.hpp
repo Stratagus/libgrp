@@ -138,7 +138,7 @@ class ColorPalette
          * \pre A valid palette file must be loaded.
          * \post Shadow/Light/Red/Green/Blue tables are generated
          * \note NA*/
-        void GenerateBasicColorTables(int gradation = 32);
+        void GenerateColorTables(int gradation = 32);
     
         //!Generate the Shadow Table
         /*! Generates different shades of black that 
@@ -180,6 +180,58 @@ class ColorPalette
          * \note NA*/
         void GenerateBluetable(int gradation = 32);
     
+        //!Gets the Red/Blue/Green values for a specific color in the Palette
+        /*! A simple getter to grab the Red/Blue/Green elements of a specific
+        *      color.
+        * \pre A palette must be loaded and colorNumber a valid Color palette #
+        * \returns A colorValues struct with the loaded element values.
+        * \note NA*/
+        colorValues GetColorFromPalette(int colorNumber);
+    
+        //!Gets the number of colors on the Palette
+        /*! A simple getter to get the number of colors in a Palette
+         * \pre NA
+         * \returns The number of colors in a palette
+         * \note NA*/
+        int GetNumberOfColors();
+    
+#warning Full document here
+        //!Apply modifier from the Shadow Table
+        colorValues ApplyShadowValue(colorValues baseColor, int targetApplication);
+        colorValues ApplyLightValue(colorValues baseColor, int targetApplication);
+        colorValues ApplyRedValue(colorValues baseColor, int targetApplication);
+        colorValues ApplyBlueValue(colorValues baseColor, int targetApplication);
+        colorValues ApplyGreenValue(colorValues baseColor, int targetApplication);
+    
+	protected:
+    
+        //!Ensures that all tables are NULL or deleted.
+        /*!Cleans out all the palettes in order to ensure all data is deleted
+         * \pre NA
+         * \post All the ColorPalette tables are deleted
+         * \note NA*/
+        void ClearAllTables();
+
+        //!Generates the Glow Colors of a specific image
+        /*! Generates a byte glow table (shades) based on the
+         *  color values entered in initialColor to finalColor
+         * \pre A palette file must be loaded, colorvalues defined and maxGradation
+         *       a positive value.
+         * \returns A colorValues vector containing the best fit colors from the palette
+         * \param [in] maxGradation How fine set of colors to be generated
+         * \param [in] startingColor The starting color to begin color shades
+         * \param [in] endingColor The target color of the gradient generation
+         * \note NA*/
+        std::vector<colorValues> GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor);
+    
+    
+        //!Gets the difference in between two colors
+        /*! Subtracts the operationColor from the Initialcolor
+         * \pre Both colorValues structs must be declared and defined
+         * \returns A new colorValues struct of initialColor - operationColor
+         * \note difference = initialColor - operationColor NA*/  
+        colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
+    
         //Loaded formatted Palette Data
         std::vector<colorValues> *formattedPaletteData;
     
@@ -203,36 +255,6 @@ class ColorPalette
     
         //The generated Blue Color Table
         std::vector<uint8_t> *blueTable;
-
-	protected:
-
-        //!Generates the Glow Colors of a specific image
-        /*! Generates a byte glow table (shades) based on the
-         *  color values entered in initialColor to finalColor
-         * \pre A palette file must be loaded, colorvalues defined and maxGradation
-         *       a positive value.
-         * \returns A colorValues vector containing the best fit colors from the palette
-         * \param [in] maxGradation How fine set of colors to be generated
-         * \param [in] startingColor The starting color to begin color shades
-         * \param [in] endingColor The target color of the gradient generation
-         * \note NA*/
-        std::vector<colorValues> GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor);
-    
-        //!Gets the Red/Blue/Green values for a specific color in the Palette
-        /*! A simple getter to grab the Red/Blue/Green elements of a specific
-         *      color.
-         * \pre A palette must be loaded and colorNumber a valid Color palette #
-         * \returns A colorValues struct with the loaded element values.
-         * \note NA*/
-        colorValues GetColorFromPalette(int colorNumber);
-    
-        //!Gets the difference in between two colors
-        /*! Subtracts the operationColor from the Initialcolor
-         * \pre Both colorValues structs must be declared and defined
-         * \returns A new colorValues struct of initialColor - operationColor
-         * \note difference = initialColor - operationColor NA*/  
-        colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
-    
 
     
 	private:

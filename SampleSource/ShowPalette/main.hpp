@@ -13,6 +13,9 @@
 #define SDL_LOGPAL 0x01
 #define SDL_PHYSPAL 0x02
 
+//This is used to allow the sample program to rotate between colorized palettes (Nothing libgrp related)
+enum colorTableSelect {NONE, SHADOWTABLE, LIGHTTABLE, REDTABLE, BLUETABLE, GREENTABLE};
+
 //Allow Windows to use 8/16/32 byte values
 #if defined(_WIN32)
 #include <stdint.h>
@@ -23,6 +26,7 @@
 
 void LoadSDLColors(SDL_Surface *targetSurface, ColorPalette sourceColorPalette);
 void UpdateSurface(SDL_Surface *targetSurface, std::vector<int8_t> background);
+void ApplyColorizedValues(ColorPalette applicationPalette, colorTableSelect selectedTable, colorValues targetColor);
 
 #ifdef __APPLE__
     #define PALLETTEFILEPATH "../../Documentation/SampleContent/SamplePalette.pal"

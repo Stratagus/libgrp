@@ -17,74 +17,12 @@ ColorPalette::ColorPalette()
 
 ColorPalette::~ColorPalette()
 {
-    if(formattedPaletteData != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating formattedPalleteData.\n";
-        #endif
-        delete formattedPaletteData;
-        formattedPaletteData = NULL;
-    }
-    if(transparentColorsTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating transparentColorsTable.\n";
-        #endif
-        delete transparentColorsTable;
-        transparentColorsTable = NULL;
-    }
-    if(greyscaleTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating greyscaleTable.\n";
-        #endif
-        delete greyscaleTable;
-        greyscaleTable = NULL;
-    }
-    if(shadowTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating shadowTable.\n";
-        #endif
-        delete shadowTable;
-        shadowTable = NULL;
-    }
-    if(lightTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating lightTable.\n";
-        #endif
-        delete lightTable;
-        lightTable = NULL;
-    }
-    if(redTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating redTable.\n";
-        #endif
-        delete redTable;
-        redTable = NULL;
-    }
-    if(greenTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating greenTable.\n";
-        #endif
-        delete greenTable;
-        greenTable = NULL;
-    }
-    if(blueTable != NULL)
-    {
-        #if VERBOSE >= 5
-            std::cout << "Deallocating blueTable.\n";
-        #endif
-        delete blueTable;
-        blueTable = NULL;
-    }
+    ClearAllTables();
 }
 
 void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
+    ClearAllTables();
     colorValues currentColorProcessing;
     if( (inputPalette != NULL) && ((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
     {
@@ -124,6 +62,7 @@ void ColorPalette::LoadPalette(std::string filePath)
     std::cout << "Loading Palette from file: " << filePath << '\n';
 #endif
     
+    ClearAllTables();
     int inputFileSize;
     colorValues currentColorProcessing;
     
@@ -687,7 +626,7 @@ void ColorPalette::GenerateBluetable(int gradation)
 #endif
 }
 
-void ColorPalette::GenerateBasicColorTables(int gradation)
+void ColorPalette::GenerateColorTables(int gradation)
 {
     GenerateTransparentColorsTable();
     GenerateGreyscaleTable();
@@ -696,4 +635,179 @@ void ColorPalette::GenerateBasicColorTables(int gradation)
     GenerateRedtable(gradation);
     GenerateGreentable(gradation);
     GenerateBluetable(gradation);
+}
+
+//!Gets the number of colors on the Palette
+/*! A simple getter to get the number of colors in a Palette
+ * \pre NA
+ * \returns The number of colors in a palette
+ * \note NA*/
+int ColorPalette::GetNumberOfColors()
+{
+    if(formattedPaletteData == NULL)
+    {
+        return 0;
+    }
+    return formattedPaletteData->size();
+}
+colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    if(shadowTable == NULL)
+    {
+        GenerateShadowtable();
+    }
+    return baseColor;
+#warning Complete Implementation
+}
+colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    return baseColor;
+#warning Complete IMplementation
+}
+colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    if(redTable == NULL)
+    {
+        GenerateRedtable();
+    }
+    if((targetApplication < 0) || (targetApplication > redTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
+    }
+    colorValues appliedColor = baseColor;
+    appliedColor.RedElement += redTable->at(targetApplication);
+    return appliedColor;
+}
+
+colorValues ColorPalette::ApplyBlueValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    if(blueTable == NULL)
+    {
+        GenerateBluetable();
+    }
+    if((targetApplication < 0) || (targetApplication > redTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
+    }
+    colorValues appliedColor = baseColor;
+    appliedColor.BlueElement += blueTable->at(targetApplication);
+    return appliedColor;
+}
+
+colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    if(greenTable == NULL)
+    {
+        GenerateGreentable();
+    }
+    if((targetApplication < 0) || (targetApplication > redTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
+    }
+    colorValues appliedColor = baseColor;
+    appliedColor.GreenElement += greenTable->at(targetApplication);
+    return appliedColor;
+}
+void ColorPalette::ClearAllTables()
+{
+    if(formattedPaletteData != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating formattedPalleteData.\n";
+#endif
+        delete formattedPaletteData;
+        formattedPaletteData = NULL;
+    }
+    if(transparentColorsTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating transparentColorsTable.\n";
+#endif
+        delete transparentColorsTable;
+        transparentColorsTable = NULL;
+    }
+    if(greyscaleTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating greyscaleTable.\n";
+#endif
+        delete greyscaleTable;
+        greyscaleTable = NULL;
+    }
+    if(shadowTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating shadowTable.\n";
+#endif
+        delete shadowTable;
+        shadowTable = NULL;
+    }
+    if(lightTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating lightTable.\n";
+#endif
+        delete lightTable;
+        lightTable = NULL;
+    }
+    if(redTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating redTable.\n";
+#endif
+        delete redTable;
+        redTable = NULL;
+    }
+    if(greenTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating greenTable.\n";
+#endif
+        delete greenTable;
+        greenTable = NULL;
+    }
+    if(blueTable != NULL)
+    {
+#if VERBOSE >= 5
+        std::cout << "Deallocating blueTable.\n";
+#endif
+        delete blueTable;
+        blueTable = NULL;
+    }
 }
