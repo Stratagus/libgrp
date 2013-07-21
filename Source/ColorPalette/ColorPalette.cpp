@@ -674,7 +674,7 @@ colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetAppli
         throw noPaletteException;
     }
     return baseColor;
-#warning Complete IMplementation
+#warning Complete Implementation
 }
 colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplication)
 {
