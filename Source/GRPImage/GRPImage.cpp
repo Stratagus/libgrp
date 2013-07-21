@@ -144,10 +144,11 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                     tmp = rawPacket;
                     currentUniquePixel.xPosition = currentProcessingRow;
                      do{
-                        currentUniquePixel.xPosition++;
+                        
                         currentUniquePixel.yPosition = currentProcessingHeight;
                         currentUniquePixel.colorPaletteReference = convertedPacket;
                         targetFrame->frameData.push_back(currentUniquePixel);
+                        currentUniquePixel.xPosition++;
                      }while (--tmp);
 
                     
@@ -261,7 +262,7 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique, bool singleStitchedImage)
 {
     Magick::InitializeMagick(NULL);
-    Magick::Image convertedImage(Magick::Geometry(maxImageWidth, maxImageHeight), "white");
+    Magick::Image convertedImage(Magick::Geometry(maxImageWidth, maxImageHeight), "black");
 
     Magick::ColorRGB currentMagickPixel;
     colorValues currentPalettePixel;
