@@ -75,7 +75,8 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
         
 
         
-        imageFrames.insert(imageFrames.end(), currentImageFrame);
+        //imageFrames.insert(imageFrames.end(), currentImageFrame);
+        imageFrames.push_back(currentImageFrame);
     }
     
 }
@@ -238,8 +239,39 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 }
 
 #if MAGICKPP_FOUND
-void ConvertImage(int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true)
+void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique, bool singleStitchedImage)
 {
+    std::stringstream imageSize;
+    imageSize << maxImageWidth << 'x' << maxImageHeight;
+    Magick::InitializeMagick(NULL);
+    Magick::Image convertedImage(imageSize.str(), "white");
+    Magick::PixelPacket currentMagickPixel;
+    colorValues currentPalettePixel;
+    
+    
+    for(int currentProcessingFrame = startingFrame; currentProcessingFrame < endingFrame; currentProcessingFrame++)
+    {
+        GRPFrame *currentFrame = imageFrames.at(currentProcessingFrame);
+        for (std::list<UniquePixel>::iterator currentProcessPixel = currentFrame->frameData.begin(); currentProcessPixel != currentFrame->frameData.end(); currentProcessPixel++)
+        {
+            currentPalettePixel = currentPalette->GetColorFromPalette(currentProcessPixel->colorPaletteReference);
+            currentMagickPixel.red = currentPalettePixel.RedElement;
+            currentMagickPixel.green = currentPalettePixel.GreenElement;
+            currentMagickPixel.blue = currentPalettePixel.BlueElement;
+            
+            convertedImage.pixelColor(currentProcessPixel->xPosition, currentProcessPixel->yPosition, currentMagickPixel);
+        }
+        if(!singleStitchedImage)
+        {
+            convertedImage.write(outFilePath);
+        }
+    }
+    
+    /*for(std::list<UniquePixel>::iterator it = targetFrame->frameData.begin(); it != targetFrame->frameData.end(); it++)
+    {
+        std::cout << '(' << it->xPosition << ',' << it->yPosition << ") = " << (int) it->colorPaletteReference << '\n';
+    }*/
+    
     
 }
 #endif

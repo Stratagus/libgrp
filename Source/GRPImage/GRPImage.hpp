@@ -23,7 +23,9 @@
 
 //Gives the ability to convert images to other formats.
 #if MAGICKPP_FOUND
+    #include <sstream>
     #include <Magick++/Image.h>
+    #include <Magick++/Pixels.h>
 #endif
 
 //Allow Windows to use 8/16/32 byte values
@@ -95,7 +97,7 @@ public:
     void SetColorPalette(ColorPalette *selectedColorPalette);
 
 #if MAGICKPP_FOUND
-    void ConvertImage(int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true);
+    void ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true);
 #endif
 protected:
     
@@ -112,7 +114,7 @@ protected:
     
 private:
     std::vector<unsigned char> *imageData;
-    std::list<GRPFrame *> imageFrames;
+    std::vector<GRPFrame *> imageFrames;
     ColorPalette *currentPalette;
     
     

@@ -121,6 +121,7 @@ source_group(GRPFrameTests FILES ${GRPFRAME_UNITTEST_SOURCE})
 set (LIBRARIES_DIR "./Libraries")
 
 add_library(libgrp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
+target_link_libraries(libgrp ${Magick++_LIBRARIES})
 
 if(APPLE)
 	#Check MacPorts include/lib folders
@@ -155,7 +156,7 @@ if(UNITTESTS)
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE} ${GRPIMAGE_UNITTEST_SOURCE})
-	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES} ${Magick++_LIBRARIES})
+	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
 endif()
 
 option(SAMPLECODE "Compile SampleCode" OFF)
