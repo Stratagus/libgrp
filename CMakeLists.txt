@@ -26,7 +26,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
 find_package(Magick++)
 
 if(Magick++_FOUND)
-add_definitions( -DMAGICKPP_FOUND=1 )
+add_definitions(-DMAGICKPP_FOUND=1)
+add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
 endif()
 
 #Source directory variables
