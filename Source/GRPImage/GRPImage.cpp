@@ -122,11 +122,14 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
         //2.Skip over by the Row offset mentioned in the list 
         inputFile.seekg((targetFrame->dataOffset + (imageRowOffsets.at(currentProcessingHeight))));
         currentProcessingRow = targetFrame->width;
-        do
+        
+        
+        while(currentProcessingRow)
         {
             inputFile.read((char *) &rawPacket, 1);
             if(!(rawPacket & 0x80))
             {
+                //Repeat
                 if(rawPacket & 0x40)
                 {
                     rawPacket &= 0x3f;
@@ -142,6 +145,7 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                     currentUniquePixel.yPosition = currentProcessingHeight;
                     currentUniquePixel.colorPaletteReference = convertedPacket;
                     targetFrame->frameData.push_back(currentUniquePixel);
+                    
                     currentProcessingRow -= rawPacket;
                     
                     
@@ -151,6 +155,7 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                 else
                 {
                     //currentProcessingRow -= rawPacket;
+                    //This is the copy byte?
                     tmp = rawPacket;
                     do
                     {
@@ -171,18 +176,19 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
             }
             else
             {
+                //Skip Pixel?
                 rawPacket &= 0x7f;
                 
-                
-                //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
-                currentUniquePixel.xPosition = currentProcessingRow;
-                currentUniquePixel.yPosition = currentProcessingHeight;
-                currentUniquePixel.colorPaletteReference = rawPacket;
-                targetFrame->frameData.push_back(currentUniquePixel);
-                
                 currentProcessingRow -= rawPacket;
+                
+                //currentUniquePixel.xPosition = currentProcessingRow;
+                //currentUniquePixel.yPosition = currentProcessingHeight;
+                //currentUniquePixel.colorPaletteReference = rawPacket;
+                //targetFrame->frameData.push_back(currentUniquePixel);
+                
+                
             }
-        }while(currentProcessingRow);
+        }
     }
     
     
@@ -265,9 +271,9 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
             //currentMagickPixel.green = currentPalettePixel.GreenElement;
             //currentMagickPixel.blue = currentPalettePixel.BlueElement;
             
-            currentMagickPixel.red(currentPalettePixel.RedElement / 100);
-            currentMagickPixel.green(currentPalettePixel.GreenElement / 100);
-            currentMagickPixel.blue(currentPalettePixel.BlueElement / 100);
+            currentMagickPixel.red(currentPalettePixel.RedElement / 300);
+            currentMagickPixel.green(currentPalettePixel.GreenElement / 300);
+            currentMagickPixel.blue(currentPalettePixel.BlueElement / 300);
             
            
             convertedImage.pixelColor((currentFrame->xOffset + currentProcessPixel->xPosition), (currentFrame->yOffset + currentProcessPixel->yPosition), currentMagickPixel);
