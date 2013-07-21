@@ -34,8 +34,8 @@ public:
     
     
     //Tells us where to begin drawing
-    uint8_t xPosition;
-    uint8_t yPosition;
+    uint8_t xOffset;
+    uint8_t yOffset;
     
     //The actual width/height of the image in the frame
     uint8_t width;
