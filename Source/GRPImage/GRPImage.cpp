@@ -121,10 +121,10 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
         //1.Skip over to the Frame data
         //2.Skip over by the Row offset mentioned in the list 
         inputFile.seekg((targetFrame->dataOffset + (imageRowOffsets.at(currentProcessingHeight))));
-        currentProcessingRow = targetFrame->width;
+        //currentProcessingRow = targetFrame->width;
+        currentProcessingRow = 0;
         
-        
-        while(currentProcessingRow)
+        while(currentProcessingRow < targetFrame->width)
         {
             inputFile.read((char *) &rawPacket, 1);
             if(!(rawPacket & 0x80))
@@ -139,14 +139,19 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                     //Set the Player color (Not implemented yet :|
                     //covertedPacket = tableof unitColor[ colorbyte+gr_gamenr];
                     
-                    
+                    std::cout << "rawpacket value is: " << (int) rawPacket;
                     //targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
+                    tmp = rawPacket;
                     currentUniquePixel.xPosition = currentProcessingRow;
-                    currentUniquePixel.yPosition = currentProcessingHeight;
-                    currentUniquePixel.colorPaletteReference = convertedPacket;
-                    targetFrame->frameData.push_back(currentUniquePixel);
+                     do{
+                        currentUniquePixel.xPosition++;
+                        currentUniquePixel.yPosition = currentProcessingHeight;
+                        currentUniquePixel.colorPaletteReference = convertedPacket;
+                        targetFrame->frameData.push_back(currentUniquePixel);
+                     }while (--tmp);
+
                     
-                    currentProcessingRow -= rawPacket;
+                    currentProcessingRow += rawPacket;
                     
                     
                     //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
@@ -170,7 +175,7 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                         currentUniquePixel.yPosition = currentProcessingHeight;
                         currentUniquePixel.colorPaletteReference = convertedPacket;
                         targetFrame->frameData.push_back(currentUniquePixel);
-                        currentProcessingRow--;
+                        currentProcessingRow++;
                     } while (--tmp);
                 }
             }
@@ -179,7 +184,9 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                 //Skip Pixel?
                 rawPacket &= 0x7f;
                 
-                currentProcessingRow -= rawPacket;
+                currentProcessingRow += rawPacket;
+                
+                std::cout << "Raw packet value " << (int) rawPacket << '\n';
                 
                 //currentUniquePixel.xPosition = currentProcessingRow;
                 //currentUniquePixel.yPosition = currentProcessingHeight;
@@ -253,10 +260,9 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 #if MAGICKPP_FOUND
 void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique, bool singleStitchedImage)
 {
-    std::stringstream imageSize;
-    imageSize << maxImageWidth << 'x' << maxImageHeight;
     Magick::InitializeMagick(NULL);
-    Magick::Image convertedImage(imageSize.str(), "white");
+    Magick::Image convertedImage(Magick::Geometry(maxImageWidth, maxImageHeight), "white");
+
     Magick::ColorRGB currentMagickPixel;
     colorValues currentPalettePixel;
     
@@ -271,9 +277,9 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
             //currentMagickPixel.green = currentPalettePixel.GreenElement;
             //currentMagickPixel.blue = currentPalettePixel.BlueElement;
             
-            currentMagickPixel.red(currentPalettePixel.RedElement / 300);
-            currentMagickPixel.green(currentPalettePixel.GreenElement / 300);
-            currentMagickPixel.blue(currentPalettePixel.BlueElement / 300);
+            currentMagickPixel.red(currentPalettePixel.RedElement / 256);
+            currentMagickPixel.green(currentPalettePixel.GreenElement / 256);
+            currentMagickPixel.blue(currentPalettePixel.BlueElement / 256);
             
            
             convertedImage.pixelColor((currentFrame->xOffset + currentProcessPixel->xPosition), (currentFrame->yOffset + currentProcessPixel->yPosition), currentMagickPixel);
