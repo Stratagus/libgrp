@@ -6,7 +6,7 @@ BOOST_AUTO_TEST_CASE(LoadGRP)
 {
     ColorPalette *samplePalette = new ColorPalette;
     samplePalette->LoadPalette(PALETTEFILEPATH);
-    samplePalette->GenerateBasicColorTables();
+    samplePalette->GenerateColorTables();
     
     GRPImage sampleImage;
     sampleImage.SetColorPalette(samplePalette);

@@ -29,7 +29,6 @@
     typedef uint32_t u_int32_t;
 #endif
 
-
 enum GRPImageType {STANDARD, SHADOW};
 
 class GRPImage

@@ -50,7 +50,9 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
     //Find the Maximum Image Width & Height
     inputFile.read((char *) &maxImageWidth, 2);
     inputFile.read((char *) &maxImageHeight, 2);
-    
+#if VERBOSE >= 2
+    std::cout << "GRP Image Number of Frames: " << numberOfFrames << " maxWidth: " << maxImageWidth << " maxHeight: " << maxImageHeight << '\n';
+#endif
     //Load each GRP Header into a GRPFrame & Allocate the 
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
     {
@@ -61,11 +63,13 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
         inputFile.read((char *) &currentImageFrame->width, 1);
         inputFile.read((char *) &currentImageFrame->height, 1);
         inputFile.read((char *) &currentImageFrame->dataOffset, 4);
-        
-        //std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->width << " Height: "
-        //<< (int) currentImageFrame->height << "\nxPosition: " << (int) currentImageFrame->xPosition
-        //<< " yPosition: " << (int) currentImageFrame->yPosition << " with offset " << (int)currentImageFrame->dataOffset << '\n';
-        
+
+#if VERBOSE >= 2
+        std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->width << " Height: "
+        << (int) currentImageFrame->height << "\nxPosition: " << (int) currentImageFrame->xPosition
+        << " yPosition: " << (int) currentImageFrame->yPosition << " with offset " << (int)currentImageFrame->dataOffset << '\n';
+#endif
+
         //Decode Frame here
         DecodeGRPFrameData(inputFile, currentImageFrame);
         
@@ -73,9 +77,6 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
         
         imageFrames.insert(imageFrames.end(), currentImageFrame);
     }
-    //std::cout << "Finished loading grpimages!\n";
-    
-    
     
 }
 
@@ -109,6 +110,8 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
     uint8_t rawPacket, convertedPacket;
     int tmp;
     
+    UniquePixel currentUniquePixel;
+    
     std::cout << "The first row offset is: " << imageRowOffsets[0] << '\n';
     //Goto each row and process the row data
     for(int currentProcessingHeight = 0; currentProcessingHeight < targetFrame->height; currentProcessingHeight++)
@@ -134,7 +137,10 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                     
                     
                     //targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
-                    targetFrame->frameData.push_back(convertedPacket);
+                    currentUniquePixel.xPosition = currentProcessingRow;
+                    currentUniquePixel.yPosition = currentProcessingHeight;
+                    currentUniquePixel.colorPaletteReference = convertedPacket;
+                    targetFrame->frameData.push_back(currentUniquePixel);
                     
                     
                     //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
@@ -151,7 +157,10 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                         
                         
                         //targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
-                        targetFrame->frameData.push_back(convertedPacket);
+                        currentUniquePixel.xPosition = currentProcessingRow;
+                        currentUniquePixel.yPosition = currentProcessingHeight;
+                        currentUniquePixel.colorPaletteReference = convertedPacket;
+                        targetFrame->frameData.push_back(currentUniquePixel);
                     } while (--tmp);
                 }
             }
@@ -161,7 +170,10 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                 currentProcessingRow -= rawPacket;
                 
                 //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
-                targetFrame->frameData.push_back(rawPacket);
+                currentUniquePixel.xPosition = currentProcessingRow;
+                currentUniquePixel.yPosition = currentProcessingHeight;
+                currentUniquePixel.colorPaletteReference = rawPacket;
+                targetFrame->frameData.push_back(currentUniquePixel);
             }
         }while(currentProcessingRow);
     }
@@ -169,54 +181,14 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
     
     //Finished put the file position back
         inputFile.seekg(currentHeaderFilePosition);
-    
-    std::ofstream test;
-    test.open("out");
-    test.write((char *)&targetFrame->frameData, targetFrame->frameData.size());
-    
-    
-    //std::cout << "Target offset " << targetFrame->dataOffset << '\n';
-    /*while (currentProcessingColumn-- > 0)
+#if VERBOSE >= 5
+    std::cout << "Frame data is size: " << targetFrame->frameData.size() << '\n';
+    for(std::list<UniquePixel>::iterator it = targetFrame->frameData.begin(); it != targetFrame->frameData.end(); it++)
     {
-        currentProcessingRow = targetFrame->width;
-        do
-        {
-            if(!(rawPacket & 0x80))
-            {
-                if(rawPacket & 0x40)
-                {
-                    rawPacket &= 0x3f;
-                    currentProcessingRow -= rawPacket;
-                    
-                    //covertedPacket = tableof unitColor[ colorbyte+gr_gamenr];
-                    targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
-                    //vidadr+=packbyte;
-                }
-                else
-                {
-                    currentProcessingRow -= rawPacket;
-                    tmp = rawPacket;
-                    do
-                    {
-                        inputFile.read((char *)&convertedPacket, 1);
-                        //covertedPacket = tableof unitColor[ colorbyte+gr_gamenr];
-                        targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
-                    } while (--tmp);
-                }
-            }
-            else
-            {
-                rawPacket &= 0x7f;
-                currentProcessingRow -= rawPacket;
-                targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
-            }
-        }while(currentProcessingRow > 0);
-        //vidadr += wmaximx;
-        //vidadr -= PixelPerLine;
-#warning viadr?
-    }*/
-
+        std::cout << '(' << it->xPosition << ',' << it->yPosition << ") = " << (int) it->colorPaletteReference << '\n';
     }
+#endif
+}
 
 uint16_t GRPImage::getNumberOfFrames() const
 {

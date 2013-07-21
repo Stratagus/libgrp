@@ -14,6 +14,16 @@
 
 #warning Get a way to query the caller for max width and height
 
+//Used to map what pixels are in a image
+//are set to Palette values and location
+//Position 0,0 is the upper left corner
+struct UniquePixel
+{
+    int xPosition = 0;
+    int yPosition = 0;
+    uint8_t colorPaletteReference;
+};
+
 class GRPFrame
 {
 public:
@@ -35,7 +45,7 @@ public:
     uint32_t dataOffset;
     
     //The loaded data
-    std::list<uint8_t> frameData;
+    std::list<UniquePixel> frameData;
 
 protected:
     //The actual width and Height of the image (NOT THE FRAME!!!)
