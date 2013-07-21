@@ -22,6 +22,12 @@ ADD_DEFINITIONS(-DVERBOSE=${VERBOSE})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
                       ${CMAKE_MODULE_PATH})
 
+#Find optional libraries
+find_package(Magick++)
+
+if(Magick++_FOUND)
+add_definitions( -DMAGICKPP_FOUND=1 )
+endif()
 
 #Source directory variables
 #These allow for folders in the source and unittesting to be moved
@@ -89,6 +95,10 @@ set(SAMPLES_SHOWGRP_SOURCE
 	${SAMPLESOURCE_DIR}/ShowGRP/main.hpp
 	${SAMPLESOURCE_DIR}/ShowGRP/main.cpp)
 
+set(SAMPLES_CONVERTGRP_SOURCE
+	${SAMPLESOURCE_DIR}/ConvertGRP/main.hpp
+	${SAMPLESOURCE_DIR}/ConvertGRP/main.cpp)
+
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
 source_group(GRPImage FILES ${GRPIMAGE_SOURCE})
@@ -115,16 +125,15 @@ add_library(libgrp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOU
 if(APPLE)
 	#Check MacPorts include/lib folders
     include_directories("/opt/local/include")
+    include_directories("/opt/local/include/ImageMagick")
+    include_directories("/opt/local/include/ImageMagick-6")
+
     link_directories("/opt/local/lib")
 
     set_target_properties(libgrp PROPERTIES FRAMEWORK true)
     set_target_properties(libgrp PROPERTIES PUBLIC_HEADER "Source/libgrp.hpp")
     set_target_properties(libgrp PROPERTIES LINK_FLAGS "-framework Carbon")
 endif()
-
-	#Temporary Includes
-    include_directories("~/dev/fakeroot/include")
-    link_directories("~/dev/fakeroot/lib")
 
 if(UNIX)
     set_target_properties(libgrp PROPERTIES VERSION ${LIBGRP_VERSION})
@@ -146,7 +155,7 @@ if(UNITTESTS)
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE} ${GRPIMAGE_UNITTEST_SOURCE})
-	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
+	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES} ${Magick++_LIBRARIES})
 endif()
 
 option(SAMPLECODE "Compile SampleCode" OFF)
@@ -160,6 +169,10 @@ if(SAMPLECODE)
 	#Example showing a GRP Image
 	add_executable(ShowGRP ${SAMPLES_SHOWGRP_SOURCE})
 	target_link_libraries(ShowGRP libgrp ${SDL_LIBRARY})
+if(Magick++_FOUND)
+	add_executable(ConvertGRP ${SAMPLES_CONVERTGRP_SOURCE})
+	target_link_libraries(ConvertGRP libgrp)
+endif()
 endif()
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")

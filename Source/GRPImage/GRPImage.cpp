@@ -236,3 +236,10 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
      //       throw "Invalid color palette";
     //}
 }
+
+#if MAGICKPP_FOUND
+void ConvertImage(int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true)
+{
+    
+}
+#endif

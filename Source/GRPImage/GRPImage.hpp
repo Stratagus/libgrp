@@ -21,6 +21,11 @@
 #include <list>
 #include <fstream>
 
+//Gives the ability to convert images to other formats.
+#if MAGICKPP_FOUND
+    #include <Magick++/Image.h>
+#endif
+
 //Allow Windows to use 8/16/32 byte values
 #if defined(_WIN32)
 #include <stdint.h>
@@ -88,7 +93,10 @@ public:
     
     
     void SetColorPalette(ColorPalette *selectedColorPalette);
-    
+
+#if MAGICKPP_FOUND
+    void ConvertImage(int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true);
+#endif
 protected:
     
     void DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame);
