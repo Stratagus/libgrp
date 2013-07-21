@@ -271,9 +271,9 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
             //currentMagickPixel.green = currentPalettePixel.GreenElement;
             //currentMagickPixel.blue = currentPalettePixel.BlueElement;
             
-            currentMagickPixel.red(currentPalettePixel.RedElement / 256);
-            currentMagickPixel.green(currentPalettePixel.GreenElement / 256);
-            currentMagickPixel.blue(currentPalettePixel.BlueElement / 256);
+            currentMagickPixel.red(currentPalettePixel.RedElement / 255);
+            currentMagickPixel.green(currentPalettePixel.GreenElement / 255);
+            currentMagickPixel.blue(currentPalettePixel.BlueElement / 255);
             currentMagickPixel.alpha(0);
             
            
