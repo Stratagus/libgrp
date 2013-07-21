@@ -85,6 +85,10 @@ set(SAMPLES_SHOWPALETTE_SOURCE
 	${SAMPLESOURCE_DIR}/ShowPalette/main.hpp
 	${SAMPLESOURCE_DIR}/ShowPalette/main.cpp)
 
+set(SAMPLES_SHOWGRP_SOURCE
+	${SAMPLESOURCE_DIR}/ShowGRP/main.hpp
+	${SAMPLESOURCE_DIR}/ShowGRP/main.cpp)
+
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
 source_group(GRPImage FILES ${GRPIMAGE_SOURCE})
@@ -148,8 +152,14 @@ endif()
 option(SAMPLECODE "Compile SampleCode" OFF)
 if(SAMPLECODE)
 	find_package(SDL REQUIRED)
+
+	#Example showing only the current application colors
 	add_executable(ShowPalette ${SAMPLES_SHOWPALETTE_SOURCE})
 	target_link_libraries(ShowPalette libgrp ${SDL_LIBRARY})
+
+	#Example showing a GRP Image
+	add_executable(ShowGRP ${SAMPLES_SHOWGRP_SOURCE})
+	target_link_libraries(ShowGRP libgrp ${SDL_LIBRARY})
 endif()
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")

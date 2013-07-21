@@ -20,7 +20,7 @@ public:
     GRPFrame();
     ~GRPFrame();
     
-    void SetFrameSize(unsigned int inputFrameWidth, unsigned int inputFrameHeight);
+    void SetFrameSize(uint8_t inputFrameWidth, uint8_t inputFrameHeight);
     
     
     //Tells us where to begin drawing

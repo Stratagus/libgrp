@@ -88,7 +88,6 @@ public:
     uint16_t getMaxImageHeight() const;
     
     
- 
     void SetColorPalette(ColorPalette *selectedColorPalette);
     
 protected:

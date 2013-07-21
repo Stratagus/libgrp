@@ -86,22 +86,93 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
         #warning throw here
         //std::cout << "Problem";
     }
-    //The current image pixel that we are working on
-    char rawPacket, convertedPacket;
-    
     
     //Save the original file pointer position to continue loading GRPHeaders
     std::ifstream::pos_type currentHeaderFilePosition = inputFile.tellg();
     
-    //Goto the GRPFrame data
+    //Seek to the Row offset data
     inputFile.seekg(targetFrame->dataOffset);
-    int tmp;
-
     
-#warning Select specific grp image type here
-    //int currentProcessingRow = targetFrame->width; //The current X Position
-    int currentProcessingColumn = targetFrame->height; //The current Y Position
-    int currentProcessingRow = targetFrame->width;
+    //Create a vector of all the Image row offsets
+    std::vector<uint16_t> imageRowOffsets;
+    imageRowOffsets.resize(targetFrame->height);
+    
+    //Read in the ImageRow offsets
+    for (int currentReadingRowOffset = 0; currentReadingRowOffset < targetFrame->height; currentReadingRowOffset++)
+    {
+        inputFile.read((char *) &imageRowOffsets.at(currentReadingRowOffset), 2);
+    }
+    
+    
+#warning Clean up
+    int currentProcessingRow = 0;
+    uint8_t rawPacket, convertedPacket;
+    int tmp;
+    
+    std::cout << "The first row offset is: " << imageRowOffsets[0] << '\n';
+    //Goto each row and process the row data
+    for(int currentProcessingHeight = 0; currentProcessingHeight < targetFrame->height; currentProcessingHeight++)
+    {
+        //Seek to the point of the first byte in the rowData from the
+        //1.Skip over to the Frame data
+        //2.Skip over by the Row offset mentioned in the list 
+        inputFile.seekg((targetFrame->dataOffset + (imageRowOffsets.at(currentProcessingHeight))));
+        currentProcessingRow = targetFrame->width;
+        do
+        {
+            inputFile.read((char *) &rawPacket, 1);
+            if(!(rawPacket & 0x80))
+            {
+                if(rawPacket & 0x40)
+                {
+                    rawPacket &= 0x3f;
+                    currentProcessingRow -= rawPacket;
+                    inputFile.read((char *) &convertedPacket, 1);
+                    
+                    //Set the Player color (Not implemented yet :|
+                    //covertedPacket = tableof unitColor[ colorbyte+gr_gamenr];
+                    
+                    
+                    //targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
+                    targetFrame->frameData.push_back(convertedPacket);
+                    
+                    
+                    //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
+                    //vidadr+=packbyte;
+                }
+                else
+                {
+                    currentProcessingRow -= rawPacket;
+                    tmp = rawPacket;
+                    do
+                    {
+                        inputFile.read((char *)&convertedPacket, 1);
+                        //covertedPacket = tableof unitColor[ colorbyte+gr_gamenr];
+                        
+                        
+                        //targetFrame->frameData.insert(targetFrame->frameData.end(), convertedPacket);
+                        targetFrame->frameData.push_back(convertedPacket);
+                    } while (--tmp);
+                }
+            }
+            else
+            {
+                rawPacket &= 0x7f;
+                currentProcessingRow -= rawPacket;
+                
+                //targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
+                targetFrame->frameData.push_back(rawPacket);
+            }
+        }while(currentProcessingRow);
+    }
+    
+    
+    //Finished put the file position back
+        inputFile.seekg(currentHeaderFilePosition);
+    
+    std::ofstream test;
+    test.open("out");
+    test.write((char *)&targetFrame->frameData, targetFrame->frameData.size());
     
     
     //std::cout << "Target offset " << targetFrame->dataOffset << '\n';
@@ -110,7 +181,6 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
         currentProcessingRow = targetFrame->width;
         do
         {
-            inputFile.read((char *) &rawPacket, 1);
             if(!(rawPacket & 0x80))
             {
                 if(rawPacket & 0x40)
@@ -140,16 +210,13 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
                 currentProcessingRow -= rawPacket;
                 targetFrame->frameData.insert(targetFrame->frameData.end(), rawPacket);
             }
-        }while(currentProcessingRow > 0);*/
+        }while(currentProcessingRow > 0);
         //vidadr += wmaximx;
         //vidadr -= PixelPerLine;
 #warning viadr?
-    //}
+    }*/
 
-    
-    //Finished put the file position back
-    //inputFile.seekg(currentHeaderFilePosition);
-}
+    }
 
 uint16_t GRPImage::getNumberOfFrames() const
 {
