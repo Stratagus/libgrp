@@ -24,6 +24,7 @@
 //Gives the ability to convert images to other formats.
 #if MAGICKPP_FOUND
     #include <sstream>
+    #include <iomanip>
     #include <Magick++/Image.h>
     #include <Magick++/Pixels.h>
 #endif
@@ -97,7 +98,7 @@ public:
     void SetColorPalette(ColorPalette *selectedColorPalette);
 
 #if MAGICKPP_FOUND
-    void ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique = false, bool singleStitchedImage = true);
+    void ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 1);
 #endif
 protected:
     

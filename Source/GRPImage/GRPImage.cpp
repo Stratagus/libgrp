@@ -253,43 +253,86 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 }
 
 #if MAGICKPP_FOUND
-void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool onlyUnique, bool singleStitchedImage)
+void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
 {
     Magick::InitializeMagick(NULL);
-    Magick::Image convertedImage(Magick::Geometry(maxImageWidth, maxImageHeight), "transparent");
-    Magick::ColorRGB currentMagickPixel;
+    Magick::Image *convertedImage;
+    //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
+    if(singleStitchedImage)
+    {
+        convertedImage = new Magick::Image(Magick::Geometry((maxImageWidth * imagesPerRow), (maxImageHeight * (ceil( (float)numberOfFrames/imagesPerRow)))), "transparent");
+    }
+    else
+    {
+        convertedImage = new Magick::Image(Magick::Geometry(maxImageWidth, maxImageHeight), "transparent");
+        //We will erase the image after writing the last processed image to disk
+        convertedImage->backgroundColor("transparent");
+    }
     colorValues currentPalettePixel;
+    std::stringstream fileOutPath;
+    Magick::ColorRGB currentMagickPixel;
+    currentMagickPixel.alpha(0);
+    int currentImageDestinationColumn = 0;
+    int currentImageDestinationRow = 0;
     
     
-    for(int currentProcessingFrame = startingFrame; currentProcessingFrame < endingFrame; currentProcessingFrame++)
+    for(int currentProcessingFrame = startingFrame; currentProcessingFrame < endingFrame; ++currentProcessingFrame)
     {
         GRPFrame *currentFrame = imageFrames.at(currentProcessingFrame);
+        
+        //If a row in a stitched image is complete, move onto the next row
+        if(singleStitchedImage && (currentImageDestinationRow >= imagesPerRow))
+        {
+            currentImageDestinationColumn++;
+            currentImageDestinationRow = 0;
+        }
+        
+        //Start appling the pixels with the refence colorpalettes
         for (std::list<UniquePixel>::iterator currentProcessPixel = currentFrame->frameData.begin(); currentProcessPixel != currentFrame->frameData.end(); currentProcessPixel++)
         {
             currentPalettePixel = currentPalette->GetColorFromPalette(currentProcessPixel->colorPaletteReference);
-            //currentMagickPixel.red = currentPalettePixel.RedElement;
-            //currentMagickPixel.green = currentPalettePixel.GreenElement;
-            //currentMagickPixel.blue = currentPalettePixel.BlueElement;
             
             currentMagickPixel.red(currentPalettePixel.RedElement / 255);
             currentMagickPixel.green(currentPalettePixel.GreenElement / 255);
             currentMagickPixel.blue(currentPalettePixel.BlueElement / 255);
-            currentMagickPixel.alpha(0);
+
             
-           
-            convertedImage.pixelColor((currentFrame->xOffset + currentProcessPixel->xPosition), (currentFrame->yOffset + currentProcessPixel->yPosition), currentMagickPixel);
+           if(singleStitchedImage)
+           {
+               convertedImage->pixelColor(((currentFrame->xOffset + currentProcessPixel->xPosition) + (maxImageWidth * currentImageDestinationRow)), ((currentFrame->yOffset + currentProcessPixel->yPosition) + (maxImageHeight * currentImageDestinationColumn)), currentMagickPixel);
+           }
+           else
+           {
+               convertedImage->pixelColor((currentFrame->xOffset + currentProcessPixel->xPosition), (currentFrame->yOffset + currentProcessPixel->yPosition), currentMagickPixel);
+           }
+
         }
+        
+        //If not stitched it's time to write the current frame to a file
         if(!singleStitchedImage)
         {
-            convertedImage.write(outFilePath);
+            fileOutPath << std::setw(3) << std::setfill('0') << currentProcessingFrame << outFilePath;
+            convertedImage->write(fileOutPath.str());
+            fileOutPath.str(std::string());
+            convertedImage->erase();
         }
+        //Otherwise continue writing down the row
+        else
+        {
+            currentImageDestinationRow++;
+        }
+        
+    }
+    //Now that all the pixels are in place, lets write the result to disk
+    if(singleStitchedImage)
+    {
+        convertedImage->write(outFilePath);
     }
     
-    /*for(std::list<UniquePixel>::iterator it = targetFrame->frameData.begin(); it != targetFrame->frameData.end(); it++)
-    {
-        std::cout << '(' << it->xPosition << ',' << it->yPosition << ") = " << (int) it->colorPaletteReference << '\n';
-    }*/
     
+    //Clean up our pointers from earlier.
+    delete convertedImage;
+    convertedImage = NULL;
     
 }
 #endif
