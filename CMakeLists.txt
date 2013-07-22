@@ -2,11 +2,11 @@
 #This format is commonly found in Starcraft:Broodwar
 #Main Github repository @ https://github.com/ShadowFlare/grpapi
 #bradc6 Github repository @ https://github.com/bradc6/grpapi
-project(libgrp)
+project(grp)
 cmake_minimum_required(VERSION 2.6)
 
 #Set the current version of the library
-set(LIBGRP_VERSION 0.0.1)
+set(LIBGRP_VERSION 1.0.0)
 
 #If you want debug information add the flag -DVERBOSE= [1-5]
 #1 being basic 5 for everything
@@ -21,9 +21,6 @@ ADD_DEFINITIONS(-DVERBOSE=${VERBOSE})
 #found @ /usr/share/cmake-2.8/Modules
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
                       ${CMAKE_MODULE_PATH})
-
-#Use the c++ 2011 standard
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 #Find optional libraries
 find_package(Magick++)
@@ -41,6 +38,7 @@ endif()
 set (SOURCE_DIR "./Source")
 set (SAMPLESOURCE_DIR "./SampleSource")
 set (UNITTEST_DIR "./UnitTests")
+
 
 set(LIBGRP_SOURCE
 	${SOURCE_DIR}/libgrp.hpp
@@ -103,6 +101,10 @@ set(SAMPLES_CONVERTGRP_SOURCE
 	${SAMPLESOURCE_DIR}/ConvertGRP/main.hpp
 	${SAMPLESOURCE_DIR}/ConvertGRP/main.cpp)
 
+#Code groupings allow for IDEs to put files into collections
+#instead of simply throwing all files into a pile. This should
+#allow for easy navigation through the code base for novice and
+#heavy contributors.
 source_group(Main FILES ${LIBGRP_SOURCE})
 source_group(ColorPalette FILES ${COLORPALETTE_SOURCE})
 source_group(GRPImage FILES ${GRPIMAGE_SOURCE})
@@ -124,10 +126,12 @@ source_group(GRPFrameTests FILES ${GRPFRAME_UNITTEST_SOURCE})
 #a packaged version installed via DEB/RPM/Macports
 set (LIBRARIES_DIR "./Libraries")
 
-add_library(libgrp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
-target_link_libraries(libgrp ${Magick++_LIBRARIES})
+add_library(grp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
+target_link_libraries(grp ${Magick++_LIBRARIES})
 
 if(APPLE)
+
+option(MAKEFRAMEWORK "Create FRAMEWORK" OFF)
 	#Check MacPorts include/lib folders
     include_directories("/opt/local/include")
     include_directories("/opt/local/include/ImageMagick")
@@ -135,22 +139,21 @@ if(APPLE)
 
     link_directories("/opt/local/lib")
 
-    #set_target_properties(libgrp PROPERTIES FRAMEWORK true)
-    set_target_properties(libgrp PROPERTIES PUBLIC_HEADER "Source/libgrp.hpp")
-    set_target_properties(libgrp PROPERTIES LINK_FLAGS "-framework Carbon")
+if(MAKEFRAMEWORK)
+    set_target_properties(grp PROPERTIES FRAMEWORK true)
+    set_target_properties(grp PROPERTIES PUBLIC_HEADER "")
+endif()
+    set_target_properties(grp PROPERTIES LINK_FLAGS "-framework Carbon")
 endif()
 
 if(UNIX)
-    set_target_properties(libgrp PROPERTIES VERSION ${LIBGRP_VERSION})
-    set_target_properties(libgrp PROPERTIES SOVERSION ${LIBGRP_VERSION})
+    set_target_properties(grp PROPERTIES VERSION ${LIBGRP_VERSION})
+    set_target_properties(grp PROPERTIES SOVERSION ${LIBGRP_VERSION})
 endif()
 
 if(WIN32)
-    set_target_properties(libgrp PROPERTIES OUTPUT_NAME libgrp)
+    set_target_properties(grp PROPERTIES OUTPUT_NAME grp)
 endif()
-
-install(TARGETS libgrp RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib FRAMEWORK DESTINATION /Library/Frameworks)
-install(FILES Source/libgrp.hpp DESTINATION include)
 
 #Unittest configuration settings
 option(UNITTESTS "Compile Unittests" OFF)
@@ -160,7 +163,7 @@ if(UNITTESTS)
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE} ${GRPIMAGE_UNITTEST_SOURCE})
-	target_link_libraries(libgrpUnitTests libgrp ${Boost_LIBRARIES})
+	target_link_libraries(libgrpUnitTests grp ${Boost_LIBRARIES})
 endif()
 
 option(SAMPLECODE "Compile SampleCode" OFF)
@@ -169,23 +172,25 @@ if(SAMPLECODE)
 
 	#Example showing only the current application colors
 	add_executable(ShowPalette ${SAMPLES_SHOWPALETTE_SOURCE})
-	target_link_libraries(ShowPalette libgrp ${SDL_LIBRARY})
+	target_link_libraries(ShowPalette grp ${SDL_LIBRARY})
 
 	#Example showing a GRP Image
 	add_executable(ShowGRP ${SAMPLES_SHOWGRP_SOURCE})
-	target_link_libraries(ShowGRP libgrp ${SDL_LIBRARY})
+	target_link_libraries(ShowGRP grp ${SDL_LIBRARY})
 if(Magick++_FOUND)
 	add_executable(ConvertGRP ${SAMPLES_CONVERTGRP_SOURCE})
-	target_link_libraries(ConvertGRP libgrp)
+	target_link_libraries(ConvertGRP grp)
 endif()
 endif()
 
-install(DIRECTORY Source/ DESTINATION include
+install(DIRECTORY Source/ DESTINATION include/libgrp
           FILES_MATCHING PATTERN "*.hpp")
-
-install(TARGETS libgrp DESTINATION lib)
+install(TARGETS grp RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib FRAMEWORK DESTINATION /Library/Frameworks)
 
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")
 message(" Verbose Level: ${VERBOSE} [-DVERBOSE=[(1-5)] 1-Min 5-Max")
+if(APPLE)
+message(" Compile Framework: ${MAKEFRAMEWORK} [-DMAKEFRAMEWORK=(off-on)")
+endif()
 message(" Sample Code: ${SAMPLECODE} [-DSAMPLECODE=(off-on)\n")

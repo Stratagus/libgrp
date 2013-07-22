@@ -3,7 +3,7 @@
  *  \details   This class runs all the underlying generic functions required
  * 				for nearly all objects in the framework
  *  \author    Bradley Clemetson, from GRPLib Authors
- *  \version   0.0.1
+ *  \version   1.0.0
  *  \date      Jan 13, 2013
  *  \copyright LGPLv2
  *  \section basicsGRPFormat Basic Format Aspects

@@ -4,8 +4,9 @@
 #include <exception>
 #include <string>
 
-//!The base exception for which all GrpImage exceptions are based off of
-/*!A base exception class
+//!The base exception class
+/*!A base exception class for which all other GRPImage/Frame and
+ *Colorpalettes are based on
  * \pre NA
  * \post NA
  * \note */
@@ -14,29 +15,21 @@ class GRPException : public virtual std::exception
 {
     
 public:
+    
+    //!Set the human readable message
+    /*!Set a string with a message for the user/developer
+     *  to see.
+     * \pre NA
+     * \post Sets message to string
+     * \note NA*/
     void SetErrorMessage(const std::string &errorMessage);
     
     ~GRPException() throw() {}
     virtual std::string GetErrorMessage();
 protected:
+        //Stored message for error throw
        std::string humanReadableError;
 private:
     
 };
-
-//!An exception for filesystem based errors
-/*!A Exception
- * \pre NA
- * \post NA
- * \note */
-class GRPImageFilesystemException : public GRPException
-{
-public:
-    void SetFilePath(const std::string &FilePath);
-    std::string GetFilePath();
-protected:
-    std::string *problemPath;
-    
-};
-
 #endif
