@@ -48,6 +48,10 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
     std::cout << "GRP Image Number of Frames: " << numberOfFrames << " maxWidth: " << maxImageWidth << " maxHeight: " << maxImageHeight << '\n';
 #endif
     
+    //Temporary image demension placeholders
+    uint8_t tempValue1, tempValue2;
+    uint32_t tempDataOffset;
+    
     //Create a hash table to stop the creation of duplicates
     std::tr1::unordered_map<uint32_t, int> uniqueGRPImages;
     
@@ -56,18 +60,27 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
     {
         GRPFrame *currentImageFrame = new GRPFrame;
         
-        inputFile.read((char *) &currentImageFrame->xOffset, 1);
-        inputFile.read((char *) &currentImageFrame->yOffset, 1);
-        inputFile.read((char *) &currentImageFrame->width, 1);
-        inputFile.read((char *) &currentImageFrame->height, 1);
-        inputFile.read((char *) &currentImageFrame->dataOffset, 4);
+        //Read in the image xOffset
+        inputFile.read((char *) &tempValue1, 1);
+        //Read in the image yOffset
+        inputFile.read((char *) &tempValue2, 1);
+        currentImageFrame->SetImageOffsets(tempValue1, tempValue2);
+        
+        //Read in the image width
+        inputFile.read((char *) &tempValue1, 1);
+        //Read in the image height
+        inputFile.read((char *) &tempValue2, 1);
+        currentImageFrame->SetImageSize(tempValue1, tempValue2);
+        //Read in the image dataOffset
+        inputFile.read((char *) &tempDataOffset, 4);
+        currentImageFrame->SetDataOffset(tempDataOffset);
 
 #warning work on hash here
 
 #if VERBOSE >= 2
-        std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->width << " Height: "
-        << (int) currentImageFrame->height << "\nxPosition: " << (int) currentImageFrame->xOffset
-        << " yPosition: " << (int) currentImageFrame->yOffset << " with offset " << (int)currentImageFrame->dataOffset << '\n';
+        std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->GetImageWidth() << " Height: "
+        << (int) currentImageFrame->GetImageHeight() << "\nxPosition: " << (int) currentImageFrame->GetXOffset()
+        << " yPosition: " << (int) currentImageFrame->GetYOffset() << " with offset " << (int)currentImageFrame->GetDataOffset() << '\n';
 #endif
 
         //Decode Frame here
@@ -98,14 +111,14 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
     std::ifstream::pos_type currentHeaderFilePosition = inputFile.tellg();
     
     //Seek to the Row offset data
-    inputFile.seekg(targetFrame->dataOffset);
+    inputFile.seekg(targetFrame->GetDataOffset());
     
     //Create a vector of all the Image row offsets
     std::vector<uint16_t> imageRowOffsets;
-    imageRowOffsets.resize(targetFrame->height);
+    imageRowOffsets.resize(targetFrame->GetImageHeight());
     
     //Read in the ImageRow offsets
-    for (int currentReadingRowOffset = 0; currentReadingRowOffset < targetFrame->height; currentReadingRowOffset++)
+    for (int currentReadingRowOffset = 0; currentReadingRowOffset < targetFrame->GetImageHeight(); currentReadingRowOffset++)
     {
         inputFile.read((char *) &imageRowOffsets.at(currentReadingRowOffset), 2);
     }
@@ -129,20 +142,20 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
     
 
     //Goto each row and process the row data
-    for(int currentProcessingHeight = 0; currentProcessingHeight < targetFrame->height; currentProcessingHeight++)
+    for(int currentProcessingHeight = 0; currentProcessingHeight < targetFrame->GetImageHeight(); currentProcessingHeight++)
     {
         
 #if VERBOSE >= 2
-        std::cout << "Current row offset is: " << (targetFrame->dataOffset + (imageRowOffsets.at(currentProcessingHeight))) << '\n';
+        std::cout << "Current row offset is: " << (targetFrame->GetDataOffset() + (imageRowOffsets.at(currentProcessingHeight))) << '\n';
 #endif
         //Seek to the point of the first byte in the rowData from the
         //1.Skip over to the Frame data
         //2.Skip over by the Row offset mentioned in the list
-        inputFile.seekg((targetFrame->dataOffset + (imageRowOffsets.at(currentProcessingHeight))));
+        inputFile.seekg((targetFrame->GetDataOffset() + (imageRowOffsets.at(currentProcessingHeight))));
 
         currentProcessingRow = 0;
         
-        while(currentProcessingRow < targetFrame->width)
+        while(currentProcessingRow < targetFrame->GetImageWidth())
         {
             inputFile.read((char *) &rawPacket, 1);
             if(!(rawPacket & 0x80))
@@ -282,11 +295,11 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
             
            if(singleStitchedImage)
            {
-               convertedImage->pixelColor(((currentFrame->xOffset + currentProcessPixel->xPosition) + (maxImageWidth * currentImageDestinationRow)), ((currentFrame->yOffset + currentProcessPixel->yPosition) + (maxImageHeight * currentImageDestinationColumn)), currentMagickPixel);
+               convertedImage->pixelColor(((currentFrame->GetXOffset() + currentProcessPixel->xPosition) + (maxImageWidth * currentImageDestinationRow)), ((currentFrame->GetYOffset() + currentProcessPixel->yPosition) + (maxImageHeight * currentImageDestinationColumn)), currentMagickPixel);
            }
            else
            {
-               convertedImage->pixelColor((currentFrame->xOffset + currentProcessPixel->xPosition), (currentFrame->yOffset + currentProcessPixel->yPosition), currentMagickPixel);
+               convertedImage->pixelColor((currentFrame->GetXOffset() + currentProcessPixel->xPosition), (currentFrame->GetYOffset() + currentProcessPixel->yPosition), currentMagickPixel);
            }
 
         }

@@ -32,9 +32,8 @@ int main(int count,char *argv[])
     
     //Now that we have our Palette loaded, lets load out GRP Image
     //IT IS IMPORTANT to set a loaded Color palette first!!
-    GRPImage targetGRPImage;
+    GRPImage targetGRPImage(GRPIMAGEFILEPATH);
     targetGRPImage.SetColorPalette(&myColorPalette);
-    targetGRPImage.LoadImage(GRPIMAGEFILEPATH);
     
     //If you want to force the generation of derived color tables
     //at the start. Otherwise they are generated upon request.
