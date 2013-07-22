@@ -146,7 +146,7 @@ public:
      * \param[in] singleStitchedImage Stitch the GRP frames together into one image.
      * \param[in] imagesPerRow If stitching is enabled, how many images should be save per row.
      * \note NA*/
-    void SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 1);
+    void SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 10);
 #endif
 protected:
     
@@ -171,7 +171,7 @@ protected:
      * \pre GRPImage Loaded
      * \post GRPImage Frame is decoded into the frame
      * \param[in] inputData A vector of the GRPImage file data
-     * \param[in[ targetFrame The frame to store the resulting image data
+     * \param[in] targetFrame The frame to store the resulting image data
      * \note NA*/
     void DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *targetFrame);
     

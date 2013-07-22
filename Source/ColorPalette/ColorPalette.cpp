@@ -20,6 +20,32 @@ ColorPalette::~ColorPalette()
     ClearAllTables();
 }
 
+ColorPalette::ColorPalette(std::vector<char> *inputPalette)
+{
+    transparentColorsTable = NULL;
+    greyscaleTable = NULL;
+    shadowTable = NULL;
+    formattedPaletteData = NULL;
+    lightTable = NULL;
+    redTable = NULL;
+    greenTable = NULL;
+    blueTable =NULL;
+    LoadPalette(inputPalette);
+}
+
+ColorPalette::ColorPalette(std::string filePath)
+{
+    transparentColorsTable = NULL;
+    greyscaleTable = NULL;
+    shadowTable = NULL;
+    formattedPaletteData = NULL;
+    lightTable = NULL;
+    redTable = NULL;
+    greenTable = NULL;
+    blueTable =NULL;
+    LoadPalette(filePath);
+}
+
 void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
     ClearAllTables();

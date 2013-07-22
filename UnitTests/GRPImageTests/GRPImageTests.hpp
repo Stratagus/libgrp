@@ -15,4 +15,6 @@
 #define GRPIMAGEFILEPATH "../../Documentation/SampleContent/SampleImage.grp"
 #endif
 
+void LoadFileToVectorImageGRP(std::string filePath, std::vector<char> *destinationVector);
+
 #endif

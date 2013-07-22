@@ -75,6 +75,9 @@ class ColorPalette
 		ColorPalette();
 		~ColorPalette();
     
+        //Convience constructors to load
+        ColorPalette(std::vector<char> *inputPalette);
+        ColorPalette(std::string filePath);
     
         //!Set palette data from memory
         /*! Use the palette data that is loaded in a the specified
