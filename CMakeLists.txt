@@ -129,6 +129,8 @@ set (LIBRARIES_DIR "./Libraries")
 add_library(grp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
 target_link_libraries(grp ${Magick++_LIBRARIES})
 
+include_directories("/usr/include/ImageMagick")
+
 if(APPLE)
 
 option(MAKEFRAMEWORK "Create FRAMEWORK" OFF)

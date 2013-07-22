@@ -20,6 +20,7 @@
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
 #include <list>
 #include <fstream>
+#include <inttypes.h>
 #include <tr1/unordered_map>
 
 //Gives the ability to convert images to other formats.

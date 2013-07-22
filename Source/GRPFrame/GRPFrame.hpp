@@ -12,6 +12,7 @@
  */
 
 #include <list>
+#include <inttypes.h>
 #include "../Exceptions/GRPFrame/GRPFrameException.hpp"
 
 //Allow Windows to use 8/16/32 byte values

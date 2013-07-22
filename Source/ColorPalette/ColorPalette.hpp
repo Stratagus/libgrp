@@ -21,6 +21,7 @@
 #include <fstream>
 #include <limits>
 #include <math.h>
+#include <inttypes.h>
 
 #include "../Exceptions/ColorPalette/ColorPaletteException.hpp"
 
