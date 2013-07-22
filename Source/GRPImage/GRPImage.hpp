@@ -20,7 +20,6 @@
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
 #include <list>
 #include <fstream>
-#include <inttypes.h>
 #include <tr1/unordered_map>
 
 //Gives the ability to convert images to other formats.
@@ -29,6 +28,8 @@
     #include <iomanip>
     #include <Magick++/Image.h>
     #include <Magick++/Pixels.h>
+#else
+#include <inttypes.h>
 #endif
 
 //Allow Windows to use 8/16/32 byte values

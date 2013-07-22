@@ -12,7 +12,6 @@
  */
 
 #include <list>
-#include <inttypes.h>
 #include "../Exceptions/GRPFrame/GRPFrameException.hpp"
 
 //Allow Windows to use 8/16/32 byte values
@@ -21,6 +20,8 @@
     typedef uint8_t u_int8_t;
     typedef uint16_t u_int16_t;
     typedef uint32_t u_int32_t;
+#else
+#include <inttypes.h>
 #endif
 
 //Used to map what pixels are in a image
