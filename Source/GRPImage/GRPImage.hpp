@@ -44,9 +44,34 @@ class GRPImage
 {
     
 public:
-        GRPImage(std::vector<char> *inputImage, bool removeDuplicates = true);
-        GRPImage(std::string filePath, bool removeDuplicates = true);
-        ~GRPImage();
+    //!Set image data from memory
+    /*! Use the image data that is loaded in a the specified
+     * vector.
+     * \pre The inputInput vector must be defined and contain
+     *      valid grp image data. Otherwise there will be decoding
+     *      errors. (garbled up junk images)
+     * \param[in] inputPalette The memory location of the image
+     *      to be decoded/encoded.
+     * \warning This will not make a copy of the std::vector<char> data
+     *      so if you delete the vector before/during processing it will likly crash.
+     * \note Same thing as LoadImage, but on object construction*/
+    GRPImage(std::vector<char> *inputImage, bool removeDuplicates = true);
+    
+    //!Load image data from a file (.grp)
+    /*! Load a GRP file to use when decoding/encoding
+     * a GRPImage.
+     * \pre Filepath must be to a valid .grp image file
+     * \post The file is loaded into memory for the GRPImage
+     * \param[in] filePath The file path to the grp image file
+     * \note NA*/
+    GRPImage(std::string filePath, bool removeDuplicates = true);
+    
+    //!Deallocates the GRPImage and it's data
+    /*! Deallocated all data related to the GRP Image
+     * \pre NA
+     * \post Data is deleted
+     * \note NA*/
+    ~GRPImage();
     
     //!Set image data from memory
     /*! Use the image data that is loaded in a the specified
@@ -61,22 +86,21 @@ public:
      * \note NA*/
     void LoadImage(std::vector<char> *inputImage);
     
-    //!Load image data from a file (.wpe)
+    //!Load image data from a file (.grp)
     /*! Load a GRP file to use when decoding/encoding
      * a GRPImage.
      * \pre Filepath must be to a valid .grp image file
      * \post The file is loaded into memory for the GRPImage
      * \param[in] filePath The file path to the grp image file
-     * \note NA
-     */
-    void LoadImage(std::string filePath, bool removeDuplicates = false);
+     * \note NA*/
+    void LoadImage(std::string filePath, bool removeDuplicates = true);
     
     //!Return the number of frames in a GRPImage
     /*! Return the number of frames in a GRP image animation.
      * \pre GRP image data must be defined and loaded into
      *      imageData.
      * \returns The number of image frames in a GRP Image.
-     */
+     * \note NA*/
     uint16_t getNumberOfFrames() const;
     
     //!Return the maximum width of any GRP image Frame
@@ -96,16 +120,57 @@ public:
      * \note NA*/
     uint16_t getMaxImageHeight() const;
     
-    
+    //!Set the desired colorPalette to use
+    /*!Sets the colorPalette that will be used as reference for image
+     *conversion.
+     * \param[in] selectedColorPalette The Palette to apply to images
+     * \warning GRPImage will not delete the color palette upon deallocation,
+     * \warning If the palette is not the correct palette for the image
+     *      during the conversion process you may get a invalidColors or
+     *      throw exception
+     * \note NA*/
     void SetColorPalette(ColorPalette *selectedColorPalette);
 
 #if MAGICKPP_FOUND
-    void ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 1);
+    
+    //!Save the GRPImage frames to a file via ImageMaigck
+    /*!Save the GRPImage frames into the file format of your choosing
+     * \pre GRPImage is loaded.
+     * \post Outputs a image to the ourFilePath.
+     * \param[in] outFilePath The output image file path.
+     * \param[in] startingFrame The first image that you would like saved.
+     * \param[in] endingFrame The frame you would like to stop saving on.
+     * \param[in] singleStitchedImage Stitch the GRP frames together into one image.
+     * \param[in] imagesPerRow If stitching is enabled, how many images should be save per row.
+     * \note NA*/
+    void SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 1);
 #endif
 protected:
+    
+    //!Deleted any GRPImage data for reuse
+    /*! Deallocated all data related to the GRP Image
+     * \pre NA
+     * \post Data is deleted
+     * \note NA*/
     void CleanGRPImage();
     
+    //!Decode the GRPFrameData
+    /*!Decode the GRP compression and save the unique pixels to the GRPFrame datastruct
+     * \pre GRPImage Loaded
+     * \post GRPImage Frame is decoded into the frame
+     * \param[in] inputFile a input file stream of the GRPImage file
+     * \param[in[ targetFrame The frame to store the resulting image data
+     * \note NA*/
     void DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame);
+    
+    //!Decode the GRPFrameData
+    /*!Decode the GRP compression and save the unique pixels to the GRPFrame datastruct
+     * \pre GRPImage Loaded
+     * \post GRPImage Frame is decoded into the frame
+     * \param[in] inputData A vector of the GRPImage file data
+     * \param[in[ targetFrame The frame to store the resulting image data
+     * \note NA*/
+    void DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *targetFrame);
     
     //!Load file into a std::vector<char>
     /*!Subroutine function to load a file into the internal imageData or
@@ -117,12 +182,14 @@ protected:
     void LoadFileToVector(std::string sourceFilePath, std::vector<unsigned char> *destinationVector);
     
 private:
-    std::vector<unsigned char> *imageData;
+    //The decoded GRPFrames
     std::vector<GRPFrame *> imageFrames;
+    
+    //The palette that will be used during conversion
     ColorPalette *currentPalette;
     
     
-    //GRPiamge Header
+    //GRPimage Header
     uint16_t numberOfFrames;
     uint16_t maxImageWidth;
     uint16_t maxImageHeight;

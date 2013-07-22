@@ -2,7 +2,6 @@
 
 GRPImage::GRPImage(std::string filePath, bool removeDuplicates)
 {
-    imageData = NULL;
     currentPalette = NULL;
 
     LoadImage(filePath, removeDuplicates);
@@ -245,7 +244,7 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 }
 
 #if MAGICKPP_FOUND
-void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
+void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
 {
     Magick::InitializeMagick(NULL);
     Magick::Image *convertedImage;
@@ -334,11 +333,6 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
 
 void GRPImage::CleanGRPImage()
 {
-    if(imageData != NULL)
-    {
-        delete imageData;
-        imageData = NULL;
-    }
     if(imageFrames.size() != 0)
     {
         for(std::vector<GRPFrame *>::iterator currentDeleteFrame = imageFrames.begin(); currentDeleteFrame != imageFrames.end(); currentDeleteFrame++)

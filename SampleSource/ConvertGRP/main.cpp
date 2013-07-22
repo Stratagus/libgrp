@@ -8,7 +8,7 @@ int main()
     GRPImage myGRPImage(GRPIMAGEFILEPATH, false);
     myGRPImage.SetColorPalette(&myGRPPallete);
     
-    myGRPImage.ConvertImage("outputWithDuplicates.png", 0, myGRPImage.getNumberOfFrames(), true, 17);
+    myGRPImage.SaveConvertedImage("outputWithDuplicates.png", 0, myGRPImage.getNumberOfFrames(), true, 17);
     
     //myGRPImage.LoadImage(GRPIMAGEFILEPATH, true);
     //myGRPImage.ConvertImage("outputWithOUTDuplicates.png", 0, myGRPImage.getNumberOfFrames(), false, 17);

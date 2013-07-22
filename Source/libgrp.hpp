@@ -3,7 +3,9 @@
 /*! \mainpage General Information
  *  GRP Format Motivation
  *  =====================
- *  (Get description cleared with Wyatt)\n
+ *  It was necessary to minimize memory use because we endeavored to make Blizzard games\n
+ *  playable on low-spec systems. Consequently the GRP format needed to be highly compressed\n 
+ *  to maximize the number of frames we could fit in memory. - Patrick Wyatt 
  *
  *  libgrp Motivation
  *  ================
