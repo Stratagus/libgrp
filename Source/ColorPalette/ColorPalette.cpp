@@ -24,19 +24,33 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
     ClearAllTables();
     colorValues currentColorProcessing;
-    if( (inputPalette != NULL) && ((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
+    if(inputPalette == NULL)
     {
         CurruptColorPaletteException curruptPalette;
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
         throw(curruptPalette);
     }
     
+    std::cout << "Input palette size: " << inputPalette->size();
+    if(((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
+    {
+        CurruptColorPaletteException curruptPalette;
+        curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
+        throw(curruptPalette);
+    }
+    if(formattedPaletteData != NULL)
+    {
+        delete formattedPaletteData;
+    }
+    formattedPaletteData = new std::vector<colorValues>;
+    formattedPaletteData->resize(inputPalette->size() / 3);
+    
     //Start loading the Palette into the formattedPaletteData Vector.
     for(int loadCurrentColor = 0; loadCurrentColor < (inputPalette->size() / 3); loadCurrentColor++)
     {
-        currentColorProcessing.RedElement = inputPalette->at((3 * loadCurrentColor));
-        currentColorProcessing.GreenElement = inputPalette->at((3 * loadCurrentColor) + 1);
-        currentColorProcessing.BlueElement = inputPalette->at((3 * loadCurrentColor) + 2);
+        currentColorProcessing.RedElement = (uint8_t) inputPalette->at((3 * loadCurrentColor));
+        currentColorProcessing.GreenElement = (uint8_t) inputPalette->at((3 * loadCurrentColor) + 1);
+        currentColorProcessing.BlueElement = (uint8_t) inputPalette->at((3 * loadCurrentColor) + 2);
         
         formattedPaletteData->at(loadCurrentColor) = currentColorProcessing;
     }
@@ -385,6 +399,13 @@ std::vector<colorValues> ColorPalette::GenerateGlowColors(unsigned int maxGradat
 }
 std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
 {
+    
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteLoaded;
+        noPaletteLoaded.SetErrorMessage("No palette file has been loaded");
+        throw noPaletteLoaded;
+    }
     if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
     {
         InvalidGradationValueException gradationError;
@@ -440,6 +461,20 @@ std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, col
 
 std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues baseColor, float addGradation)
 {
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteLoaded;
+        noPaletteLoaded.SetErrorMessage("No color palette loaded");
+        throw noPaletteLoaded;
+    }
+    
+    if(addGradation < 0)
+    {
+        InvalidGradationValueException invalidGradation;
+        invalidGradation.SetErrorMessage("Invalid Gradation values, must be positive");
+        throw invalidGradation;
+    }
+    
     std::vector<colorValues> finalConstrainedColorTable;
     finalConstrainedColorTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
     
@@ -662,6 +697,12 @@ colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetAppl
     {
         GenerateShadowtable();
     }
+    if((targetApplication < 0) || (targetApplication > shadowTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
+    }
     return baseColor;
 #warning Complete Implementation
 }
@@ -672,6 +713,16 @@ colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetAppli
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
+    }
+    if(lightTable == NULL)
+    {
+        GenerateLighttable();
+    }
+    if((targetApplication < 0) || (targetApplication > lightTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
     }
     return baseColor;
 #warning Complete Implementation
@@ -711,7 +762,7 @@ colorValues ColorPalette::ApplyBlueValue(colorValues baseColor, int targetApplic
     {
         GenerateBluetable();
     }
-    if((targetApplication < 0) || (targetApplication > redTable->size()))
+    if((targetApplication < 0) || (targetApplication > blueTable->size()))
     {
         OutofBoundsColorException outOfBoundsError;
         outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
@@ -734,7 +785,7 @@ colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetAppli
     {
         GenerateGreentable();
     }
-    if((targetApplication < 0) || (targetApplication > redTable->size()))
+    if((targetApplication < 0) || (targetApplication > greenTable->size()))
     {
         OutofBoundsColorException outOfBoundsError;
         outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");

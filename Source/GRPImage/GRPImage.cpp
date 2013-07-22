@@ -218,27 +218,6 @@ uint16_t GRPImage::getMaxImageHeight() const
     return maxImageHeight;
 }
 
-void GRPImage::LoadFileToVector(std::string filePath, std::vector<unsigned char> *destinationVector)
-{
-    std::fstream inputFile(filePath.c_str());
-    
-    inputFile.exceptions(
-                         std::ifstream::badbit
-                         | std::ifstream::failbit
-                         | std::ifstream::eofbit);
-    
-    inputFile.seekg(0, std::ios::end);
-    
-    std::streampos length(inputFile.tellg());
-    
-    if (length)
-    {
-        inputFile.seekg(0, std::ios::beg);
-        destinationVector->resize(static_cast<std::size_t>(length));
-        inputFile.read((char *)&destinationVector->front(), static_cast<std::size_t>(length));
-    }
-}
-
 void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 {
     currentPalette = selectedColorPalette;
@@ -258,7 +237,7 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
     Magick::InitializeMagick(NULL);
     Magick::Image *convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
-    if(imagesPerRow > numberOfFrames)
+    if(imagesPerRow >= numberOfFrames)
     {
         imagesPerRow = numberOfFrames;
     }

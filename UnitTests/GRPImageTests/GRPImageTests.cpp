@@ -8,9 +8,8 @@ BOOST_AUTO_TEST_CASE(LoadGRP)
     samplePalette->LoadPalette(PALETTEFILEPATH);
     samplePalette->GenerateColorTables();
     
-    GRPImage sampleImage;
+    GRPImage sampleImage(GRPIMAGEFILEPATH, false);
     sampleImage.SetColorPalette(samplePalette);
-    sampleImage.LoadImage(GRPIMAGEFILEPATH);
     
     delete samplePalette;
     samplePalette = NULL;
