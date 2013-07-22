@@ -141,7 +141,7 @@ option(MAKEFRAMEWORK "Create FRAMEWORK" OFF)
 
 if(MAKEFRAMEWORK)
     set_target_properties(grp PROPERTIES FRAMEWORK true)
-    set_target_properties(grp PROPERTIES PUBLIC_HEADER "")
+    set_target_properties(grp PROPERTIES PUBLIC_HEADER "Source/libgrp.h")
 endif()
     set_target_properties(grp PROPERTIES LINK_FLAGS "-framework Carbon")
 endif()
@@ -185,7 +185,7 @@ endif()
 
 install(DIRECTORY Source/ DESTINATION include/libgrp
           FILES_MATCHING PATTERN "*.hpp")
-install(TARGETS grp RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib FRAMEWORK DESTINATION /Library/Frameworks)
+install(TARGETS grp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib FRAMEWORK DESTINATION /Library/Frameworks)
 
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")
