@@ -3,13 +3,17 @@
 
 int main()
 {
-    
-    GRPImage myGRPImage;
     ColorPalette myGRPPallete;
     myGRPPallete.LoadPalette(PALLETTEFILEPATH);
-    myGRPImage.LoadImage(GRPIMAGEFILEPATH);
+    GRPImage myGRPImage(GRPIMAGEFILEPATH, false);
     myGRPImage.SetColorPalette(&myGRPPallete);
     
-    myGRPImage.ConvertImage("test.png", 0, myGRPImage.getNumberOfFrames(), true, 17);
+    myGRPImage.ConvertImage("outputWithDuplicates.png", 0, myGRPImage.getNumberOfFrames(), true, 17);
+    
+    //myGRPImage.LoadImage(GRPIMAGEFILEPATH, true);
+    //myGRPImage.ConvertImage("outputWithOUTDuplicates.png", 0, myGRPImage.getNumberOfFrames(), false, 17);
+    
+    
+    
     return 0;
 }

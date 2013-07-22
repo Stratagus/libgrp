@@ -1,22 +1,16 @@
 #include "GRPImage.hpp"
 
-GRPImage::GRPImage()
+GRPImage::GRPImage(std::string filePath, bool removeDuplicates)
 {
     imageData = NULL;
     currentPalette = NULL;
-    
-    numberOfFrames = -1;
-    maxImageWidth = -1;
-    maxImageHeight = -1;
+
+    LoadImage(filePath, removeDuplicates);
 }
 
 GRPImage::~GRPImage()
 {
-    if(imageData != NULL)
-    {
-        delete imageData;
-        imageData = NULL;
-    }
+    CleanGRPImage();
     if(currentPalette != NULL)
     {
         currentPalette = NULL;
@@ -29,20 +23,20 @@ void GRPImage::LoadImage(std::vector<char> *inputImage)
 
 void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
 {
-    if(imageData == NULL)
-    {
-        imageData = new std::vector<unsigned char>;
-    }
-    else
-    {
-        delete imageData;
-        imageData = new std::vector<unsigned char>;
-    }
-    LoadFileToVector(filePath, imageData);
+    CleanGRPImage();
+    //if(imageData == NULL)
+    //{
+    //    imageData = new std::vector<unsigned char>;
+    //}
+    //else
+    //{
+    //    delete imageData;
+    //    imageData = new std::vector<unsigned char>;
+    //}
+    //LoadFileToVector(filePath, imageData);
     
     std::ifstream inputFile(filePath.c_str(), std::ios::binary);
     inputFile.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
-    
     
     //Read in some basic data about the grp.
     inputFile.read((char *) &numberOfFrames, 2);
@@ -53,7 +47,11 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
 #if VERBOSE >= 2
     std::cout << "GRP Image Number of Frames: " << numberOfFrames << " maxWidth: " << maxImageWidth << " maxHeight: " << maxImageHeight << '\n';
 #endif
-    //Load each GRP Header into a GRPFrame & Allocate the 
+    
+    //Create a hash table to stop the creation of duplicates
+    std::tr1::unordered_map<uint32_t, int> uniqueGRPImages;
+    
+    //Load each GRP Header into a GRPFrame & Allocate the
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
     {
         GRPFrame *currentImageFrame = new GRPFrame;
@@ -63,6 +61,8 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
         inputFile.read((char *) &currentImageFrame->width, 1);
         inputFile.read((char *) &currentImageFrame->height, 1);
         inputFile.read((char *) &currentImageFrame->dataOffset, 4);
+
+#warning work on hash here
 
 #if VERBOSE >= 2
         std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->width << " Height: "
@@ -258,6 +258,10 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
     Magick::InitializeMagick(NULL);
     Magick::Image *convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
+    if(imagesPerRow > numberOfFrames)
+    {
+        imagesPerRow = numberOfFrames;
+    }
     if(singleStitchedImage)
     {
         convertedImage = new Magick::Image(Magick::Geometry((maxImageWidth * imagesPerRow), (maxImageHeight * (ceil( (float)numberOfFrames/imagesPerRow)))), "transparent");
@@ -334,5 +338,22 @@ void GRPImage::ConvertImage(std::string outFilePath, int startingFrame, int endi
     delete convertedImage;
     convertedImage = NULL;
     
+}
+
+void GRPImage::CleanGRPImage()
+{
+    if(imageData != NULL)
+    {
+        delete imageData;
+        imageData = NULL;
+    }
+    if(imageFrames.size() != 0)
+    {
+        for(std::vector<GRPFrame *>::iterator currentDeleteFrame = imageFrames.begin(); currentDeleteFrame != imageFrames.end(); currentDeleteFrame++)
+        {
+            delete *currentDeleteFrame;
+            *currentDeleteFrame = NULL;
+        }
+    }
 }
 #endif

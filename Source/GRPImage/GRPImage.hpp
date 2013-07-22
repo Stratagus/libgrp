@@ -20,6 +20,7 @@
 #include "../Exceptions/GRPImage/GRPImageException.hpp"
 #include <list>
 #include <fstream>
+#include <tr1/unordered_map>
 
 //Gives the ability to convert images to other formats.
 #if MAGICKPP_FOUND
@@ -43,8 +44,9 @@ class GRPImage
 {
     
 public:
-    GRPImage();
-    ~GRPImage();
+        GRPImage(std::vector<char> *inputImage, bool removeDuplicates = true);
+        GRPImage(std::string filePath, bool removeDuplicates = true);
+        ~GRPImage();
     
     //!Set image data from memory
     /*! Use the image data that is loaded in a the specified
@@ -101,6 +103,7 @@ public:
     void ConvertImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 1);
 #endif
 protected:
+    void CleanGRPImage();
     
     void DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame);
     

@@ -22,6 +22,9 @@ ADD_DEFINITIONS(-DVERBOSE=${VERBOSE})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
                       ${CMAKE_MODULE_PATH})
 
+#Use the c++ 2011 standard
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 #Find optional libraries
 find_package(Magick++)
 
