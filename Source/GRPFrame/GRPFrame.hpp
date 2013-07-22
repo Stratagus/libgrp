@@ -27,8 +27,8 @@
 //Position 0,0 is the upper left corner
 struct UniquePixel
 {
-    int xPosition = 0;
-    int yPosition = 0;
+    int xPosition;
+    int yPosition;
     uint8_t colorPaletteReference;
 };
 

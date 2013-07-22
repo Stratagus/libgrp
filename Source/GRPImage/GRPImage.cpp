@@ -17,7 +17,7 @@ GRPImage::~GRPImage()
         currentPalette = NULL;
     }
 }
-#warning MUST IMPLEMENT
+
 void GRPImage::LoadImage(std::vector<char> *inputImage, bool removeDuplicates)
 {
     

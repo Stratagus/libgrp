@@ -31,6 +31,7 @@ find_package(Magick++)
 if(Magick++_FOUND)
 add_definitions(-DMAGICKPP_FOUND=1)
 add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
+add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
 endif()
 
 #Source directory variables
@@ -40,7 +41,6 @@ endif()
 set (SOURCE_DIR "./Source")
 set (SAMPLESOURCE_DIR "./SampleSource")
 set (UNITTEST_DIR "./UnitTests")
-
 
 set(LIBGRP_SOURCE
 	${SOURCE_DIR}/libgrp.hpp
@@ -135,7 +135,7 @@ if(APPLE)
 
     link_directories("/opt/local/lib")
 
-    set_target_properties(libgrp PROPERTIES FRAMEWORK true)
+    #set_target_properties(libgrp PROPERTIES FRAMEWORK true)
     set_target_properties(libgrp PROPERTIES PUBLIC_HEADER "Source/libgrp.hpp")
     set_target_properties(libgrp PROPERTIES LINK_FLAGS "-framework Carbon")
 endif()
@@ -179,6 +179,12 @@ if(Magick++_FOUND)
 	target_link_libraries(ConvertGRP libgrp)
 endif()
 endif()
+
+install(DIRECTORY Source/ DESTINATION include
+          FILES_MATCHING PATTERN "*.hpp")
+
+install(TARGETS libgrp DESTINATION lib)
+
 #Tell the developer the current build options
 message("\n\nlibgrp Compile Options\n Unit Tests: ${UNITTESTS} [-DUNITESTS=(off-on)]")
 message(" Verbose Level: ${VERBOSE} [-DVERBOSE=[(1-5)] 1-Min 5-Max")

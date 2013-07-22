@@ -30,7 +30,6 @@ BOOST_AUTO_TEST_CASE(LoadGRPMEM)
     
 }
 
-
 BOOST_AUTO_TEST_SUITE_END()
 
 void LoadFileToVectorImageGRP(std::string filePath, std::vector<char> *destinationVector)
