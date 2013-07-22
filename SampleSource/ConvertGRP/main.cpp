@@ -10,8 +10,8 @@ int main()
     
     myGRPImage.SaveConvertedImage("outputWithDuplicates.png", 0, myGRPImage.getNumberOfFrames(), true, 17);
     
-    //myGRPImage.LoadImage(GRPIMAGEFILEPATH, true);
-    //myGRPImage.ConvertImage("outputWithOUTDuplicates.png", 0, myGRPImage.getNumberOfFrames(), false, 17);
+    myGRPImage.LoadImage(GRPIMAGEFILEPATH, true);
+    myGRPImage.SaveConvertedImage("outputWithOUTDuplicates.png", 0, myGRPImage.getNumberOfFrames(), false, 17);
     
     
     

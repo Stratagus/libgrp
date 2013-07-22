@@ -52,6 +52,7 @@ public:
      *      errors. (garbled up junk images)
      * \param[in] inputPalette The memory location of the image
      *      to be decoded/encoded.
+     * \param[in] removeDuplicates Remove GRPFrames that are the same
      * \warning This will not make a copy of the std::vector<char> data
      *      so if you delete the vector before/during processing it will likly crash.
      * \note Same thing as LoadImage, but on object construction*/
@@ -63,6 +64,7 @@ public:
      * \pre Filepath must be to a valid .grp image file
      * \post The file is loaded into memory for the GRPImage
      * \param[in] filePath The file path to the grp image file
+     * \param[in] removeDuplicates Remove GRPFrames that are the same
      * \note NA*/
     GRPImage(std::string filePath, bool removeDuplicates = true);
     
@@ -81,10 +83,11 @@ public:
      *      errors. (garbled up junk images)
      * \param[in] inputPalette The memory location of the image
      *      to be decoded/encoded.
+     * \param[in] removeDuplicates Remove GRPFrames that are the same
      * \warning This will not make a copy of the std::vector<char> data
      *      so if you delete the vector before/during processing it will likly crash.
      * \note NA*/
-    void LoadImage(std::vector<char> *inputImage);
+    void LoadImage(std::vector<char> *inputImage, bool removeDuplicates = true);
     
     //!Load image data from a file (.grp)
     /*! Load a GRP file to use when decoding/encoding

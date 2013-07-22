@@ -16,7 +16,7 @@ GRPImage::~GRPImage()
     }
 }
 #warning MUST IMPLEMENT
-void GRPImage::LoadImage(std::vector<char> *inputImage)
+void GRPImage::LoadImage(std::vector<char> *inputImage, bool removeDuplicates)
 {
 }
 
@@ -52,7 +52,8 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
     uint32_t tempDataOffset;
     
     //Create a hash table to stop the creation of duplicates
-    std::tr1::unordered_map<uint32_t, int> uniqueGRPImages;
+    std::tr1::unordered_map<uint32_t, bool> uniqueGRPImages;
+    std::tr1::unordered_map<uint32_t, bool>::const_iterator uniqueGRPCheck;
     
     //Load each GRP Header into a GRPFrame & Allocate the
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
@@ -74,21 +75,34 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
         inputFile.read((char *) &tempDataOffset, 4);
         currentImageFrame->SetDataOffset(tempDataOffset);
 
-#warning work on hash here
 
 #if VERBOSE >= 2
         std::cout << "Current Frame: " << currentGRPFrame << " Width: " << (int) currentImageFrame->GetImageWidth() << " Height: "
         << (int) currentImageFrame->GetImageHeight() << "\nxPosition: " << (int) currentImageFrame->GetXOffset()
         << " yPosition: " << (int) currentImageFrame->GetYOffset() << " with offset " << (int)currentImageFrame->GetDataOffset() << '\n';
 #endif
-
-        //Decode Frame here
-        DecodeGRPFrameData(inputFile, currentImageFrame);
+        uniqueGRPCheck = uniqueGRPImages.find(currentImageFrame->GetDataOffset());
+        if(removeDuplicates && (uniqueGRPCheck != uniqueGRPImages.end()))
+        {
+            
+        }
+        else
+        {
+            //The GRPImage is unique save in the unordered set
+            uniqueGRPImages.insert(std::make_pair<uint32_t,bool>(currentImageFrame->GetDataOffset(),true));
+            
+            //Decode Frame here
+            DecodeGRPFrameData(inputFile, currentImageFrame);
+            
+            //imageFrames.insert(imageFrames.end(), currentImageFrame);
+            imageFrames.push_back(currentImageFrame);
+        }
         
-
-        
-        //imageFrames.insert(imageFrames.end(), currentImageFrame);
-        imageFrames.push_back(currentImageFrame);
+    }
+    
+    if (removeDuplicates)
+    {
+        numberOfFrames = imageFrames.size();
     }
     
 }
@@ -232,15 +246,8 @@ uint16_t GRPImage::getMaxImageHeight() const
 
 void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 {
-    currentPalette = selectedColorPalette;
-    //if(selectedColorPalette != NULL)
-    //{
-     //   ;
-    //}
-    //else
-    //{
-     //       throw "Invalid color palette";
-    //}
+    if(selectedColorPalette)
+        currentPalette = selectedColorPalette;
 }
 
 #if MAGICKPP_FOUND
@@ -340,6 +347,7 @@ void GRPImage::CleanGRPImage()
             delete *currentDeleteFrame;
             *currentDeleteFrame = NULL;
         }
+        imageFrames.resize(0);
     }
 }
 #endif
