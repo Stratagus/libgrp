@@ -1,14 +1,18 @@
 #ifndef ColorPalette_Header
 #define ColorPalette_Header
 
-/*!Hello
- *  \brief     A datastructure for holding a GRP Palette
+/*!ColorPalette Datastructure
+ *  \brief     A datastructure for holding a GRP Palette data
  *  \details   Datastructure that generates the color tables, loads the palette
- *              and allows for easy color access.
+ *              and allowing for easy color access.
  *  \author    Bradley Clemetson, GRPLib Authors https://sourceforge.net/projects/grplib
  *  \version   1.0.0
  *  \date      July 8, 2013
  *  \copyright LGPLv2
+ *  \section basicColorPaletteFileLayout ColorPalette File Layout
+ *  The standard GRP Color palette is either 768 or 1024 bytes
+ *  each byte (uint8_t) represents one color element (Red, Blue, Green).
+ *  \image html ColorPaletteFileLayout.png ![Diagram of GRP Color Palette Layout] 
  */
 
 
@@ -84,6 +88,7 @@ class ColorPalette
         *      so if you delete the vector before/during processing it will crash.
         * \warning The method will not delete the vector, called remains responsible for
         *       inputPalette vector deallocation.
+        * \throws CurruptColorPaletteException - Bad Colorpalette detected
         * \note NA*/
         void LoadPalette(std::vector<char> *inputPalette);
     
@@ -93,14 +98,32 @@ class ColorPalette
         * \pre Filepath must be to a valid .pal palette file
         * \post The file is loaded into memory for the GRPImage
         * \param[in] filePath The file path to the palette file
-        *\note NA
-        */
+        * \throws CurruptColorPaletteException
+        * \note NA*/
         void LoadPalette(std::string filePath);
+    
+        //!Gets the number of colors on the Palette
+        /*! A simple getter to get the number of colors in a Palette
+        * \pre NA
+        * \returns The number of colors in a palette
+        * \note NA*/
+        int GetNumberOfColors();
+    
+        //!Gets the Red/Blue/Green values for a specific color in the Palette
+        /*! A simple getter to grab the Red/Blue/Green elements of a specific
+        *      color.
+        * \pre A palette must be loaded and colorNumber a valid Color palette #
+        * \returns A colorValues struct with the loaded element values.
+        * \throws OutofBoundsColorException
+        * \throws NoPaletteLoadedException
+        * \note NA*/
+        colorValues GetColorFromPalette(int colorNumber);
     
         //!Generates the TransparentColor Table to be applied to the GRP images
         /* \pre A valid GRP Palette must be loaded to paletteData
          * \post A transparent color table will be generated based off
          *      the palette file input.
+         * \throws NoPaletteLoadedExpception
          * \note NA*/
         void GenerateTransparentColorsTable();
     
@@ -108,11 +131,121 @@ class ColorPalette
         /* \pre A valid GRP Palette must be loaded to paletteData
          * \post A greyscale color table will be generated based off
          *      the palette file input.
+         * \throws NoPaletteLoadedException
          * \note NA*/
         void GenerateGreyscaleTable();
-  
+    
+        //!Generate all base color tables
+        /*!A simple convience method to call all the different
+         *  table generators.
+         * \pre A valid palette file must be loaded.
+         * \post Shadow/Light/Red/Green/Blue tables are generated
+         * \throws NoPaletteLoadedException
+         * \note NA*/
+        void GenerateColorTables(int gradation = 32);
+    
+        //!Generate the Shadow Table
+        /*! Generates different shades of black that 
+         *  can/will be applied to unit shadows
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
+         * \throws NoPaletteLoadedException
+         * \note NA*/
+        void GenerateShadowtable(int gradation = 32);
+    
+        //!Generate the Light Table
+        /*! Generates different shade of white that
+         *  can/will be applied to images for highlights.
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
+         * \throws NoPaletteLoadedException
+         * \note NA*/
+        void GenerateLighttable(int gradation = 32);
+    
+        //!Generate the Red Table
+        /*! Generates multiple shades of Red that
+         *  can/will be used for different art assets (blood, ect)
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
+         * \throws NoPaletteLoadedException
+         * \note NA*/
+        void GenerateRedtable(int gradation = 32);
+    
+        //!Generate the Green Table
+        /*! Generates multiple shades of Green that
+        *  can/will be used for different art assets (plants, ect)
+        * \pre A valid palette file must be loaded
+        * \post Generates a 8192byte set of shades
+         * \throws NoPaletteLoadedException
+        * \note NA*/
+        void GenerateGreentable(int gradation = 32);
+    
+        //!Generate the Blue Table
+        /*! Generates multiple shades of Blue that
+         *  can/will be used for different art assets (water, ect)
+         * \pre A valid palette file must be loaded
+         * \post Generates a 8192byte set of shades
+         * \throws NoPaletteLoadedException
+         * \note NA*/
+        void GenerateBluetable(int gradation = 32);
+    
+        //!Apply values from the shadow table to image
+        /*!Generates (if needed) and applied the value on all Colorelements of the base color
+         * \pre PaletteData loaded and targetApplication be in bounds
+         * \returns colorValues with the applied color table
+         * \param[in] basecolor The starting color the table should apply
+         * \param[in] The desired application value
+         * \throws NoPaletteLoadedException
+         * \throw OutofBoundsColorException
+         * \note NA*/
+        colorValues ApplyShadowValue(colorValues baseColor, int targetApplication);
+    
+        //!Apply values from the light table to image
+        /*!Generates (if needed) and applied the value on all Colorelements of the base color
+        * \pre PaletteData loaded and targetApplication be in bounds
+        * \returns colorValues with the applied color table
+        * \param[in] basecolor The starting color the table should apply
+        * \param[in] The desired application value
+        * \throws NoPaletteLoadedException
+        * \throw OutofBoundsColorException
+        * \note NA*/
+        colorValues ApplyLightValue(colorValues baseColor, int targetApplication);
+    
+        //!Apply values from the Red table to image
+        /*!Generates (if needed) and applied the value on all Colorelements of the base color
+        * \pre PaletteData loaded and targetApplication be in bounds
+        * \returns colorValues with the applied color table
+        * \param[in] basecolor The starting color the table should apply
+        * \param[in] The desired application value
+        * \throws NoPaletteLoadedException
+        * \throw OutofBoundsColorException
+        * \note NA*/
+        colorValues ApplyRedValue(colorValues baseColor, int targetApplication);
+    
+        //!Apply values from the Blue table to image
+        /*!Generates (if needed) and applied the value on all Colorelements of the base color
+        * \pre PaletteData loaded and targetApplication be in bounds
+        * \returns colorValues with the applied color table
+        * \param[in] basecolor The starting color the table should apply
+        * \param[in] The desired application value
+        * \throws NoPaletteLoadedException
+        * \throw OutofBoundsColorException
+        * \note NA*/
+        colorValues ApplyBlueValue(colorValues baseColor, int targetApplication);
+    
+        //!Apply values from the Blue table to image
+        /*!Generates (if needed) and applied the value on all Colorelements of the base color
+        * \pre PaletteData loaded and targetApplication be in bounds
+        * \returns colorValues with the applied color table
+        * \param[in] basecolor The starting color the table should apply
+        * \param[in] The desired application value
+        * \throws NoPaletteLoadedException
+        * \throw OutofBoundsColorException
+        * \note NA*/
+        colorValues ApplyGreenValue(colorValues baseColor, int targetApplication);
+    
         //!Generates Colorization tables
-        /*! Generates Colorization table (the table colors the start 
+        /*! Generates Colorization table (the table colors the start
          *  from startingGlowColor and transform to endingglowColor.
          * \pre A valid palette file must be loaded
          * \returns A table with colors from startingGlowColor to endingGlowColor
@@ -126,91 +259,13 @@ class ColorPalette
         /*! Details here
          * \pre
          * \post
-         * \param [in]
-         * \param [in]
-         * \returns
-         * \note NA*/
+        * \param [in]
+        * \param [in]
+        * \returns
+        * \note NA*/
         std::vector<colorValues> GenerateTableWithConstraints(colorValues baseColor, float addGradation);
     
-        //!Generate all base color tables
-        /*!A simple convience method to call all the different
-         *  table generators.
-         * \pre A valid palette file must be loaded.
-         * \post Shadow/Light/Red/Green/Blue tables are generated
-         * \note NA*/
-        void GenerateColorTables(int gradation = 32);
-    
-        //!Generate the Shadow Table
-        /*! Generates different shades of black that 
-         *  can/will be applied to unit shadows
-         * \pre A valid palette file must be loaded
-         * \post Generates a 8192byte set of shades
-         * \note NA*/
-        void GenerateShadowtable(int gradation = 32);
-    
-        //!Generate the Light Table
-        /*! Generates different shade of white that
-         *  can/will be applied to images for highlights.
-         * \pre A valid palette file must be loaded
-         * \post Generates a 8192byte set of shades
-         * \note NA*/
-        void GenerateLighttable(int gradation = 32);
-    
-        //!Generate the Red Table
-        /*! Generates multiple shades of Red that
-         *  can/will be used for different art assets (blood, ect)
-         * \pre A valid palette file must be loaded
-         * \post Generates a 8192byte set of shades
-         * \note NA*/
-        void GenerateRedtable(int gradation = 32);
-    
-        //!Generate the Green Table
-        /*! Generates multiple shades of Green that
-        *  can/will be used for different art assets (plants, ect)
-        * \pre A valid palette file must be loaded
-        * \post Generates a 8192byte set of shades
-        * \note NA*/
-        void GenerateGreentable(int gradation = 32);
-    
-        //!Generate the Blue Table
-        /*! Generates multiple shades of Blue that
-         *  can/will be used for different art assets (water, ect)
-         * \pre A valid palette file must be loaded
-         * \post Generates a 8192byte set of shades
-         * \note NA*/
-        void GenerateBluetable(int gradation = 32);
-    
-        //!Gets the Red/Blue/Green values for a specific color in the Palette
-        /*! A simple getter to grab the Red/Blue/Green elements of a specific
-        *      color.
-        * \pre A palette must be loaded and colorNumber a valid Color palette #
-        * \returns A colorValues struct with the loaded element values.
-        * \note NA*/
-        colorValues GetColorFromPalette(int colorNumber);
-    
-        //!Gets the number of colors on the Palette
-        /*! A simple getter to get the number of colors in a Palette
-         * \pre NA
-         * \returns The number of colors in a palette
-         * \note NA*/
-        int GetNumberOfColors();
-    
-#warning Full document here
-        //!Apply modifier from the Shadow Table
-        colorValues ApplyShadowValue(colorValues baseColor, int targetApplication);
-        colorValues ApplyLightValue(colorValues baseColor, int targetApplication);
-        colorValues ApplyRedValue(colorValues baseColor, int targetApplication);
-        colorValues ApplyBlueValue(colorValues baseColor, int targetApplication);
-        colorValues ApplyGreenValue(colorValues baseColor, int targetApplication);
-    
 	protected:
-    
-        //!Ensures that all tables are NULL or deleted.
-        /*!Cleans out all the palettes in order to ensure all data is deleted
-         * \pre NA
-         * \post All the ColorPalette tables are deleted
-         * \note NA*/
-        void ClearAllTables();
 
         //!Generates the Glow Colors of a specific image
         /*! Generates a byte glow table (shades) based on the
@@ -231,6 +286,13 @@ class ColorPalette
          * \returns A new colorValues struct of initialColor - operationColor
          * \note difference = initialColor - operationColor NA*/  
         colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
+    
+        //!Ensures that all tables are NULL or deleted.
+        /*!Cleans out all the palettes in order to ensure all data is deleted
+         * \pre NA
+         * \post All the ColorPalette tables are deleted
+         * \note NA*/
+        void ClearAllTables();
     
         //Loaded formatted Palette Data
         std::vector<colorValues> *formattedPaletteData;

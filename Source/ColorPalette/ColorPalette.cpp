@@ -31,7 +31,9 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
         throw(curruptPalette);
     }
     
+#if VERBOSE >= 2
     std::cout << "Input palette size: " << inputPalette->size();
+#endif
     if(((inputPalette->size() != 768) && (inputPalette->size() != 1024)))
     {
         CurruptColorPaletteException curruptPalette;
@@ -148,9 +150,23 @@ void ColorPalette::LoadPalette(std::string filePath)
     outputPalleteData.close();
 #endif
 }
+int ColorPalette::GetNumberOfColors()
+{
+    if(formattedPaletteData == NULL)
+    {
+        return 0;
+    }
+    return formattedPaletteData->size();
+}
 
 colorValues ColorPalette::GetColorFromPalette(int colorNumber)
 {
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteLoaded;
+        noPaletteLoaded.SetErrorMessage("No palette data loaded");
+        throw noPaletteLoaded;
+    }
     if(colorNumber < 0 || colorNumber > formattedPaletteData->size())
     {
         #if VERBOSE >= 1
@@ -241,10 +257,6 @@ void ColorPalette::GenerateTransparentColorsTable()
     //Start loading the Palette into the formattedPaletteData Vector.
     for(int loadCurrentColor = 0; loadCurrentColor < transparentColorsTable->size(); loadCurrentColor++)
     {
-        //std::cout << "Color: " << loadCurrentColor
-        //<< "  Red: " << currentColorProcessing.RedElement
-        //<< " Blue: " << currentColorProcessing.BlueElement
-        //<< " Green: " <<currentColorProcessing.GreenElement << '\n';
         std::cout << (int) transparentColorsTable->at(loadCurrentColor) << '\n';
     }
 #endif
@@ -327,217 +339,15 @@ void ColorPalette::GenerateGreyscaleTable()
 #endif
 }
 
-
-std::vector<colorValues> ColorPalette::GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor)
+void ColorPalette::GenerateColorTables(int gradation)
 {
-    #if VERBOSE >= 2
-        std::cout << "GlowColors-Creating vector of size: " << maxGradation << '\n';
-    #endif
-    
-    
-    std::vector<colorValues> finalGlowColors;
-    finalGlowColors.resize(maxGradation + 1);
-    
-    colorValues trColor, currentProcessColor;
-    
-    int i = 0;
-    
-    float mgr3 = maxGradation/3;
-	float mgr31 = mgr3*1.67;
-    for(; i < mgr3; i++)
-    {
-        currentProcessColor.RedElement = (initialColor.RedElement * (i/mgr31 + 0.4));
-        currentProcessColor.GreenElement = (initialColor.GreenElement * (i/mgr31 + 0.4));
-        currentProcessColor.BlueElement = (initialColor.BlueElement * (i/mgr31 + 0.4));
-        finalGlowColors.at(i) = currentProcessColor;
-    }
-    
-    float mgr23 = mgr3 * 2;
-    trColor.RedElement = finalColor.RedElement - initialColor.RedElement;
-    trColor.GreenElement = finalColor.GreenElement - initialColor.GreenElement;
-    trColor.BlueElement = finalColor.BlueElement - initialColor.BlueElement;
-    
-    for(; i < maxGradation; i++)
-    {
-        float togo = (i-mgr3)/mgr23;
-        currentProcessColor.RedElement = (initialColor.RedElement + trColor.RedElement * togo);
-        currentProcessColor.GreenElement = (initialColor.GreenElement + trColor.GreenElement * togo);
-        currentProcessColor.BlueElement = (initialColor.BlueElement + trColor.BlueElement * togo);
-        finalGlowColors.at(i) = currentProcessColor;
-    }
-    
-    if(finalColor.RedElement && finalColor.GreenElement && finalColor.BlueElement)
-    {
-        currentProcessColor.RedElement = 255;
-        currentProcessColor.GreenElement = 255;
-        currentProcessColor.BlueElement = 255;
-        
-        finalGlowColors.at(i) = currentProcessColor;
-    }
-    else
-    {
-        currentProcessColor.RedElement = 0;
-        currentProcessColor.GreenElement = 0;
-        currentProcessColor.BlueElement = 0;
-        
-        finalGlowColors.at(i) = currentProcessColor;
-    }
-    
-#if DUMPGLOWTABLE 
-    std::ofstream outGlowTable("GlowTable.dat");
-    for(int currentColor = 0; currentColor < finalGlowColors.size(); currentColor++)
-    {
-        currentProcessColor = finalGlowColors.at(currentColor);
-        outGlowTable.put(currentProcessColor.RedElement);
-        outGlowTable.put(currentProcessColor.GreenElement);
-        outGlowTable.put(currentProcessColor.BlueElement);
-        
-    }
-    outGlowTable.close();
-#endif
-    return finalGlowColors;
-}
-std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
-{
-    
-    if(formattedPaletteData == NULL)
-    {
-        NoPaletteLoadedException noPaletteLoaded;
-        noPaletteLoaded.SetErrorMessage("No palette file has been loaded");
-        throw noPaletteLoaded;
-    }
-    if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
-    {
-        InvalidGradationValueException gradationError;
-        gradationError.SetErrorMessage("Invalid maxGradation size");
-        throw gradationError;
-    }
-    
-    std::vector<uint8_t> *finalColorizedTable = new std::vector<uint8_t>;
-    finalColorizedTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * maxGradation);
-    
-    colorValues firstColor, secondColor, differenceColor;
-    float lowest, totalColorDifference;
-    int currentBestFit = -1, currentColor, currentGradation, findColor;
-    std::vector<colorValues> glowColors = GenerateGlowColors(maxGradation, startingGlowColor, endingGlowColor);
-    
-    for(currentColor = 0; currentColor < maxGradation; currentColor++)
-    {
-        for(currentGradation = 0; currentGradation < maxGradation; currentGradation++)
-        {
-            firstColor = GetColorFromPalette(currentColor);
-            firstColor.RedElement = glowColors.at(currentGradation).RedElement * (currentGradation + 1);
-            firstColor.GreenElement = glowColors.at(currentGradation).GreenElement * (currentGradation + 1);
-            firstColor.BlueElement = glowColors.at(currentGradation).BlueElement * (currentGradation + 1);
-            
-            firstColor.RedElement /= maxGradation;
-            firstColor.GreenElement /= maxGradation;
-            firstColor.BlueElement /= maxGradation;
-            
-            lowest = 655350.0;
-            for (findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
-            {
-                secondColor = GetColorFromPalette(findColor);
-                differenceColor = GetColorDifference(secondColor, firstColor);
-                differenceColor.RedElement *= 33;
-                differenceColor.GreenElement *= 33;
-                differenceColor.BlueElement *= 33;
-                
-                totalColorDifference = sqrt( (differenceColor.RedElement * differenceColor.RedElement) +
-                                             (differenceColor.GreenElement * differenceColor.GreenElement) +
-                                            (differenceColor.BlueElement * differenceColor.BlueElement));
-                
-                if(totalColorDifference < lowest)
-                {
-                    lowest = totalColorDifference;
-                    currentBestFit = findColor;
-                }
-            }
-            finalColorizedTable->at(MAXIMUMNUMBEROFCOLORSPERPALETTE * currentGradation + currentColor) = currentBestFit;
-        }
-    }
-    return finalColorizedTable;
-}
-
-std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues baseColor, float addGradation)
-{
-    if(formattedPaletteData == NULL)
-    {
-        NoPaletteLoadedException noPaletteLoaded;
-        noPaletteLoaded.SetErrorMessage("No color palette loaded");
-        throw noPaletteLoaded;
-    }
-    
-    if(addGradation < 0)
-    {
-        InvalidGradationValueException invalidGradation;
-        invalidGradation.SetErrorMessage("Invalid Gradation values, must be positive");
-        throw invalidGradation;
-    }
-    
-    std::vector<colorValues> finalConstrainedColorTable;
-    finalConstrainedColorTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
-    
-    colorValues firstColor, secondColor, cachedColor, differenceColor;
-    
-    
-    int bestFittingColor = -1;
-    float lowest, finalColorDifference;
-    
-    for (int currentColor = 0; currentColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; currentColor ++)
-    {
-        cachedColor = GetColorFromPalette(currentColor);
-        
-        firstColor.RedElement = (float) cachedColor.RedElement * baseColor.RedElement * (int)(addGradation / 100);
-        if(firstColor.RedElement > 255)
-        {
-            firstColor.RedElement = 255;
-        }
-        
-        firstColor.GreenElement = (float) cachedColor.GreenElement * baseColor.GreenElement * (int) (addGradation / 100);
-        if(firstColor.GreenElement > 255)
-        {
-            firstColor.GreenElement = 255;
-        }
-        
-        firstColor.BlueElement = (float) cachedColor.BlueElement * baseColor.BlueElement * (int) (addGradation / 100);
-        if(firstColor.BlueElement > 255)
-        {
-            firstColor.BlueElement = 255;
-        }
-        
-        lowest = 655350;
-        
-        for(int findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
-        {
-            secondColor = GetColorFromPalette(findColor);
-            differenceColor = GetColorDifference(secondColor, firstColor);
-            differenceColor.RedElement *= baseColor.RedElement;
-            differenceColor.GreenElement *= baseColor.GreenElement;
-            differenceColor.BlueElement *= baseColor.BlueElement;
-            
-            finalColorDifference = sqrtf((differenceColor.RedElement * differenceColor.RedElement) +
-                                         (differenceColor.GreenElement * differenceColor.GreenElement) +
-                                         (differenceColor.BlueElement * differenceColor.BlueElement));
-            if(finalColorDifference < lowest)
-            {
-                lowest = finalColorDifference;
-                bestFittingColor = findColor;
-            }
-        }
-        finalConstrainedColorTable.at(currentColor) = GetColorFromPalette(bestFittingColor);
-    }
-    return finalConstrainedColorTable;
-}
-
-colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValues operationColor)
-{
-    colorValues difference;
-    difference.RedElement = initialColor.RedElement - operationColor.RedElement;
-    difference.GreenElement = initialColor.GreenElement - operationColor.GreenElement;
-    difference.BlueElement = initialColor.BlueElement - operationColor.BlueElement;
-    
-    return difference;
+    GenerateTransparentColorsTable();
+    GenerateGreyscaleTable();
+    GenerateShadowtable(gradation);
+    GenerateLighttable(gradation);
+    GenerateRedtable(gradation);
+    GenerateGreentable(gradation);
+    GenerateBluetable(gradation);
 }
 
 void ColorPalette::GenerateShadowtable(int gradation)
@@ -661,30 +471,6 @@ void ColorPalette::GenerateBluetable(int gradation)
 #endif
 }
 
-void ColorPalette::GenerateColorTables(int gradation)
-{
-    GenerateTransparentColorsTable();
-    GenerateGreyscaleTable();
-    GenerateShadowtable(gradation);
-    GenerateLighttable(gradation);
-    GenerateRedtable(gradation);
-    GenerateGreentable(gradation);
-    GenerateBluetable(gradation);
-}
-
-//!Gets the number of colors on the Palette
-/*! A simple getter to get the number of colors in a Palette
- * \pre NA
- * \returns The number of colors in a palette
- * \note NA*/
-int ColorPalette::GetNumberOfColors()
-{
-    if(formattedPaletteData == NULL)
-    {
-        return 0;
-    }
-    return formattedPaletteData->size();
-}
 colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetApplication)
 {
     if(formattedPaletteData == NULL)
@@ -703,8 +489,12 @@ colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetAppl
         outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
         throw outOfBoundsError;
     }
-    return baseColor;
-#warning Complete Implementation
+    
+    colorValues appliedColor;
+    appliedColor.RedElement = baseColor.RedElement - shadowTable->at(targetApplication);
+    appliedColor.GreenElement = baseColor.GreenElement -  shadowTable->at(targetApplication);
+    appliedColor.BlueElement = baseColor.BlueElement - shadowTable->at(targetApplication);
+    return appliedColor;
 }
 colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetApplication)
 {
@@ -724,8 +514,11 @@ colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetAppli
         outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
         throw outOfBoundsError;
     }
-    return baseColor;
-#warning Complete Implementation
+    colorValues appliedColor;
+    appliedColor.RedElement = baseColor.RedElement - lightTable->at(targetApplication);
+    appliedColor.GreenElement = baseColor.GreenElement -  lightTable->at(targetApplication);
+    appliedColor.BlueElement = baseColor.BlueElement - lightTable->at(targetApplication);
+    return appliedColor;
 }
 colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplication)
 {
@@ -747,6 +540,29 @@ colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplica
     }
     colorValues appliedColor = baseColor;
     appliedColor.RedElement += redTable->at(targetApplication);
+    return appliedColor;
+}
+
+colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetApplication)
+{
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteException;
+        noPaletteException.SetErrorMessage("No Color Palette is loaded");
+        throw noPaletteException;
+    }
+    if(greenTable == NULL)
+    {
+        GenerateGreentable();
+    }
+    if((targetApplication < 0) || (targetApplication > greenTable->size()))
+    {
+        OutofBoundsColorException outOfBoundsError;
+        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
+        throw outOfBoundsError;
+    }
+    colorValues appliedColor = baseColor;
+    appliedColor.GreenElement += greenTable->at(targetApplication);
     return appliedColor;
 }
 
@@ -773,28 +589,219 @@ colorValues ColorPalette::ApplyBlueValue(colorValues baseColor, int targetApplic
     return appliedColor;
 }
 
-colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetApplication)
+std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
+{
+    
+    if(formattedPaletteData == NULL)
+    {
+        NoPaletteLoadedException noPaletteLoaded;
+        noPaletteLoaded.SetErrorMessage("No palette file has been loaded");
+        throw noPaletteLoaded;
+    }
+    if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
+    {
+        InvalidGradationValueException gradationError;
+        gradationError.SetErrorMessage("Invalid maxGradation size");
+        throw gradationError;
+    }
+    
+    std::vector<uint8_t> *finalColorizedTable = new std::vector<uint8_t>;
+    finalColorizedTable->resize(MAXIMUMNUMBEROFCOLORSPERPALETTE * maxGradation);
+    
+    colorValues firstColor, secondColor, differenceColor;
+    float lowest, totalColorDifference;
+    int currentBestFit = -1, currentColor, currentGradation, findColor;
+    std::vector<colorValues> glowColors = GenerateGlowColors(maxGradation, startingGlowColor, endingGlowColor);
+    
+    for(currentColor = 0; currentColor < maxGradation; currentColor++)
+    {
+        for(currentGradation = 0; currentGradation < maxGradation; currentGradation++)
+        {
+            firstColor = GetColorFromPalette(currentColor);
+            firstColor.RedElement = glowColors.at(currentGradation).RedElement * (currentGradation + 1);
+            firstColor.GreenElement = glowColors.at(currentGradation).GreenElement * (currentGradation + 1);
+            firstColor.BlueElement = glowColors.at(currentGradation).BlueElement * (currentGradation + 1);
+            
+            firstColor.RedElement /= maxGradation;
+            firstColor.GreenElement /= maxGradation;
+            firstColor.BlueElement /= maxGradation;
+            
+            lowest = 655350.0;
+            for (findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
+            {
+                secondColor = GetColorFromPalette(findColor);
+                differenceColor = GetColorDifference(secondColor, firstColor);
+                differenceColor.RedElement *= 33;
+                differenceColor.GreenElement *= 33;
+                differenceColor.BlueElement *= 33;
+                
+                totalColorDifference = sqrt( (differenceColor.RedElement * differenceColor.RedElement) +
+                                            (differenceColor.GreenElement * differenceColor.GreenElement) +
+                                            (differenceColor.BlueElement * differenceColor.BlueElement));
+                
+                if(totalColorDifference < lowest)
+                {
+                    lowest = totalColorDifference;
+                    currentBestFit = findColor;
+                }
+            }
+            finalColorizedTable->at(MAXIMUMNUMBEROFCOLORSPERPALETTE * currentGradation + currentColor) = currentBestFit;
+        }
+    }
+    return finalColorizedTable;
+}
+
+std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues baseColor, float addGradation)
 {
     if(formattedPaletteData == NULL)
     {
-        NoPaletteLoadedException noPaletteException;
-        noPaletteException.SetErrorMessage("No Color Palette is loaded");
-        throw noPaletteException;
+        NoPaletteLoadedException noPaletteLoaded;
+        noPaletteLoaded.SetErrorMessage("No color palette loaded");
+        throw noPaletteLoaded;
     }
-    if(greenTable == NULL)
+    
+    if(addGradation < 0)
     {
-        GenerateGreentable();
+        InvalidGradationValueException invalidGradation;
+        invalidGradation.SetErrorMessage("Invalid Gradation values, must be positive");
+        throw invalidGradation;
     }
-    if((targetApplication < 0) || (targetApplication > greenTable->size()))
+    
+    std::vector<colorValues> finalConstrainedColorTable;
+    finalConstrainedColorTable.resize(MAXIMUMNUMBEROFCOLORSPERPALETTE);
+    
+    colorValues firstColor, secondColor, cachedColor, differenceColor;
+    
+    
+    int bestFittingColor = -1;
+    float lowest, finalColorDifference;
+    
+    for (int currentColor = 0; currentColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; currentColor ++)
     {
-        OutofBoundsColorException outOfBoundsError;
-        outOfBoundsError.SetErrorMessage("Invalid targetApplication color value");
-        throw outOfBoundsError;
+        cachedColor = GetColorFromPalette(currentColor);
+        
+        firstColor.RedElement = (float) cachedColor.RedElement * baseColor.RedElement * (int)(addGradation / 100);
+        if(firstColor.RedElement > 255)
+        {
+            firstColor.RedElement = 255;
+        }
+        
+        firstColor.GreenElement = (float) cachedColor.GreenElement * baseColor.GreenElement * (int) (addGradation / 100);
+        if(firstColor.GreenElement > 255)
+        {
+            firstColor.GreenElement = 255;
+        }
+        
+        firstColor.BlueElement = (float) cachedColor.BlueElement * baseColor.BlueElement * (int) (addGradation / 100);
+        if(firstColor.BlueElement > 255)
+        {
+            firstColor.BlueElement = 255;
+        }
+        
+        lowest = 655350;
+        
+        for(int findColor = 0; findColor < MAXIMUMNUMBEROFCOLORSPERPALETTE; findColor++)
+        {
+            secondColor = GetColorFromPalette(findColor);
+            differenceColor = GetColorDifference(secondColor, firstColor);
+            differenceColor.RedElement *= baseColor.RedElement;
+            differenceColor.GreenElement *= baseColor.GreenElement;
+            differenceColor.BlueElement *= baseColor.BlueElement;
+            
+            finalColorDifference = sqrtf((differenceColor.RedElement * differenceColor.RedElement) +
+                                         (differenceColor.GreenElement * differenceColor.GreenElement) +
+                                         (differenceColor.BlueElement * differenceColor.BlueElement));
+            if(finalColorDifference < lowest)
+            {
+                lowest = finalColorDifference;
+                bestFittingColor = findColor;
+            }
+        }
+        finalConstrainedColorTable.at(currentColor) = GetColorFromPalette(bestFittingColor);
     }
-    colorValues appliedColor = baseColor;
-    appliedColor.GreenElement += greenTable->at(targetApplication);
-    return appliedColor;
+    return finalConstrainedColorTable;
 }
+
+std::vector<colorValues> ColorPalette::GenerateGlowColors(unsigned int maxGradation, colorValues initialColor, colorValues finalColor)
+{
+    #if VERBOSE >= 2
+        std::cout << "GlowColors-Creating vector of size: " << maxGradation << '\n';
+    #endif
+    
+    
+    std::vector<colorValues> finalGlowColors;
+    finalGlowColors.resize(maxGradation + 1);
+    
+    colorValues trColor, currentProcessColor;
+    
+    int i = 0;
+    
+    float mgr3 = maxGradation/3;
+	float mgr31 = mgr3*1.67;
+    for(; i < mgr3; i++)
+    {
+        currentProcessColor.RedElement = (initialColor.RedElement * (i/mgr31 + 0.4));
+        currentProcessColor.GreenElement = (initialColor.GreenElement * (i/mgr31 + 0.4));
+        currentProcessColor.BlueElement = (initialColor.BlueElement * (i/mgr31 + 0.4));
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    
+    float mgr23 = mgr3 * 2;
+    trColor.RedElement = finalColor.RedElement - initialColor.RedElement;
+    trColor.GreenElement = finalColor.GreenElement - initialColor.GreenElement;
+    trColor.BlueElement = finalColor.BlueElement - initialColor.BlueElement;
+    
+    for(; i < maxGradation; i++)
+    {
+        float togo = (i-mgr3)/mgr23;
+        currentProcessColor.RedElement = (initialColor.RedElement + trColor.RedElement * togo);
+        currentProcessColor.GreenElement = (initialColor.GreenElement + trColor.GreenElement * togo);
+        currentProcessColor.BlueElement = (initialColor.BlueElement + trColor.BlueElement * togo);
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    
+    if(finalColor.RedElement && finalColor.GreenElement && finalColor.BlueElement)
+    {
+        currentProcessColor.RedElement = 255;
+        currentProcessColor.GreenElement = 255;
+        currentProcessColor.BlueElement = 255;
+        
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    else
+    {
+        currentProcessColor.RedElement = 0;
+        currentProcessColor.GreenElement = 0;
+        currentProcessColor.BlueElement = 0;
+        
+        finalGlowColors.at(i) = currentProcessColor;
+    }
+    
+#if DUMPGLOWTABLE 
+    std::ofstream outGlowTable("GlowTable.dat");
+    for(int currentColor = 0; currentColor < finalGlowColors.size(); currentColor++)
+    {
+        currentProcessColor = finalGlowColors.at(currentColor);
+        outGlowTable.put(currentProcessColor.RedElement);
+        outGlowTable.put(currentProcessColor.GreenElement);
+        outGlowTable.put(currentProcessColor.BlueElement);
+        
+    }
+    outGlowTable.close();
+#endif
+    return finalGlowColors;
+}
+
+colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValues operationColor)
+{
+    colorValues difference;
+    difference.RedElement = initialColor.RedElement - operationColor.RedElement;
+    difference.GreenElement = initialColor.GreenElement - operationColor.GreenElement;
+    difference.BlueElement = initialColor.BlueElement - operationColor.BlueElement;
+    
+    return difference;
+}
+
 void ColorPalette::ClearAllTables()
 {
     if(formattedPaletteData != NULL)

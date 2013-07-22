@@ -9,7 +9,7 @@
  *  \section basicsGRPFormat Basic Format Aspects
  *  \section conventions Naming Conventions
  *  \section av
- *  ![Diagram of GRP file layout] (GRPFileLayout.png)
+ *  \image html GRPFileLayout.png
  */
 #ifndef GRPImage_Header
 #define GRPImage_Header

@@ -460,6 +460,25 @@ BOOST_AUTO_TEST_CASE(OutofBoundsApplyBlueHigh)
     
     BOOST_REQUIRE_THROW(goodData.ApplyBlueValue(myColor, (goodData.GetNumberOfColors() * 1000)), OutofBoundsColorException);
 }
+
+//Ensure that things are deleted properly
+BOOST_AUTO_TEST_CASE(LoadOverPalette)
+{
+    ColorPalette myPalette;
+    try
+    {
+        myPalette.LoadPalette(PALLETTEFILEPATH);
+        myPalette.GenerateColorTables();
+        myPalette.LoadPalette(PALLETTEFILEPATH);
+        myPalette.GenerateColorTables();
+        BOOST_ASSERT(true);
+    } catch (...)
+    {
+        BOOST_ASSERT(false);
+    }
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 //Used to load files into vectors for testing
 void LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
