@@ -193,11 +193,20 @@ endif()
 # Write pkgconfig-file:
 include(cmake/InstallPkgConfigFile.cmake)
 install_pkg_config_file(libgrp
-	DESCRIPTION "A library to convert GRP images to a modern image formats"
+	DESCRIPTION "A library to convert Blizzard GRP images to common image formats"
     CFLAGS
     LIBS ${Magick++_LIBRARIES}
     REQUIRES
     VERSION ${LIBGRP_MAJOR_VERSION}.${LIBGRP_MINOR_VERSION}.${LIBGRP_PATCH_VERSION})
+
+# uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CMakeUninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 install(DIRECTORY Source/ DESTINATION include/libgrp
           FILES_MATCHING PATTERN "*.hpp")
