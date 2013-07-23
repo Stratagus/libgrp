@@ -193,6 +193,7 @@ endif()
 # Write pkgconfig-file:
 include(cmake/InstallPkgConfigFile.cmake)
 install_pkg_config_file(libgrp
+	DESCRIPTION "A library to convert GRP images to a modern image formats"
     CFLAGS
     LIBS ${Magick++_LIBRARIES}
     REQUIRES
