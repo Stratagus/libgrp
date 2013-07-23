@@ -6,8 +6,9 @@ project(grp)
 cmake_minimum_required(VERSION 2.6)
 
 #Set the current version of the library
-set(LIBGRP_VERSION 1.0.0)
-
+set(LIBGRP_MAJOR_VERSION 1)
+set(LIBGRP_MINOR_VERSION 0)
+set(LIBGRP_PATCH_VERSION 0)
 #If you want debug information add the flag -DVERBOSE= [1-5]
 #1 being basic 5 for everything
 IF (NOT DEFINED VERBOSE)
@@ -149,8 +150,8 @@ endif()
 endif()
 
 if(UNIX)
-    set_target_properties(grp PROPERTIES VERSION ${LIBGRP_VERSION})
-    set_target_properties(grp PROPERTIES SOVERSION ${LIBGRP_VERSION})
+    set_target_properties(grp PROPERTIES VERSION ${LIBGRP_MAJOR_VERSION}.${LIBGRP_MINOR_VERSION}.${LIBGRP_PATCH_VERSION})
+    set_target_properties(grp PROPERTIES SOVERSION ${LIBGRP_MAJOR_VERSION}.${LIBGRP_MINOR_VERSION}.${LIBGRP_PATCH_VERSION})
 endif()
 
 if(WIN32)
@@ -184,6 +185,14 @@ if(Magick++_FOUND)
 	target_link_libraries(ConvertGRP grp)
 endif()
 endif()
+
+# Write pkgconfig-file:
+include(cmake/InstallPkgConfigFile.cmake)
+install_pkg_config_file(libgrp
+    CFLAGS
+    LIBS ${Magick++_LIBRARIES}
+    REQUIRES
+    VERSION ${LIBGRP_MAJOR_VERSION}.${LIBGRP_MINOR_VERSION}.${LIBGRP_PATCH_VERSION})
 
 install(DIRECTORY Source/ DESTINATION include/libgrp
           FILES_MATCHING PATTERN "*.hpp")
