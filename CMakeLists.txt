@@ -131,6 +131,10 @@ add_library(grp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE
 target_link_libraries(grp ${Magick++_LIBRARIES})
 
 include_directories("/usr/include/ImageMagick")
+include_directories("/usr/local/include/ImageMagick")
+include_directories("/usr/local/include/")
+
+link_directories("/usr/local/lib")
 
 if(APPLE)
 
