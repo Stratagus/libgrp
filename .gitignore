@@ -11,3 +11,14 @@
 *.lai
 *.la
 *.a
+
+# Editor Intermediary Files
+*~
+
+# Cmake build directory
+build/
+CMakeCache.txt
+cmake_install.cmake
+
+#Doxygen Output Directory
+Documentation/GeneratedDocumentation

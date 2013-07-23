@@ -1,0 +1,4 @@
+#include "GRPFrameTests.hpp"
+
+BOOST_AUTO_TEST_SUITE(GRPFrameTests)
+BOOST_AUTO_TEST_SUITE_END()
