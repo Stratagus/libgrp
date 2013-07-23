@@ -139,12 +139,18 @@ link_directories("/usr/local/lib")
 if(APPLE)
 
 option(MAKEFRAMEWORK "Create FRAMEWORK" OFF)
-	#Check MacPorts include/lib folders
-    include_directories("/opt/local/include")
-    include_directories("/opt/local/include/ImageMagick")
-    include_directories("/opt/local/include/ImageMagick-6")
+option(OSXUNIVERSAL "Universal Build" OFF)
 
-    link_directories("/opt/local/lib")
+#Check MacPorts include/lib folders
+include_directories("/opt/local/include")
+include_directories("/opt/local/include/ImageMagick")
+include_directories("/opt/local/include/ImageMagick-6")
+
+link_directories("/opt/local/lib")
+
+if(OSXUNIVERSAL)
+	set(CMAKE_OSX_ARCHITECTURES ppc;i386;ppc64;x86_64) 
+endif()
 
 if(MAKEFRAMEWORK)
     set_target_properties(grp PROPERTIES FRAMEWORK true)
