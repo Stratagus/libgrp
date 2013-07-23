@@ -7,5 +7,6 @@ class GRPImageException : public GRPException {};
 class GRPImageInvalidFrameNumber : public GRPImageException {};
 class GRPImageNoLoadedPaletteSet : public GRPImageException {};
 class GRPImageNoFrameLoaded : public GRPImageException {};
+class GRPImageImageMagickNotCompiledIn : public GRPImageException {};
 
 #endif

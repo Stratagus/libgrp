@@ -263,12 +263,11 @@ class ColorPalette
     
         //!Generate Colortable with the rules of passed in color and multiplicator
         /*! Details here
-         * \pre
-         * \post
-        * \param [in]
-        * \param [in]
-        * \returns
-        * \note NA*/
+         * \pre Color Palette must be loaded
+         * \param [in] baseColor The starting to generate the table
+         * \param [in] addGradation How fine of shades between colors to create
+         * \returns A new constraind table
+         * \note NA*/
         std::vector<colorValues> GenerateTableWithConstraints(colorValues baseColor, float addGradation);
     
 	protected:

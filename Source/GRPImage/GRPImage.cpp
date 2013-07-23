@@ -439,6 +439,12 @@ void GRPImage::SetColorPalette(ColorPalette *selectedColorPalette)
 #if MAGICKPP_FOUND
 void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
 {
+    
+    if(!currentPalette && (currentPalette->GetNumberOfColors() != 0))
+    {
+        GRPImageNoLoadedPaletteSet noPalette;
+        noPalette.SetErrorMessage("No loaded set");
+    }
     Magick::InitializeMagick(NULL);
     Magick::Image *convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
@@ -523,7 +529,15 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
     convertedImage = NULL;
     
 }
+#else
+void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
+{
+    GRPImageImageMagickNotCompiledIn compiledError;
+    compiledError.SetErrorMessage("Imagemagick was not compiled into libgrp, method unavailable")
+    throw compiledError;
+}
 
+#endif
 void GRPImage::CleanGRPImage()
 {
     if(imageFrames.size() != 0)
@@ -536,4 +550,4 @@ void GRPImage::CleanGRPImage()
         imageFrames.resize(0);
     }
 }
-#endif
+

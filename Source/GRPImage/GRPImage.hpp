@@ -135,8 +135,6 @@ public:
      *      throw exception
      * \note NA*/
     void SetColorPalette(ColorPalette *selectedColorPalette);
-
-#if MAGICKPP_FOUND
     
     //!Save the GRPImage frames to a file via ImageMaigck
     /*!Save the GRPImage frames into the file format of your choosing
@@ -149,7 +147,7 @@ public:
      * \param[in] imagesPerRow If stitching is enabled, how many images should be save per row.
      * \note NA*/
     void SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage = true, int imagesPerRow = 10);
-#endif
+    
 protected:
     
     //!Deleted any GRPImage data for reuse
