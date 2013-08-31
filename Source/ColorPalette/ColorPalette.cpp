@@ -624,7 +624,7 @@ std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, col
         noPaletteLoaded.SetErrorMessage("No palette file has been loaded");
         throw noPaletteLoaded;
     }
-    if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation < 0)
+    if(maxGradation > MAXIMUMNUMBEROFCOLORSPERPALETTE || maxGradation <= 0)
     {
         InvalidGradationValueException gradationError;
         gradationError.SetErrorMessage("Invalid maxGradation size");
