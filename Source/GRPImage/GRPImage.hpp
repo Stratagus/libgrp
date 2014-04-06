@@ -36,7 +36,7 @@
     typedef uint16_t u_int16_t;
     typedef uint32_t u_int32_t;
 #else
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <inttypes.h>
 #endif
 

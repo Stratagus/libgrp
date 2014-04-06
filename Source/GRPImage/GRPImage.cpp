@@ -40,8 +40,8 @@ void GRPImage::LoadImage(std::vector<char> *inputImage, bool removeDuplicates)
     uint32_t tempDataOffset;
     
     //Create a hash table to stop the creation of duplicates
-    std::tr1::unordered_map<uint32_t, bool> uniqueGRPImages;
-    std::tr1::unordered_map<uint32_t, bool>::const_iterator uniqueGRPCheck;
+    std::unordered_map<uint32_t, bool> uniqueGRPImages;
+    std::unordered_map<uint32_t, bool>::const_iterator uniqueGRPCheck;
     
     //Load each GRP Header into a GRPFrame & Allocate the
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
@@ -116,8 +116,8 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
     uint32_t tempDataOffset;
     
     //Create a hash table to stop the creation of duplicates
-    std::tr1::unordered_map<uint32_t, bool> uniqueGRPImages;
-    std::tr1::unordered_map<uint32_t, bool>::const_iterator uniqueGRPCheck;
+    std::unordered_map<uint32_t, bool> uniqueGRPImages;
+    std::unordered_map<uint32_t, bool>::const_iterator uniqueGRPCheck;
     
     //Load each GRP Header into a GRPFrame & Allocate the
     for(int currentGRPFrame = 0; currentGRPFrame < numberOfFrames; currentGRPFrame++)
@@ -445,7 +445,7 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
         GRPImageNoLoadedPaletteSet noPalette;
         noPalette.SetErrorMessage("No loaded set");
     }
-    Magick::InitializeMagick(NULL);
+    MagickCore::MagickCoreGenesis(NULL, MagickCore::MagickFalse);
     Magick::Image *convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
     if(imagesPerRow >= numberOfFrames)
