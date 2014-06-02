@@ -533,7 +533,7 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
 void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
 {
     GRPImageImageMagickNotCompiledIn compiledError;
-    compiledError.SetErrorMessage("Imagemagick was not compiled into libgrp, method unavailable")
+    compiledError.SetErrorMessage("Imagemagick was not compiled into libgrp, method unavailable");
     throw compiledError;
 }
 

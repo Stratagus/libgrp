@@ -8,7 +8,13 @@ cmake_minimum_required(VERSION 2.6)
 #Set the current version of the library
 set(LIBGRP_MAJOR_VERSION 1)
 set(LIBGRP_MINOR_VERSION 0)
-set(LIBGRP_PATCH_VERSION 0)
+set(LIBGRP_PATCH_VERSION 3)
+
+#Enable the use of unordered maps
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-std=c++11)
+endif()
+
 #If you want debug information add the flag -DVERBOSE= [1-5]
 #1 being basic 5 for everything
 IF (NOT DEFINED VERBOSE)
@@ -28,6 +34,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
 find_package(Magick++)
 
 if(Magick++_FOUND)
+include_directories(${Magick++_INCLUDE_DIRS})
 add_definitions(-DMAGICKPP_FOUND=1)
 add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
 add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
