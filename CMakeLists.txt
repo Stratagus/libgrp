@@ -194,6 +194,7 @@ endif()
 #Unittest configuration settings
 option(UNITTESTS "Compile Unittests" OFF)
 if(UNITTESTS)
+	add_definitions(-DSAMPLECONTENTDIR=${CMAKE_CURRENT_LIST_DIR}/Documentation/SampleContent)
 	#Search for the required libraries for the project to properly
 	#link and compile.
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)

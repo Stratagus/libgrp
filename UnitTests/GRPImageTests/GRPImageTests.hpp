@@ -5,14 +5,17 @@
 #include <boost/test/unit_test.hpp>
 #include "../../Source/GRPImage/GRPImage.hpp"
 
-#ifdef __APPLE__
-#define PALETTEFILEPATH "../../Documentation/SampleContent/SamplePalette.pal"
-#define GRPIMAGEFILEPATH "../../Documentation/SampleContent/SampleImage.grp"
+#ifndef QUOTE
+	#define Q(x) #x
+	#define QUOTE(x) Q(x)
+#endif
 
-#else
+#ifndef PALETTEFILEPATH
+	#define PALETTEFILEPATH QUOTE(SAMPLECONTENTDIR/SamplePalette.pal)
+#endif
 
-#define PALETTEFILEPATH "../Documentation/SampleContent/SamplePalette.pal"
-#define GRPIMAGEFILEPATH "../../Documentation/SampleContent/SampleImage.grp"
+#ifndef GRPIMAGEFILEPATH
+	#define GRPIMAGEFILEPATH QUOTE(SAMPLECONTENTDIR/SampleImage.grp)
 #endif
 
 void LoadFileToVectorImageGRP(std::string filePath, std::vector<char> *destinationVector);

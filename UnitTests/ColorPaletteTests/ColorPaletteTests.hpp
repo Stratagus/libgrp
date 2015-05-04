@@ -5,15 +5,21 @@
 #include <boost/test/unit_test.hpp>
 #include "../../Source/ColorPalette/ColorPalette.hpp"
 
-#ifdef __APPLE__
-#define PALLETTEFILEPATH "../../Documentation/SampleContent/SamplePalette.pal"
-#define CURRUPTPALLETTEFILEPATH "../../Documentation/SampleContent/CurruptSamplePalette.pal"
+#ifndef QUOTE
+	#define Q(x) #x
+	#define QUOTE(x) Q(x)
+#endif
 
-#else
+#ifndef PALLETTEFILEPATH
+	#define PALLETTEFILEPATH  QUOTE(SAMPLECONTENTDIR/SamplePalette.pal)//"../Documentation/SampleContent/SamplePalette.pal"
+#endif
 
-#define PALLETTEFILEPATH "../Documentation/SampleContent/SamplePalette.pal"
-#define CURRUPTPALLETTEFILEPATH "../Documentation/SampleContent/CurruptsamplePalette.pal"
-#define BADPALLETTEFILEPATH "/lksmdalksmdlkamsda.pal"
+#ifndef CURRUPTPALLETTEFILEPATH
+	#define CURRUPTPALLETTEFILEPATH QUOTE(SAMPLECONTENTDIR/CurruptSamplePalette.pal) //"../Documentation/SampleContent/CurruptsamplePalette.pal"
+#endif
+
+#ifndef BADPALLETTEFILEPATH
+	#define BADPALLETTEFILEPATH "/lksmdalksmdlkamsda.pal"
 #endif
 
 void LoadFileToVector(std::string filePath, std::vector<char> *destinationVector);

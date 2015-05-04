@@ -29,14 +29,17 @@ void UpdateSurface(SDL_Surface *targetSurface, std::vector<int8_t> background);
 void ApplyColorizedValues(ColorPalette applicationPalette, colorTableSelect selectedTable, colorValues targetColor);
 void ApplyGRPImage(unsigned int xPosition, unsigned int yPosition, GRPImage targetGRPImage, unsigned int targetFrame);
 
+#ifndef QUOTE
+	#define Q(x) #x
+	#define QUOTE(x) Q(x)
+#endif
 
-#ifdef __APPLE__
-    #define PALLETTEFILEPATH "../../Documentation/SampleContent/SamplePalette.pal"
-    #define GRPIMAGEFILEPATH "../../Documentation/SampleContent/SampleImage.grp"
+#ifndef PALLETTEFILEPATH
+	#define PALLETTEFILEPATH QUOTE(SAMPLECONTENTDIR/SamplePalette.pal)
+#endif
 
-#else
-    #define PALLETTEFILEPATH "../Documentation/SampleContent/SamplePalette.pal"
-    #define GRPIMAGEFILEPATH "../Documentation/SampleContent/SampleImage.grp"
+#ifndef GRPIMAGEFILEPATH
+	#define GRPIMAGEFILEPATH QUOTE(SAMPLECONTENTDIR/SampleImage.grp)
 #endif
 
 #endif
