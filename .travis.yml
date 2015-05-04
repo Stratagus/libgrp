@@ -7,7 +7,7 @@ compiler:
 before_install:
   - echo $LANG
   - echo $LC_ALL
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install -y libmagickcore-dev libsdl-dev; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install -y libmagickcore-dev libsdl-dev g++-4.8 && export CXX="g++-4.8" CC="gcc-4.8"; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install imagemagick boost sdl; fi
 
 before_script:
