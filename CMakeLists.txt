@@ -10,9 +10,13 @@ set(LIBGRP_MAJOR_VERSION 1)
 set(LIBGRP_MINOR_VERSION 0)
 set(LIBGRP_PATCH_VERSION 3)
 
-#Enable the use of unordered maps
-if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-std=c++11)
+#Use C++11 if possible (or the most recent that we can use
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+        message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
 #If you want debug information add the flag -DVERBOSE= [1-5]
