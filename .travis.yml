@@ -13,7 +13,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake -DUNITTESTS=on -DVERBOSE=5 -DSAMPLECODE=on ..
+  - cmake -DVERBOSE=5 -DSAMPLECODE=on ..
 
 script: make
 
@@ -21,4 +21,4 @@ os:
   - linux
   - osx
 
-osx_image: xcode631
+osx_image: xcode61
