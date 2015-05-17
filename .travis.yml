@@ -20,7 +20,7 @@ before_script:
   - cd build
   - cmake -DSAMPLECODE=on -DUNITTESTS=on ..
 
-script: make
+script: make -j
 
 after_success:
   - ./libgrpUnitTests
