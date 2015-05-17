@@ -1,6 +1,8 @@
 libgrp
 ======
 
+[![Build Status](https://travis-ci.org/Stratagus/libgrp.svg?branch=develop)](https://travis-ci.org/Stratagus/libgrp)
+
 A simple library to convert Blizzard GRP images to common image formats.
  
 libgrp Motivation
