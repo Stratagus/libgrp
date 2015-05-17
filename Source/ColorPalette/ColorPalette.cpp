@@ -5,14 +5,14 @@ ColorPalette::ColorPalette()
 #if VERBOSE >= 5
     std::cout << "Constructing ColorPalette Object.\n";
 #endif
-    transparentColorsTable = NULL;
-    greyscaleTable = NULL;
-    shadowTable = NULL;
-    formattedPaletteData = NULL;
-    lightTable = NULL;
-    redTable = NULL;
-    greenTable = NULL;
-    blueTable =NULL;
+    transparentColorsTable = nullptr;
+    greyscaleTable = nullptr;
+    shadowTable = nullptr;
+    formattedPaletteData = nullptr;
+    lightTable = nullptr;
+    redTable = nullptr;
+    greenTable = nullptr;
+    blueTable =nullptr;
 }
 
 ColorPalette::~ColorPalette()
@@ -22,27 +22,27 @@ ColorPalette::~ColorPalette()
 
 ColorPalette::ColorPalette(std::vector<char> *inputPalette)
 {
-    transparentColorsTable = NULL;
-    greyscaleTable = NULL;
-    shadowTable = NULL;
-    formattedPaletteData = NULL;
-    lightTable = NULL;
-    redTable = NULL;
-    greenTable = NULL;
-    blueTable =NULL;
+    transparentColorsTable = nullptr;
+    greyscaleTable = nullptr;
+    shadowTable = nullptr;
+    formattedPaletteData = nullptr;
+    lightTable = nullptr;
+    redTable = nullptr;
+    greenTable = nullptr;
+    blueTable =nullptr;
     LoadPalette(inputPalette);
 }
 
 ColorPalette::ColorPalette(std::string filePath)
 {
-    transparentColorsTable = NULL;
-    greyscaleTable = NULL;
-    shadowTable = NULL;
-    formattedPaletteData = NULL;
-    lightTable = NULL;
-    redTable = NULL;
-    greenTable = NULL;
-    blueTable =NULL;
+    transparentColorsTable = nullptr;
+    greyscaleTable = nullptr;
+    shadowTable = nullptr;
+    formattedPaletteData = nullptr;
+    lightTable = nullptr;
+    redTable = nullptr;
+    greenTable = nullptr;
+    blueTable =nullptr;
     LoadPalette(filePath);
 }
 
@@ -50,7 +50,7 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
 {
     ClearAllTables();
     colorValues currentColorProcessing;
-    if(inputPalette == NULL)
+    if(inputPalette == nullptr)
     {
         CurruptColorPaletteException curruptPalette;
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
@@ -66,7 +66,7 @@ void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
         curruptPalette.SetErrorMessage("Invalid or Currupt Color Palette; expecting 768 or 1024.");
         throw(curruptPalette);
     }
-    if(formattedPaletteData != NULL)
+    if(formattedPaletteData != nullptr)
     {
         delete formattedPaletteData;
     }
@@ -129,7 +129,7 @@ void ColorPalette::LoadPalette(std::string filePath)
     
     //Since the file passed the check allocated or resize the vector
     //to the proper size.
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         #if VERBOSE >= 5
         std::cout << "Initializing formattedPaletteData.\n";
@@ -178,7 +178,7 @@ void ColorPalette::LoadPalette(std::string filePath)
 }
 int ColorPalette::GetNumberOfColors()
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         return 0;
     }
@@ -187,7 +187,7 @@ int ColorPalette::GetNumberOfColors()
 
 colorValues ColorPalette::GetColorFromPalette(int colorNumber)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteLoaded;
         noPaletteLoaded.SetErrorMessage("No palette data loaded");
@@ -207,14 +207,14 @@ colorValues ColorPalette::GetColorFromPalette(int colorNumber)
 
 void ColorPalette::GenerateTransparentColorsTable()
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException paletteError;
         paletteError.SetErrorMessage("No Palette file is loaded!!");
         throw paletteError;
     }
     
-    if(transparentColorsTable == NULL)
+    if(transparentColorsTable == nullptr)
     {
         //Create a vector with the max number of colors
         transparentColorsTable = new std::vector<uint8_t>;
@@ -299,14 +299,14 @@ void ColorPalette::GenerateTransparentColorsTable()
 
 void ColorPalette::GenerateGreyscaleTable()
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException paletteError;
         paletteError.SetErrorMessage("No Palette file is loaded!!");
         throw paletteError;
     }
     
-    if(greyscaleTable == NULL)
+    if(greyscaleTable == nullptr)
     {
         //Create a vector with the max number of colors
         greyscaleTable = new std::vector<uint8_t>;
@@ -383,10 +383,10 @@ void ColorPalette::GenerateShadowtable(int gradation)
     blackColor.GreenElement = 0;
     blackColor.BlueElement = 0;
     
-    if(shadowTable != NULL);
+    if(shadowTable != nullptr);
     {
         delete shadowTable;
-        shadowTable = NULL;
+        shadowTable = nullptr;
     }
     
     shadowTable = GenerateColorizedTable(gradation, blackColor, blackColor);
@@ -407,10 +407,10 @@ void ColorPalette::GenerateLighttable(int gradation)
     whiteColor.GreenElement = 240;
     whiteColor.BlueElement = 240;
     
-    if(lightTable != NULL)
+    if(lightTable != nullptr)
     {
         delete lightTable;
-        lightTable = NULL;
+        lightTable = nullptr;
     }
     lightTable = GenerateColorizedTable(gradation, whiteColor, whiteColor);
 #if DUMPLIGHTTABLE
@@ -434,10 +434,10 @@ void ColorPalette::GenerateRedtable(int gradation)
     lightRedColor.GreenElement = 228;
     lightRedColor.BlueElement = 144;
     
-    if(redTable != NULL)
+    if(redTable != nullptr)
     {
         delete redTable;
-        redTable = NULL;
+        redTable = nullptr;
     }
     redTable = GenerateColorizedTable(gradation, redColor, lightRedColor);
     
@@ -499,13 +499,13 @@ void ColorPalette::GenerateBluetable(int gradation)
 
 colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetApplication)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
     }
-    if(shadowTable == NULL)
+    if(shadowTable == nullptr)
     {
         GenerateShadowtable();
     }
@@ -524,13 +524,13 @@ colorValues ColorPalette::ApplyShadowValue(colorValues baseColor, int targetAppl
 }
 colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetApplication)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
     }
-    if(lightTable == NULL)
+    if(lightTable == nullptr)
     {
         GenerateLighttable();
     }
@@ -548,13 +548,13 @@ colorValues ColorPalette::ApplyLightValue(colorValues baseColor, int targetAppli
 }
 colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplication)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
     }
-    if(redTable == NULL)
+    if(redTable == nullptr)
     {
         GenerateRedtable();
     }
@@ -571,13 +571,13 @@ colorValues ColorPalette::ApplyRedValue(colorValues baseColor, int targetApplica
 
 colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetApplication)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
     }
-    if(greenTable == NULL)
+    if(greenTable == nullptr)
     {
         GenerateGreentable();
     }
@@ -594,13 +594,13 @@ colorValues ColorPalette::ApplyGreenValue(colorValues baseColor, int targetAppli
 
 colorValues ColorPalette::ApplyBlueValue(colorValues baseColor, int targetApplication)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteException;
         noPaletteException.SetErrorMessage("No Color Palette is loaded");
         throw noPaletteException;
     }
-    if(blueTable == NULL)
+    if(blueTable == nullptr)
     {
         GenerateBluetable();
     }
@@ -618,7 +618,7 @@ colorValues ColorPalette::ApplyBlueValue(colorValues baseColor, int targetApplic
 std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, colorValues startingGlowColor, colorValues endingGlowColor)
 {
     
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteLoaded;
         noPaletteLoaded.SetErrorMessage("No palette file has been loaded");
@@ -679,7 +679,7 @@ std::vector<uint8_t> *ColorPalette::GenerateColorizedTable(int maxGradation, col
 
 std::vector<colorValues> ColorPalette::GenerateTableWithConstraints(colorValues baseColor, float addGradation)
 {
-    if(formattedPaletteData == NULL)
+    if(formattedPaletteData == nullptr)
     {
         NoPaletteLoadedException noPaletteLoaded;
         noPaletteLoaded.SetErrorMessage("No color palette loaded");
@@ -830,68 +830,68 @@ colorValues ColorPalette::GetColorDifference(colorValues initialColor, colorValu
 
 void ColorPalette::ClearAllTables()
 {
-    if(formattedPaletteData != NULL)
+    if(formattedPaletteData != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating formattedPalleteData.\n";
 #endif
         delete formattedPaletteData;
-        formattedPaletteData = NULL;
+        formattedPaletteData = nullptr;
     }
-    if(transparentColorsTable != NULL)
+    if(transparentColorsTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating transparentColorsTable.\n";
 #endif
         delete transparentColorsTable;
-        transparentColorsTable = NULL;
+        transparentColorsTable = nullptr;
     }
-    if(greyscaleTable != NULL)
+    if(greyscaleTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating greyscaleTable.\n";
 #endif
         delete greyscaleTable;
-        greyscaleTable = NULL;
+        greyscaleTable = nullptr;
     }
-    if(shadowTable != NULL)
+    if(shadowTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating shadowTable.\n";
 #endif
         delete shadowTable;
-        shadowTable = NULL;
+        shadowTable = nullptr;
     }
-    if(lightTable != NULL)
+    if(lightTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating lightTable.\n";
 #endif
         delete lightTable;
-        lightTable = NULL;
+        lightTable = nullptr;
     }
-    if(redTable != NULL)
+    if(redTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating redTable.\n";
 #endif
         delete redTable;
-        redTable = NULL;
+        redTable = nullptr;
     }
-    if(greenTable != NULL)
+    if(greenTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating greenTable.\n";
 #endif
         delete greenTable;
-        greenTable = NULL;
+        greenTable = nullptr;
     }
-    if(blueTable != NULL)
+    if(blueTable != nullptr)
     {
 #if VERBOSE >= 5
         std::cout << "Deallocating blueTable.\n";
 #endif
         delete blueTable;
-        blueTable = NULL;
+        blueTable = nullptr;
     }
 }

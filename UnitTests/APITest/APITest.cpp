@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_SUITE(PublicAPITests)
     }
     
     delete testImage;
-    testImage = NULL;
+    testImage = nullptr;
 }*/
 
 BOOST_AUTO_TEST_SUITE_END()

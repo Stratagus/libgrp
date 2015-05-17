@@ -51,13 +51,13 @@ BOOST_AUTO_TEST_CASE(LoadPaletteVector)
         if(colorValuesMatch)
         {
             delete imageData;
-            imageData = NULL;
+            imageData = nullptr;
             BOOST_ASSERT(true);
         }
         else
         {
             delete imageData;
-            imageData = NULL;
+            imageData = nullptr;
             BOOST_ASSERT(false);
         }
         
@@ -65,15 +65,15 @@ BOOST_AUTO_TEST_CASE(LoadPaletteVector)
     catch (...)
     {
         delete imageData;
-        imageData = NULL;
+        imageData = nullptr;
         BOOST_ASSERT(false);
     }
 }
 
-BOOST_AUTO_TEST_CASE(LoadPaletteNULL)
+BOOST_AUTO_TEST_CASE(LoadPalettenullptr)
 {
-    ColorPalette nullPaletteData;
-    BOOST_REQUIRE_THROW(nullPaletteData.LoadPalette(NULL), CurruptColorPaletteException);
+    ColorPalette nullptrPaletteData;
+    BOOST_REQUIRE_THROW(nullptrPaletteData.LoadPalette(nullptr), CurruptColorPaletteException);
 }
 
 BOOST_AUTO_TEST_CASE(LoadCurruptPaletteFile)
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(LoadCurruptPaletteMemory)
     BOOST_REQUIRE_THROW(curruptPalette.LoadPalette(imageData), CurruptColorPaletteException);
     
     delete imageData;
-    imageData = NULL;
+    imageData = nullptr;
 }
 BOOST_AUTO_TEST_CASE(GenerateTransparentColorsTable)
 {

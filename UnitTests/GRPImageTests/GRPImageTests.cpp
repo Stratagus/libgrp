@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_CASE(LoadGRPFILE)
     sampleImage.SetColorPalette(samplePalette);
     
     delete samplePalette;
-    samplePalette = NULL;
+    samplePalette = nullptr;
 }
 
 BOOST_AUTO_TEST_CASE(LoadGRPMEM)

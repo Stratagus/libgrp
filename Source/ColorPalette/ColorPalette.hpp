@@ -292,7 +292,7 @@ class ColorPalette
          * \note difference = initialColor - operationColor NA*/  
         colorValues GetColorDifference(colorValues initialColor, colorValues operationColor);
     
-        //!Ensures that all tables are NULL or deleted.
+        //!Ensures that all tables are nullptr or deleted.
         /*!Cleans out all the palettes in order to ensure all data is deleted
          * \pre NA
          * \post All the ColorPalette tables are deleted

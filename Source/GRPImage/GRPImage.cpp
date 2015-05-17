@@ -12,9 +12,9 @@ GRPImage::GRPImage(std::string filePath, bool removeDuplicates)
 GRPImage::~GRPImage()
 {
     CleanGRPImage();
-    if(currentPalette != NULL)
+    if(currentPalette != nullptr)
     {
-        currentPalette = NULL;
+        currentPalette = nullptr;
     }
 }
 
@@ -173,12 +173,12 @@ void GRPImage::LoadImage(std::string filePath, bool removeDuplicates)
 
 void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFrame)
 {
-    if(targetFrame == NULL || (targetFrame->frameData.size() == 0))
+    if(targetFrame == nullptr || (targetFrame->frameData.size() == 0))
     {
         GRPImageNoFrameLoaded noFrameLoaded;
         noFrameLoaded.SetErrorMessage("No GRP Frame is loaded");
     }
-    if(currentPalette == NULL)
+    if(currentPalette == nullptr)
     {
         GRPImageNoLoadedPaletteSet noPaletteLoaded;
         noPaletteLoaded.SetErrorMessage("No palette has been set or loaded");
@@ -296,12 +296,12 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
 }
 
 void GRPImage::DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *targetFrame)
-{   if(targetFrame == NULL || (targetFrame->frameData.size() == 0))
+{   if(targetFrame == nullptr || (targetFrame->frameData.size() == 0))
 {
     GRPImageNoFrameLoaded noFrameLoaded;
     noFrameLoaded.SetErrorMessage("No GRP Frame is loaded");
 }
-    if(currentPalette == NULL)
+    if(currentPalette == nullptr)
     {
         GRPImageNoLoadedPaletteSet noPaletteLoaded;
         noPaletteLoaded.SetErrorMessage("No palette has been set or loaded");
@@ -445,7 +445,7 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
         GRPImageNoLoadedPaletteSet noPalette;
         noPalette.SetErrorMessage("No loaded set");
     }
-    MagickCore::MagickCoreGenesis(NULL, MagickCore::MagickFalse);
+    MagickCore::MagickCoreGenesis(nullptr, MagickCore::MagickFalse);
     Magick::Image *convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
     if(imagesPerRow >= numberOfFrames)
@@ -526,7 +526,7 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
     
     //Clean up our pointers from earlier.
     delete convertedImage;
-    convertedImage = NULL;
+    convertedImage = nullptr;
     
 }
 #else
@@ -545,7 +545,7 @@ void GRPImage::CleanGRPImage()
         for(std::vector<GRPFrame *>::iterator currentDeleteFrame = imageFrames.begin(); currentDeleteFrame != imageFrames.end(); currentDeleteFrame++)
         {
             delete *currentDeleteFrame;
-            *currentDeleteFrame = NULL;
+            *currentDeleteFrame = nullptr;
         }
         imageFrames.resize(0);
     }
