@@ -1,18 +1,15 @@
 #include "GRPImageTests.hpp"
-
+#include <memory>
 BOOST_AUTO_TEST_SUITE(GRPImageTests)
 
 BOOST_AUTO_TEST_CASE(LoadGRPFILE)
 {
-    ColorPalette *samplePalette = new ColorPalette;
+    std::unique_ptr<ColorPalette> samplePalette(new ColorPalette);
     samplePalette->LoadPalette(PALETTEFILEPATH);
     samplePalette->GenerateColorTables();
     
     GRPImage sampleImage(GRPIMAGEFILEPATH, false);
-    sampleImage.SetColorPalette(samplePalette);
-    
-    delete samplePalette;
-    samplePalette = nullptr;
+    sampleImage.SetColorPalette(samplePalette.get());
 }
 
 BOOST_AUTO_TEST_CASE(LoadGRPMEM)
