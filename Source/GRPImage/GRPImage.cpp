@@ -1,4 +1,6 @@
 #include "GRPImage.hpp"
+#include <memory>
+
 GRPImage::GRPImage(std::vector<uint8_t> *inputImage, bool removeDuplicates)
 {
     LoadImage(inputImage, removeDuplicates);
@@ -445,8 +447,9 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
         GRPImageNoLoadedPaletteSet noPalette;
         noPalette.SetErrorMessage("No loaded set");
     }
+    
     MagickCore::MagickCoreGenesis(nullptr, MagickCore::MagickFalse);
-    Magick::Image *convertedImage;
+    std::unique_ptr<Magick::Image> convertedImage;
     //Due to how Imagemagick creates the image it must be set before usage and must be resized proportionally
     if(imagesPerRow >= numberOfFrames)
     {
@@ -454,11 +457,11 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
     }
     if(singleStitchedImage)
     {
-        convertedImage = new Magick::Image(Magick::Geometry((maxImageWidth * imagesPerRow), (maxImageHeight * (ceil( (float)numberOfFrames/imagesPerRow)))), "transparent");
+        convertedImage = std::make_unique<Magick::Image>(Magick::Image(Magick::Geometry((maxImageWidth * imagesPerRow), (maxImageHeight * (ceil( (float)numberOfFrames/imagesPerRow)))), "transparent"));
     }
     else
     {
-        convertedImage = new Magick::Image(Magick::Geometry(maxImageWidth, maxImageHeight), "transparent");
+        convertedImage = std::make_unique<Magick::Image>(Magick::Image(Magick::Geometry(maxImageWidth, maxImageHeight), "transparent"));
         //We will erase the image after writing the last processed image to disk
         convertedImage->backgroundColor("transparent");
     }
@@ -522,12 +525,6 @@ void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, in
     {
         convertedImage->write(outFilePath);
     }
-    
-    
-    //Clean up our pointers from earlier.
-    delete convertedImage;
-    convertedImage = nullptr;
-    
 }
 #else
 void GRPImage::SaveConvertedImage(std::string outFilePath, int startingFrame, int endingFrame, bool singleStitchedImage, int imagesPerRow)
