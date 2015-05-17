@@ -11,6 +11,7 @@ compiler:
 osx_image: xcode61
 
 before_install:
+  - sudo deb http://ppa.launchpad.net/chewing/travis-ci/ubuntu precise main && sudo apt-get update && sudo apt-get upgrade
   - if [[ $CXX == g++ ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt-get install -y g++-4.9 && export CXX="g++-4.9" CC="gcc-4.9"; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -y libmagickcore-dev libsdl-dev libboost-test-dev libboost-date-time-dev libboost-system-dev; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install imagemagick boost sdl; fi
