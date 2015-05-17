@@ -3,7 +3,7 @@
 #Main Github repository @ https://github.com/ShadowFlare/grpapi
 #bradc6 Github repository @ https://github.com/bradc6/grpapi
 project(grp)
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8.7)
 
 #Set the current version of the library
 set(LIBGRP_MAJOR_VERSION 1)
