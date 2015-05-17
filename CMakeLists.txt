@@ -3,7 +3,7 @@
 #Main Github repository @ https://github.com/ShadowFlare/grpapi
 #bradc6 Github repository @ https://github.com/bradc6/grpapi
 project(grp)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0.2)
 
 #Set the current version of the library
 set(LIBGRP_MAJOR_VERSION 1)
@@ -35,10 +35,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
                       ${CMAKE_MODULE_PATH})
 
 #Find optional libraries
-find_package(Magick++)
-
-if(Magick++_FOUND)
-include_directories(${Magick++_INCLUDE_DIRS})
+find_package(ImageMagick COMPONENTS MagickCore MagickWand Magick++)
+if(ImageMagick_FOUND)
+include_directories(${ImageMagick_INCLUDE_DIRS})
 add_definitions(-DMAGICKPP_FOUND=1)
 add_definitions(-DMAGICKCORE_HDRI_ENABLE=0)
 add_definitions(-DMAGICKCORE_QUANTUM_DEPTH=16)
@@ -151,11 +150,7 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 endif()
 
 add_library(grp SHARED ${LIBGRP_SOURCE} ${GRPIMAGE_SOURCE} ${COLORPALETTE_SOURCE} ${GRPFRAME_SOURCE})
-target_link_libraries(grp ${Magick++_LIBRARIES})
-
-include_directories("/usr/include/ImageMagick")
-include_directories("/usr/local/include/ImageMagick")
-include_directories("/usr/local/include/")
+target_link_libraries(grp ${ImageMagick_LIBRARIES})
 
 link_directories("/usr/local/lib")
 
@@ -163,11 +158,6 @@ if(APPLE)
 
 option(MAKEFRAMEWORK "Create FRAMEWORK" OFF)
 option(OSXUNIVERSAL "Universal Build" OFF)
-
-#Check MacPorts include/lib folders
-include_directories("/opt/local/include")
-include_directories("/opt/local/include/ImageMagick")
-include_directories("/opt/local/include/ImageMagick-6")
 
 link_directories("/opt/local/lib")
 
@@ -198,6 +188,7 @@ if(UNITTESTS)
 	#Search for the required libraries for the project to properly
 	#link and compile.
 	find_package(Boost REQUIRED COMPONENTS system date_time unit_test_framework)
+	include_directories(${Boost_INCLUDE_DIRS})
 
 	add_executable(libgrpUnitTests ${LIBGRP_UNITTEST_SOURCE} ${COLORPALETTE_UNITTEST_SOURCE} ${GRPFRAME_UNITTEST_SOURCE} ${GRPIMAGE_UNITTEST_SOURCE})
 	target_link_libraries(libgrpUnitTests grp ${Boost_LIBRARIES})
@@ -206,7 +197,8 @@ endif()
 option(SAMPLECODE "Compile SampleCode" OFF)
 if(SAMPLECODE)
 	find_package(SDL REQUIRED)
-
+	include_directories(${SDL_INCLUDE_DIR})
+	
 	#Example showing only the current application colors
 	add_executable(ShowPalette ${SAMPLES_SHOWPALETTE_SOURCE})
 	target_link_libraries(ShowPalette grp ${SDL_LIBRARY})
@@ -214,7 +206,7 @@ if(SAMPLECODE)
 	#Example showing a GRP Image
 	add_executable(ShowGRP ${SAMPLES_SHOWGRP_SOURCE})
 	target_link_libraries(ShowGRP grp ${SDL_LIBRARY})
-if(Magick++_FOUND)
+if(ImageMagick_FOUND)
 	add_executable(ConvertGRP ${SAMPLES_CONVERTGRP_SOURCE})
 	target_link_libraries(ConvertGRP grp)
 endif()
@@ -225,7 +217,7 @@ include(cmake/InstallPkgConfigFile.cmake)
 install_pkg_config_file(libgrp
 	DESCRIPTION "A library to convert Blizzard GRP images to common image formats"
     CFLAGS
-    LIBS ${Magick++_LIBRARIES}
+    LIBS ${ImageMagick_LIBRARIES}
     REQUIRES
     VERSION ${LIBGRP_MAJOR_VERSION}.${LIBGRP_MINOR_VERSION}.${LIBGRP_PATCH_VERSION})
 

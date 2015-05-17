@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #define WINDOWWIDTH 640
 #define WINDOWHEIGHT 480
