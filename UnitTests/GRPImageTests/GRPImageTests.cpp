@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(LoadGRPMEM)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-void LoadFileToVectorImageGRP(std::string filePath, std::vector<char> *destinationVector)
+void LoadFileToVectorImageGRP(std::string filePath, std::vector<uint8_t> *destinationVector)
 {
     std::fstream inputFile(filePath.c_str());
     

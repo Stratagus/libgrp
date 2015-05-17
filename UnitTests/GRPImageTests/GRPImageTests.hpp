@@ -18,6 +18,6 @@
 	#define GRPIMAGEFILEPATH QUOTE(SAMPLECONTENTDIR/SampleImage.grp)
 #endif
 
-void LoadFileToVectorImageGRP(std::string filePath, std::vector<char> *destinationVector);
+void LoadFileToVectorImageGRP(std::string filePath, std::vector<uint8_t> *destinationVector);
 
 #endif

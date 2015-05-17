@@ -79,7 +79,7 @@ class ColorPalette
 		~ColorPalette();
     
         //Convience constructors to load
-        ColorPalette(std::vector<char> *inputPalette);
+        ColorPalette(std::vector<uint8_t> *inputPalette);
         ColorPalette(std::string filePath);
     
         //!Set palette data from memory
@@ -90,13 +90,13 @@ class ColorPalette
         *      errors. (Colors will not display correctly)
         * \param[in] inputPalette The memory location of the palette
         *      to use with the GRPImage.
-        * \warning This will not make a copy of the std::vector<char> data
+        * \warning This will not make a copy of the std::vector<uint8_t> data
         *      so if you delete the vector before/during processing it will crash.
         * \warning The method will not delete the vector, called remains responsible for
         *       inputPalette vector deallocation.
         * \throws CurruptColorPaletteException - Bad Colorpalette detected
         * \note NA*/
-        void LoadPalette(std::vector<char> *inputPalette);
+        void LoadPalette(std::vector<uint8_t> *inputPalette);
     
         //!Load palette data from a file (.wpe)
         /*! Load a GRP Palette file to use when decoding/encoding

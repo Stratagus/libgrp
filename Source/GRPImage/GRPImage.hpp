@@ -55,10 +55,10 @@ public:
      * \param[in] inputPalette The memory location of the image
      *      to be decoded/encoded.
      * \param[in] removeDuplicates Remove GRPFrames that are the same
-     * \warning This will not make a copy of the std::vector<char> data
+     * \warning This will not make a copy of the std::vector<uint8_t> data
      *      so if you delete the vector before/during processing it will likly crash.
      * \note Same thing as LoadImage, but on object construction*/
-    GRPImage(std::vector<char> *inputImage, bool removeDuplicates = true);
+    GRPImage(std::vector<uint8_t> *inputImage, bool removeDuplicates = true);
     
     //!Load image data from a file (.grp)
     /*! Load a GRP file to use when decoding/encoding
@@ -86,10 +86,10 @@ public:
      * \param[in] inputPalette The memory location of the image
      *      to be decoded/encoded.
      * \param[in] removeDuplicates Remove GRPFrames that are the same
-     * \warning This will not make a copy of the std::vector<char> data
+     * \warning This will not make a copy of the std::vector<uint8_t> data
      *      so if you delete the vector before/during processing it will likly crash.
      * \note NA*/
-    void LoadImage(std::vector<char> *inputImage, bool removeDuplicates = true);
+    void LoadImage(std::vector<uint8_t> *inputImage, bool removeDuplicates = true);
     
     //!Load image data from a file (.grp)
     /*! Load a GRP file to use when decoding/encoding
@@ -173,9 +173,9 @@ protected:
      * \param[in] inputData A vector of the GRPImage file data
      * \param[in] targetFrame The frame to store the resulting image data
      * \note NA*/
-    void DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *targetFrame);
+    void DecodeGRPFrameData(std::vector<uint8_t> *inputData, GRPFrame *targetFrame);
     
-    //!Load file into a std::vector<char>
+    //!Load file into a std::vector<uint8_t>
     /*!Subroutine function to load a file into the internal imageData or
      * or palette data (depending on the function call).
      * \pre GRPImage must be defined and initialized, sourceFilePath must be a valid

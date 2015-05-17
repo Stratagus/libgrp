@@ -22,6 +22,6 @@
 	#define BADPALLETTEFILEPATH "/lksmdalksmdlkamsda.pal"
 #endif
 
-void LoadFileToVector(std::string filePath, std::vector<char> *destinationVector);
+void LoadFileToVector(std::string filePath, std::vector<uint8_t> *destinationVector);
 
 #endif

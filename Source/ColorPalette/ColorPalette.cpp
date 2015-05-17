@@ -20,7 +20,7 @@ ColorPalette::~ColorPalette()
     ClearAllTables();
 }
 
-ColorPalette::ColorPalette(std::vector<char> *inputPalette)
+ColorPalette::ColorPalette(std::vector<uint8_t> *inputPalette)
 {
     transparentColorsTable = nullptr;
     greyscaleTable = nullptr;
@@ -46,7 +46,7 @@ ColorPalette::ColorPalette(std::string filePath)
     LoadPalette(filePath);
 }
 
-void ColorPalette::LoadPalette(std::vector<char> *inputPalette)
+void ColorPalette::LoadPalette(std::vector<uint8_t> *inputPalette)
 {
     ClearAllTables();
     colorValues currentColorProcessing;

@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteFile)
 //or from a vector are the same.
 BOOST_AUTO_TEST_CASE(LoadPaletteVector)
 {
-    std::vector<char> *imageData = new std::vector<char>;
+    std::vector<uint8_t> *imageData = new std::vector<uint8_t>;
     LoadFileToVector(PALLETTEFILEPATH, imageData);
     ColorPalette fromFile, fromMemory;
     colorValues fromFileColor, fromMemoryColor;    
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(LoadCurruptPaletteFile)
 }
 BOOST_AUTO_TEST_CASE(LoadCurruptPaletteMemory)
 {
-    std::vector<char> *imageData = new std::vector<char>;
+    std::vector<uint8_t> *imageData = new std::vector<uint8_t>;
     LoadFileToVector(CURRUPTPALLETTEFILEPATH, imageData);
     ColorPalette curruptPalette;
     BOOST_REQUIRE_THROW(curruptPalette.LoadPalette(imageData), CurruptColorPaletteException);
@@ -481,7 +481,7 @@ BOOST_AUTO_TEST_CASE(LoadOverPalette)
 
 BOOST_AUTO_TEST_SUITE_END()
 //Used to load files into vectors for testing
-void LoadFileToVector(std::string filePath, std::vector<char> *destinationVector)
+void LoadFileToVector(std::string filePath, std::vector<uint8_t> *destinationVector)
 {
     std::fstream inputFile(filePath.c_str());
     

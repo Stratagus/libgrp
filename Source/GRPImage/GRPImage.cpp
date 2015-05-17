@@ -1,5 +1,5 @@
 #include "GRPImage.hpp"
-GRPImage::GRPImage(std::vector<char> *inputImage, bool removeDuplicates)
+GRPImage::GRPImage(std::vector<uint8_t> *inputImage, bool removeDuplicates)
 {
     LoadImage(inputImage, removeDuplicates);
 }
@@ -18,11 +18,11 @@ GRPImage::~GRPImage()
     }
 }
 
-void GRPImage::LoadImage(std::vector<char> *inputImage, bool removeDuplicates)
+void GRPImage::LoadImage(std::vector<uint8_t> *inputImage, bool removeDuplicates)
 {
     
     CleanGRPImage();
-    std::vector<char>::iterator currentDataPosition = inputImage->begin();
+    std::vector<uint8_t>::iterator currentDataPosition = inputImage->begin();
     
     //Get basic GRP header info
     //(currentDataPosition += 2) will push the iterator forward
@@ -295,7 +295,7 @@ void GRPImage::DecodeGRPFrameData(std::ifstream &inputFile, GRPFrame *targetFram
 #endif
 }
 
-void GRPImage::DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *targetFrame)
+void GRPImage::DecodeGRPFrameData(std::vector<uint8_t> *inputData, GRPFrame *targetFrame)
 {   if(targetFrame == nullptr || (targetFrame->frameData.size() == 0))
 {
     GRPImageNoFrameLoaded noFrameLoaded;
@@ -309,7 +309,7 @@ void GRPImage::DecodeGRPFrameData(std::vector<char> *inputData, GRPFrame *target
     
     
     //Seek to the Row offset data
-    std::vector<char>::iterator currentDataPosition = inputData->begin();
+    std::vector<uint8_t>::iterator currentDataPosition = inputData->begin();
     currentDataPosition += targetFrame->GetDataOffset();
     
     //Create a vector of all the Image row offsets
