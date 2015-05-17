@@ -22,8 +22,8 @@ BOOST_AUTO_TEST_CASE(LoadPaletteFile)
 //or from a vector are the same.
 BOOST_AUTO_TEST_CASE(LoadPaletteVector)
 {
-    std::vector<uint8_t> *imageData = new std::vector<uint8_t>;
-    LoadFileToVector(PALLETTEFILEPATH, imageData);
+    std::vector<uint8_t> imageData;
+    LoadFileToVector(PALLETTEFILEPATH, &imageData);
     ColorPalette fromFile, fromMemory;
     colorValues fromFileColor, fromMemoryColor;    
     
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(LoadPaletteVector)
         fromFile.LoadPalette(PALLETTEFILEPATH);
         fromFileColor = fromFile.GetColorFromPalette(5);
         
-        fromMemory.LoadPalette(imageData);
+        fromMemory.LoadPalette(&imageData);
         fromMemoryColor = fromMemory.GetColorFromPalette(5);
         
         bool colorValuesMatch = true;
@@ -50,22 +50,16 @@ BOOST_AUTO_TEST_CASE(LoadPaletteVector)
         
         if(colorValuesMatch)
         {
-            delete imageData;
-            imageData = nullptr;
             BOOST_ASSERT(true);
         }
         else
         {
-            delete imageData;
-            imageData = nullptr;
             BOOST_ASSERT(false);
         }
         
     }
     catch (...)
     {
-        delete imageData;
-        imageData = nullptr;
         BOOST_ASSERT(false);
     }
 }
@@ -83,13 +77,10 @@ BOOST_AUTO_TEST_CASE(LoadCurruptPaletteFile)
 }
 BOOST_AUTO_TEST_CASE(LoadCurruptPaletteMemory)
 {
-    std::vector<uint8_t> *imageData = new std::vector<uint8_t>;
-    LoadFileToVector(CURRUPTPALLETTEFILEPATH, imageData);
+    std::vector<uint8_t> imageData;
+    LoadFileToVector(CURRUPTPALLETTEFILEPATH, &imageData);
     ColorPalette curruptPalette;
-    BOOST_REQUIRE_THROW(curruptPalette.LoadPalette(imageData), CurruptColorPaletteException);
-    
-    delete imageData;
-    imageData = nullptr;
+    BOOST_REQUIRE_THROW(curruptPalette.LoadPalette(&imageData), CurruptColorPaletteException);
 }
 BOOST_AUTO_TEST_CASE(GenerateTransparentColorsTable)
 {
